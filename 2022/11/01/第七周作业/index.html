@@ -1,0 +1,636 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="[TOC] 一、postgresql架构与原理1.1、体系架构概览①PostgreSQL和MySQL相似,也采用典型的C&#x2F;S模型。 ②PostgreSQL体系结构分两部分 ​    ——实例 instance ​    ——磁盘存储 ③实例 instance 包括    ——进程    ——内存存储结构  1.2、进程和内存结构PostgreSQL是进程架构模型，MySQL是线程架构模型。  1.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第七周作业">
+<meta property="og:url" content="http://example.com/2022/11/01/%E7%AC%AC%E4%B8%83%E5%91%A8%E4%BD%9C%E4%B8%9A/index.html">
+<meta property="og:site_name" content="5-12 23:30">
+<meta property="og:description" content="[TOC] 一、postgresql架构与原理1.1、体系架构概览①PostgreSQL和MySQL相似,也采用典型的C&#x2F;S模型。 ②PostgreSQL体系结构分两部分 ​    ——实例 instance ​    ——磁盘存储 ③实例 instance 包括    ——进程    ——内存存储结构  1.2、进程和内存结构PostgreSQL是进程架构模型，MySQL是线程架构模型。  1.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/11/01/%E7%AC%AC%E4%B8%83%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221102160659303.png">
+<meta property="og:image" content="http://example.com/2022/11/01/%E7%AC%AC%E4%B8%83%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221102160919783.png">
+<meta property="og:image" content="http://example.com/2022/11/01/%E7%AC%AC%E4%B8%83%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221102161934614.png">
+<meta property="og:image" content="http://example.com/2022/11/01/%E7%AC%AC%E4%B8%83%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221102163110717.png">
+<meta property="og:image" content="http://example.com/2022/11/01/%E7%AC%AC%E4%B8%83%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221105162739622.png">
+<meta property="og:image" content="http://example.com/2022/11/01/%E7%AC%AC%E4%B8%83%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221105171422005.png">
+<meta property="og:image" content="http://example.com/2022/11/01/%E7%AC%AC%E4%B8%83%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221105171532771.png">
+<meta property="og:image" content="http://example.com/2022/11/01/%E7%AC%AC%E4%B8%83%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221105171914241.png">
+<meta property="og:image" content="http://example.com/2022/11/01/%E7%AC%AC%E4%B8%83%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221105172032598.png">
+<meta property="og:image" content="http://example.com/2022/11/01/%E7%AC%AC%E4%B8%83%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221105172059569.png">
+<meta property="og:image" content="http://example.com/2022/11/01/%E7%AC%AC%E4%B8%83%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221105183302080.png">
+<meta property="og:image" content="http://example.com/2022/11/01/%E7%AC%AC%E4%B8%83%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221105183351587.png">
+<meta property="og:image" content="http://example.com/2022/11/01/%E7%AC%AC%E4%B8%83%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221105183552699.png">
+<meta property="og:image" content="http://example.com/2022/11/01/%E7%AC%AC%E4%B8%83%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221105183536464.png">
+<meta property="og:image" content="http://example.com/2022/11/01/%E7%AC%AC%E4%B8%83%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221105205416647.png">
+<meta property="og:image" content="http://example.com/2022/11/01/%E7%AC%AC%E4%B8%83%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221107101739910.png">
+<meta property="og:image" content="http://example.com/2022/11/01/%E7%AC%AC%E4%B8%83%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221107102111856.png">
+<meta property="og:image" content="http://example.com/2022/11/01/%E7%AC%AC%E4%B8%83%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221107102353593.png">
+<meta property="og:image" content="http://example.com/2022/11/01/%E7%AC%AC%E4%B8%83%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221107102549480.png">
+<meta property="og:image" content="http://example.com/2022/11/01/%E7%AC%AC%E4%B8%83%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221107102749619.png">
+<meta property="article:published_time" content="2022-11-01T15:29:51.000Z">
+<meta property="article:modified_time" content="2022-12-18T04:04:09.261Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/11/01/%E7%AC%AC%E4%B8%83%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221102160659303.png">
+  
+  
+  <title>第七周作业 - 5-12 23:30</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="第七周作业">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-11-01 15:29" pubdate>
+        November 1, 2022 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      30k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      251 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">第七周作业</h1>
+            
+            <div class="markdown-body">
+              <p>[TOC]</p>
+<h3 id="一、postgresql架构与原理"><a href="#一、postgresql架构与原理" class="headerlink" title="一、postgresql架构与原理"></a>一、postgresql架构与原理</h3><h4 id="1-1、体系架构概览"><a href="#1-1、体系架构概览" class="headerlink" title="1.1、体系架构概览"></a>1.1、体系架构概览</h4><p>①PostgreSQL和MySQL相似,也采用典型的C/S模型。</p>
+<p>②PostgreSQL体系结构分两部分</p>
+<p>​    ——实例 instance</p>
+<p>​    ——磁盘存储</p>
+<p>③实例 instance 包括</p>
+<p>   ——进程</p>
+<p>   ——内存存储结构</p>
+<p><a href=""><img src="image-20221102160659303.png" srcset="/img/loading.gif" lazyload alt="image-20221102160659303"></a></p>
+<h4 id="1-2、进程和内存结构"><a href="#1-2、进程和内存结构" class="headerlink" title="1.2、进程和内存结构"></a>1.2、进程和内存结构</h4><p>PostgreSQL是进程架构模型，MySQL是线程架构模型。</p>
+<p><a href=""><img src="image-20221102160919783.png" srcset="/img/loading.gif" lazyload alt="image-20221102160919783"></a></p>
+<h5 id="1-2-1、进程"><a href="#1-2-1、进程" class="headerlink" title="1.2.1、进程"></a>1.2.1、进程</h5><p><strong>Postmaster 主进程</strong></p>
+<p>​    它是整个数据库实例的主控制进程，负责启动和关闭该数据库实例。</p>
+<p>​    实际上,使用pg ctl来启动数据库时，pg_ctl也是通过运行postgres来启动数据库的，只是它做了一些包装,更容易启动数据库。</p>
+<p>​    它是第一个PostgreSQL进程，此主进程还会fork出其他子进程，并管理它们。</p>
+<p>​    当用户和PostgreSQL建立连接时，首先是和Postmaster进程建立连接。首先，客户端会发出身份验证的信息给Postmaster进程，Postmaster进程根据消息中的信息进行身份验证判断，如果验证通过，它会fork出一个会话子进程为这个连接服务。</p>
+<p>​    当某个服务进程出现错误的时候，Postmaster主进程会自动完成系统的恢复。恢复过程中会停掉所有的服务进程,然后进行数据库数据的一致性恢复,等恢复完成后，数据库又可以接受新的连接。</p>
+<p>​    验证功能是通过配置文件pg_hba.conf和用户验证模块来提供。</p>
+<p>​    postmaster 程序是指向postgres的软链接</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div></td><td class="code"><pre><code class="hljs sh">[root@ubuntu2004 ~]<span class="hljs-comment">#ll /apps/pgsql/bin/postmaster </span><br>lrwxrwxrwx 1 root root 8 Dec 28 01:19 /apps/pgsql/bin/postmaster -&gt; <br>postgres*<br></code></pre></td></tr></table></figure>
+
+<p><strong>BgWriter 后台写进程</strong></p>
+<p>​    为了提高插入、删除和更新数据的性能，当往数据库中插入或者更新数据时，并不会马上把数据持久化到数据文件中,而是先写入Buffer中</p>
+<p>​    该辅助进程可以周期性的把内存中的脏数据刷新到磁盘中</p>
+<p><strong>WalWriter 预写式日志进程</strong></p>
+<p>​    WAL是write ahead log的缩写，WAL log旧版中称为xlog，相当于MySQL中Redo log</p>
+<p>​    预写式日志是在修改数据之前，必须把这些修改操作记录到磁盘中，这样后面更新实际数据时，就不需要实时的把数据持久化到文件中了。即使机器突然宕机或者数据库异常退出， 导致一部分内存中的脏数据没有及时的刷新到文件中，在数据库重启后，通过读取WAL日志，并把最后一部分WAL日志重新执行一遍，就能恢复到宕机时的状态了</p>
+<p>​    WAL日志保存在pg_wal目录(早期版本为pg_xlog) 下。每个xlog 文件默认是16MB,为了满足恢复要求，在pg_wal目录下会产生多个WAL日志，这样就可保证在宕机后，未持久化的数据都可以通过WAL日志来恢复，那些不需要的WAL日志将会被自动覆盖</p>
+<p><strong>Checkpointer 检查点进程</strong></p>
+<p>​    检查点(Checkpoints)是事务序列中的点,保证在该点之前的所有日志信息都更新到数据文件</p>
+<p>中。</p>
+<p>​    在检查点时，所有脏数据页都冲刷到磁盘并且向日志文件中写入一条特殊的检查点记录。在发生崩溃的时候，恢复器就知道应该从日志中的哪个点（称做 redo 记录）开始做 REDO 操作，因为在该记录前的对数据文件的任何修改都已经在磁盘上了。在完成检查点处理之后，任何在redo记录之前写的日志段都不再需要，因此可以循环使用或者删除。在进行 WAL 归档的时候，这些日志在循环利用或者删除之前应该必须先归档保存</p>
+<p>​    检查点进程 (CKPT) 在特定时间自动执行一个检查点,通过向数据库写入进程 (BgWriter) 传递消息来启动检查点请求</p>
+<p><strong>AutoVacuum 自动清理进程</strong></p>
+<p>​    执行delete操作时，旧的数据并不会立即被删除，在更新数据时，也不会在旧的数据上做更新，而是新生成一行数据。旧的数据只是被标识为删除状态，在没有并发的其他事务读到这些旧数据时，它们才会被清除掉</p>
+<p>​    autovacuum lanucher 负责回收垃圾数据的master进程,如果开启了autovacuum的话,那么postmaster会fork这个进程</p>
+<p>​    autovacuum worker 负责回收垃圾数据的worker进程,是lanucher进程fork出来的</p>
+<p><strong>PgStat 统计数据收集进程</strong></p>
+<p>​    此进程主要做数据的统计收集工作</p>
+<p>​    收集的信息主要用于查询优化时的代价估算。统计的数据包括对一个表或索引进行的插入、删除、更新操作，磁盘块读写的次数以及行的读次数等。</p>
+<p>​    系统表pg_statistic中存储了PgStat收集的各类统计信息</p>
+<p><strong>PgArch 归档进程</strong></p>
+<p>​    默认没有此进程,开启归档功能后才会启动archiver进程</p>
+<p>​    WAL日志文件会被循环使用，也就是说WAL日志会被覆盖,利用PgArch进程会在覆盖前把WAL日志备份出来,类似于binlog,可用于备份功能</p>
+<p>​    PostgreSQL 从8.X版本开始提供了PITR ( Point-In-Time-Recovery)技术，即就是在对数据厍进行过一次全量备份后，该技术将备份时间点后面的WAL日志通过归档进行备份，将来可以使用数据库的全量备份再加上后面产生的WAL 日志，即可把数据库向前恢复到全量备份后的任意一个时间点的状态</p>
+<p><strong>SysLogger 系统日志进程</strong></p>
+<p>​    默认没有此进程,配置文件 postgresql.conf 设置参数logging_collect设置为“on”时，主进程才会启动SysLogger辅助进程</p>
+<p>​    它从Postmaster主进程、所有的服务进程以及其他辅助进程收集所有的stderr输出，并将这些输出写入到日志文件中</p>
+<p><strong>startup 启动进程</strong></p>
+<p>​    用于数据库恢复的进程</p>
+<p><strong>Session 会话进程</strong></p>
+<p>​    每一个用户发起连接后，一旦验证成功,postmaster进程就会fork—个新的子进程负责连接此</p>
+<p>用户。</p>
+<p>​    通常表现为进程形式： postgres postgres [local] idle</p>
+<p>案例: 查看进程</p>
+<p><a href=""><img src="image-20221102161934614.png" srcset="/img/loading.gif" lazyload alt="image-20221102161934614"></a></p>
+<h5 id="1-2-2、内存结构"><a href="#1-2-2、内存结构" class="headerlink" title="1.2.2、内存结构"></a>1.2.2、内存结构</h5><p>PostgreSQL的内存空间包括共享内存和本地内存两部分</p>
+<p><strong>共享内存</strong></p>
+<p>​    PostgreSQL启动后，会生成一块共享内存，共享内存主要用做数据块的缓冲区，以便提高读写性能。WAL日志缓冲区和CLOG(Commit log)缓冲区也存在于共享内存中。除此以外，一些全局信息也保存在共享内存中，如进程信息、锁的信息、全局统计信息等。</p>
+<p>​    PostgreSQL 9.3之前的版本与Oracle数据库一样，都是使用“System V”类型的共享内存，但到PostgreSQL9.3之后，PostgreSQL使用mmap()方式共享内存,好处能使用较大的共享内存。</p>
+<p>​    可以通过配置postgresql.conf文件中shared_buffers 指定，默认128M，建议是内存的50%</p>
+<p><strong>本地内存</strong></p>
+<p>​    后台服务进程除访问共享内存外，还会申请分配一些本地内存，以便暂存一些不需要全局存储的数据。</p>
+<p>​    都可以通过在配置postgresql.conf文件中指定</p>
+<p>​    这些内存缓冲区主要有以下几类：</p>
+<p>​        temp_buffers :用于访问临时表的本地缓冲区，默认为8M</p>
+<p>​        work_mem:内部排序操作和Hash表在使用临时磁盘文件之前使用的内存缓冲区,默认为4M</p>
+<p>​        maintenance_work_mem:在维护性操作(比如 VACUUM、CREATE INDEX和ALTERTABLE ADD FOREIGN KEY 等）中使用的内存缓冲区，默认为64M</p>
+<h4 id="1-3、数据更新过程"><a href="#1-3、数据更新过程" class="headerlink" title="1.3、数据更新过程"></a>1.3、数据更新过程</h4><p><a href=""><img src="image-20221102163110717.png" srcset="/img/loading.gif" lazyload alt="image-20221102163110717"></a></p>
+<p>①先将数据库文件中的更改的数据加载至内存</p>
+<p>②在内存更新数据</p>
+<p>③将日志写入内存WAL的缓存区</p>
+<p>④将日志提交，将日志写入操作系统 cache</p>
+<p>⑤同步日志到磁盘</p>
+<p>⑥后台写数据库的更新后的数据到操作系统 cache</p>
+<p>⑦写完数据后，更新检查点checkpoint</p>
+<p>⑧同步数据到磁盘</p>
+<h3 id="二、基于流复制完成postgresql的高可用"><a href="#二、基于流复制完成postgresql的高可用" class="headerlink" title="二、基于流复制完成postgresql的高可用"></a>二、基于流复制完成postgresql的高可用</h3><h4 id="2-1、基础环境准备"><a href="#2-1、基础环境准备" class="headerlink" title="2.1、基础环境准备"></a>2.1、基础环境准备</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#两个主机节点</span><br>10.0.0.184 Master<br>10.0.0.185 Standby<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-2、Master节点配置"><a href="#2-2、Master节点配置" class="headerlink" title="2.2、Master节点配置"></a>2.2、Master节点配置</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#创建复制的用户并授权</span><br>[postgres@Rocky ~]<span class="hljs-variable">$psql</span><br>postgres=<span class="hljs-comment"># create role repluser with replication login password &#x27;123456&#x27;;</span><br><br><span class="hljs-comment">#修改pg_hba.conf进行授权</span><br>[postgres@Rocky ~]<span class="hljs-variable">$vim</span> /pgsql/data/pg_hba.conf<br>host    replication     repluser        10.0.0.0/24             md5<br><br><span class="hljs-comment">#修改配置(可选):</span><br>[postgres@Rocky ~]<span class="hljs-variable">$vim</span> /pgsql/data/postgresql.conf<br>archive_mode = on   <span class="hljs-comment">#建议打开归档模式,防止长时间无法同步,WAL被覆盖造成数据丢失</span><br>archive_command = <span class="hljs-string">&#x27;[ ! -f /archive/%f ] &amp;&amp; cp %p /archive/%f&#x27;</span><br>:wq<br>[root@Rocky ~]<span class="hljs-comment">#mkdir /archive</span><br>[root@Rocky ~]<span class="hljs-comment">#chown -R postgres. /archive</span><br><br>[postgres@Rocky ~]<span class="hljs-variable">$pg_ctl</span> restart<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-3、Standby节点配置"><a href="#2-3、Standby节点配置" class="headerlink" title="2.3、Standby节点配置"></a>2.3、Standby节点配置</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#清空数据和归档</span><br>[postgres@Rocky ~]<span class="hljs-variable">$pg_ctl</span> stop<br>[postgres@Rocky ~]<span class="hljs-variable">$rm</span> -rf /pgsql/data/*           <span class="hljs-comment">#清空数据库</span><br>[postgres@Rocky ~]<span class="hljs-variable">$rm</span> -rf /archive/*              <span class="hljs-comment">#清空归档，归档最好开启，此目录需要自己创建</span><br>[postgres@Rocky ~]<span class="hljs-variable">$rm</span> -rf /pgsql/backup/*         <span class="hljs-comment">#清空以前的备份，如果没有则需要穿件备份目录</span><br><br>[root@Rocky ~]<span class="hljs-comment">#mkdir /pgsql/backup</span><br>[root@Rocky ~]<span class="hljs-comment">#chown postgres. /pgsql/backup</span><br>[root@Rocky ~]<span class="hljs-comment">#mkdir /archive</span><br>[root@Rocky ~]<span class="hljs-comment">#chown postgres. /archive</span><br><br><span class="hljs-comment">#备份主库数据到备库</span><br>[postgres@Rocky ~]<span class="hljs-variable">$pg_basebackup</span> -D /pgsql/backup/ -Ft -Pv -Urepluser -h 10.0.0.184 -p 5432 -R                         <span class="hljs-comment">#-R：必须有 -Pv：是显示复制过程</span><br>[postgres@Rocky ~]<span class="hljs-variable">$ls</span> /pgsql/backup           <span class="hljs-comment">#查看数据已备份</span><br>backup_manifest  base.tar  pg_wal.tar<br><br><span class="hljs-comment">#还原备份的数据,实现初始的主从数据同步</span><br>[postgres@Rocky ~]<span class="hljs-variable">$tar</span> xf /pgsql/backup/base.tar -C /pgsql/data<br>[postgres@Rocky ~]<span class="hljs-variable">$tar</span> xf /pgsql/backup/pg_wal.tar -C /archive/<br>[postgres@Rocky ~]<span class="hljs-variable">$ls</span> /archive           <span class="hljs-comment">#查看归档日志已解压</span><br>000000010000000000000003<br>[postgres@Rocky ~]<span class="hljs-variable">$ls</span> /pgsql/data        <span class="hljs-comment">#查看数据已解压</span><br>backup_label    pg_dynshmem   pg_multixact  pg_snapshots  pg_tblspc    pg_xact      standby.signal  base          pg_hba.conf   pg_notify     pg_stat      pg_twophase    tablespace_map  global        pg_ident.conf pg_replslot   pg_stat_tmp  PG_VERSION   postgresql.conf pg_commit_ts  pg_logical    pg_serial     pg_subtrans  pg_wal       serverlog       postgresql.auto.conf<br><br><span class="hljs-comment">#修改postgresql.conf文件</span><br>[postgres@Rocky ~]<span class="hljs-variable">$vim</span> /pgsql/data/postgresql.conf<br>primary_conninfo = <span class="hljs-string">&#x27;host=10.0.0.184 port=5432 user=repluser password=123456&#x27;</span><br>restore_command = <span class="hljs-string">&#x27;cp /archive/%f %p&#x27;</span> <span class="hljs-comment">#此项可不配置</span><br>:wq<br><br>[postgres@Rocky ~]<span class="hljs-variable">$pg_ctl</span> start<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-4、监控同步状态"><a href="#2-4、监控同步状态" class="headerlink" title="2.4、监控同步状态"></a>2.4、监控同步状态</h4><h5 id="2-4-1、查看主库状态"><a href="#2-4-1、查看主库状态" class="headerlink" title="2.4.1、查看主库状态"></a>2.4.1、查看主库状态</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@Rocky ~]<span class="hljs-comment">#pg_controldata</span><br>pg_control version number:            1300<br>Catalog version number:               202107181<br>Database system identifier:           7160103462514775493<br>Database cluster state:               <span class="hljs-keyword">in</span> production    <span class="hljs-comment">#主库状态</span><br><br>postgres=<span class="hljs-comment"># select pid,state,client_addr,sync_priority,sync_state from pg_stat_replication;</span><br> pid  |   state   | client_addr | sync_priority | sync_state <br>------+-----------+-------------+---------------+------------<br> 4499 | streaming | 10.0.0.185  |             0 | async<br><span class="hljs-comment">#                    从服务器ip                   异步（sync：同步）</span><br><br><span class="hljs-comment">#下面只在主节点查看同步模式,注意:如果无从节点连接,将无任何显示信息</span><br>postgres=<span class="hljs-comment"># SELECT pg_current_wal_insert_lsn(),* from pg_stat_replication;</span><br>-[ RECORD 1 ]-------------+------------------------------<br>pg_current_wal_insert_lsn | 0/4000148              <span class="hljs-comment">#当前的lsn号</span><br>pid                       | 4499<br>usesysid                  | 16384<br>usename                   | repluser<br>application_name          | walreceiver<br>client_addr               | 10.0.0.185<br>client_hostname           | <br>client_port               | 34426<br>backend_start             | 2022-11-02 17:33:24.681961+08<br>backend_xmin              | <br>state                     | streaming<br>sent_lsn                  | 0/4000148  <span class="hljs-comment">#同步的lsn号,和上面一致,说明同步,有差表示有同步延迟</span><br>write_lsn                 | 0/4000148<br>flush_lsn                 | 0/4000148<br>replay_lsn                | 0/4000148<br>write_lag                 | <br>flush_lag                 | <br>replay_lag                | <br>sync_priority             | 0<br>sync_state                | async<br>reply_time                | 2022-11-02 17:41:55.510802+08<br><br><span class="hljs-comment">#服务器查看数据库是否为备库，f表主库 t表示为备库</span><br>postgres=<span class="hljs-comment"># select * from pg_is_in_recovery();</span><br> pg_is_in_recovery <br>-------------------<br> f<br><br></code></pre></td></tr></table></figure>
+
+<h5 id="2-4-2、查看从库状态"><a href="#2-4-2、查看从库状态" class="headerlink" title="2.4.2、查看从库状态"></a>2.4.2、查看从库状态</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#从节点可以读</span><br>postgres=<span class="hljs-comment"># select * from student;</span><br> <span class="hljs-built_in">id</span> |              name              <br>----+--------------------------------<br>  1 | zhang <br>  <br><span class="hljs-comment">#从节点不支持写</span><br>postgres=<span class="hljs-comment"># insert into student(name)values(&#x27;wang&#x27;);</span><br>ERROR:  cannot execute INSERT <span class="hljs-keyword">in</span> a read-only transaction<br><br>[root@Rocky ~]<span class="hljs-comment">#pg_controldata</span><br>pg_control version number:            1300<br>Catalog version number:               202107181<br>Database system identifier:           7160103462514775493<br>Database cluster state:               <span class="hljs-keyword">in</span> archive recovery   <span class="hljs-comment">#从库状态</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="2-5、切换主从"><a href="#2-5、切换主从" class="headerlink" title="2.5、切换主从"></a>2.5、切换主从</h4><h5 id="2-5-1、将从库切换为主库"><a href="#2-5-1、将从库切换为主库" class="headerlink" title="2.5.1、将从库切换为主库"></a>2.5.1、将从库切换为主库</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs sh">[postgres@Rocky ~]<span class="hljs-variable">$pg_ctl</span> promote<br>waiting <span class="hljs-keyword">for</span> server to promote.... <span class="hljs-keyword">done</span><br>server promoted<br><br>[postgres@Rocky ~]<span class="hljs-variable">$pg_controldata</span><br>pg_control version number:            1300<br>Catalog version number:               202107181<br>Database system identifier:           7160103462514775493<br>Database cluster state:               <span class="hljs-keyword">in</span> production     <span class="hljs-comment">#现在是主库状态了</span><br><br>[postgres@Rocky ~]<span class="hljs-variable">$pg_ctl</span> restart<br><br></code></pre></td></tr></table></figure>
+
+<h5 id="2-5-2、将原主库切换为从库"><a href="#2-5-2、将原主库切换为从库" class="headerlink" title="2.5.2、将原主库切换为从库"></a>2.5.2、将原主库切换为从库</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#清空数据和归档</span><br>[postgres@Rocky ~]<span class="hljs-variable">$pg_ctl</span> stop<br>[postgres@Rocky ~]<span class="hljs-variable">$rm</span> -rf /pgsql/data/*          <br>[postgres@Rocky ~]<span class="hljs-variable">$rm</span> -rf /archive/*              <br>[postgres@Rocky ~]<span class="hljs-variable">$rm</span> -rf /pgsql/backup/*<br><br>[root@Rocky ~]<span class="hljs-comment">#mkdir /pgsql/backup</span><br>[root@Rocky ~]<span class="hljs-comment">#chown postgres. /pgsql/backup</span><br><br><span class="hljs-comment">#备份主库数据到备库</span><br>[postgres@Rocky ~]<span class="hljs-variable">$pg_basebackup</span> -D /pgsql/backup/ -Ft -Pv -Urepluser -h 10.0.0.185 -p 5432 -R                         <span class="hljs-comment">#-R：必须有 -Pv：是显示复制过程</span><br>[postgres@Rocky ~]<span class="hljs-variable">$ls</span> /pgsql/backup           <span class="hljs-comment">#查看数据已备份</span><br>backup_manifest  base.tar  pg_wal.tar<br><br><span class="hljs-comment">#还原备份的数据,实现初始的主从数据同步</span><br>[postgres@Rocky ~]<span class="hljs-variable">$tar</span> xf /pgsql/backup/base.tar -C /pgsql/data<br>[postgres@Rocky ~]<span class="hljs-variable">$tar</span> xf /pgsql/backup/pg_wal.tar -C /archive/<br><br><span class="hljs-comment">#修改postgresql.conf文件</span><br>[postgres@Rocky ~]<span class="hljs-variable">$vim</span> /pgsql/data/postgresql.conf<br>primary_conninfo = <span class="hljs-string">&#x27;host=10.0.0.185 port=5432 user=repluser password=123456&#x27;</span><br>restore_command = <span class="hljs-string">&#x27;cp /archive/%f %p&#x27;</span> <span class="hljs-comment">#此项可不配置</span><br>:wq<br><br>[postgres@Rocky ~]<span class="hljs-variable">$pg_ctl</span> start<br><br><span class="hljs-comment">#在原主库服务器查看状态</span><br>[postgres@Rocky ~]<span class="hljs-variable">$pg_controldata</span><br>pg_control version number:            1300<br>Catalog version number:               202107181<br>Database system identifier:           7160103462514775493<br>Database cluster state:               <span class="hljs-keyword">in</span> archive recovery  <span class="hljs-comment">#现在已是从服务状态</span><br><br>postgres=<span class="hljs-comment"># select * from pg_is_in_recovery();</span><br> pg_is_in_recovery <br>-------------------<br> t<br>(1 row)<br></code></pre></td></tr></table></figure>
+
+<h5 id="2-5-3、验证同步状态"><a href="#2-5-3、验证同步状态" class="headerlink" title="2.5.3、验证同步状态"></a>2.5.3、验证同步状态</h5><figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc">#在新主服务器插入数据，看从服务器是否更新<br>#主服务器插入数据<br>postgres=# insert into student(name)values(<span class="hljs-emphasis">&#x27;li&#x27;</span>);<br>INSERT 0 1<br>postgres=# select * from student;<br><span class="hljs-section"> id |              name              </span><br><span class="hljs-section">----+--------------------------------</span><br><span class="hljs-code">  1 | zhang                         </span><br><span class="hljs-code"> 34 | li  </span><br><span class="hljs-code"> </span><br>#从服务器查看数据，已更新<br>postgres=# select * from student;<br><span class="hljs-section"> id |              name              </span><br><span class="hljs-section">----+--------------------------------</span><br><span class="hljs-code">  1 | zhang                         </span><br><span class="hljs-code"> 34 | li  </span><br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="三、实现postgresql的时间点还原"><a href="#三、实现postgresql的时间点还原" class="headerlink" title="三、实现postgresql的时间点还原"></a>三、实现postgresql的时间点还原</h3><h4 id="3-1、备份"><a href="#3-1、备份" class="headerlink" title="3.1、备份"></a>3.1、备份</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#在服务器端开启归档设置</span><br>[root@server ~]<span class="hljs-comment">#su - postgres</span><br>[postgres@server ~]<span class="hljs-variable">$vim</span> /pgsql/data/postgresql.conf<br>archive_mode = on<br>archive_command = <span class="hljs-string">&#x27;test ! -f /archive/%f &amp;&amp;cp %p /archive/%f&#x27;</span><br>:wq<br>[root@server ~]<span class="hljs-comment">#mkdir /archive</span><br>[root@server ~]<span class="hljs-comment">#chown postgres. /archive</span><br>[postgres@server ~]<span class="hljs-variable">$pg_ctl</span> restart<br><br><span class="hljs-comment">#在服务器端创建复制的用户并授权</span><br>[postgres@server ~]<span class="hljs-variable">$psql</span><br>postgres=<span class="hljs-comment"># create role repluser with replication login password &#x27;123456&#x27;;</span><br><span class="hljs-comment">#修改pg_hba.conf进行授权</span><br>[postgres@server ~]<span class="hljs-variable">$vim</span> /pgsql/data/pg_hba.conf<br>host replication repluser 10.0.0.0/24 md5<br>:wq<br>[postgres@server ~]<span class="hljs-variable">$pg_ctl</span> restart<br><br><span class="hljs-comment">#在服务器端创建测试数据</span><br>[postgres@server ~]<span class="hljs-variable">$psql</span><br>postgres=<span class="hljs-comment"># create database test1;           #创建test1数据库</span><br>postgres=<span class="hljs-comment"># \c test1</span><br>test1=<span class="hljs-comment"># create table student(id int,name char(30));  #创建student表</span><br>test1=<span class="hljs-comment"># insert into student values(1,&#x27;zhang&#x27;);       #在表中插入数据</span><br>test1=<span class="hljs-comment"># insert into student values(2,&#x27;song&#x27;);</span><br>test1=<span class="hljs-comment"># insert into student values(3,&#x27;li&#x27;);</span><br>test1=<span class="hljs-comment"># insert into student values(4,&#x27;wang&#x27;);</span><br><br><span class="hljs-comment">#在测试服务器上进行备份</span><br>[postgres@<span class="hljs-built_in">test</span> ~]<span class="hljs-variable">$vim</span> /pgsql/data/postgresql.conf <br>archive_mode = on     <span class="hljs-comment">#开启归档</span><br>archive_command = <span class="hljs-string">&#x27;test ! -f /archive/%f  &amp;&amp; cp %p /archive/%f&#x27;</span><br>:wq<br>[root@<span class="hljs-built_in">test</span> ~]<span class="hljs-comment">#mkdir /archive</span><br>[root@<span class="hljs-built_in">test</span> ~]<span class="hljs-comment">#chown postgres. /archive</span><br>[postgres@Rocky ~]<span class="hljs-variable">$pg_ctl</span> restart<br>[root@<span class="hljs-built_in">test</span> ~]<span class="hljs-comment">#mkdir /pgsql/backup</span><br>[root@<span class="hljs-built_in">test</span> ~]<span class="hljs-comment">#chown postgres. /pgsql/backup/</span><br>[root@<span class="hljs-built_in">test</span> ~]<span class="hljs-comment">#pg_basebackup -D /pgsql/backup/ -Ft -Pv -Urepluser -h 10.0.0.184 -p 5432 -R                           #备份到/pgsql/backup/</span><br><br><span class="hljs-comment">#在PG服务器上继续生成测试数据</span><br>test1=<span class="hljs-comment"># insert into student values(5,&#x27;liu&#x27;);</span><br>test1=<span class="hljs-comment"># insert into student values(6,&#x27;han&#x27;);</span><br><br><span class="hljs-comment">#模拟数据库删除</span><br>postgres=<span class="hljs-comment"># drop database test1;</span><br><br><span class="hljs-comment">#发现故障，停止用户访问</span><br><span class="hljs-comment">#查看当前日志文件</span><br>postgres=<span class="hljs-comment"># select pg_walfile_name(pg_current_wal_lsn());</span><br>     pg_walfile_name      <br>--------------------------<br> 000000010000000000000004<br> <br><span class="hljs-comment">#查看当前事务ID</span><br>postgres=<span class="hljs-comment"># select txid_current();</span><br> txid_current <br>--------------<br>          744<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-2、还原"><a href="#3-2、还原" class="headerlink" title="3.2、还原"></a>3.2、还原</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">在服务器上切换归档日志</span><br>postgres=# select pg_switch_wal();<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">在测试机上还原，先停止服务</span><br>[postgres@test ~]$pg_ctl stop<br><span class="hljs-meta prompt_">#</span><span class="language-bash">在测试机上将数据进行还原</span><br>[root@test ~]#rm -rf /pgsql/data/*<br>[root@test ~]#rm -rf /archive/*<br>[root@test ~]#tar xf /pgsql/backup/base.tar -C /pgsql/data<br>[root@test ~]#rsync -a 10.0.0.184:/archive/ /archive/<br>[root@test ~]#ls /archive<br>000000010000000000000001  000000010000000000000003  000000010000000000000003.00000028.backup<br>000000010000000000000002  000000010000000000000004<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">查看故障点事务ID</span><br>[root@test ~]#pg_waldump /archive/000000010000000000000004<br>rmgr: Transaction len (rec/tot):     34/    34, tx:        742, lsn: 0/04000290, prev 0/04000230, desc: COMMIT 2022-11-03 11:39:07.796583 CST<br><br>rmgr: Database    len (rec/tot):     38/    38, tx:        743, lsn: 0/04000880, prev 0/04000808, desc: DROP dir 1663/16385<br><span class="hljs-meta prompt_">#</span><span class="language-bash">可以确认删库的事务<span class="hljs-built_in">id</span>是743，所有恢复到742即可（恢复到2022-11-03 11:39:07.796583时间点也可以）</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">修改配置文件postgresql.conf</span><br>[postgres@test ~]$vim /pgsql/data/postgresql.conf<br>restore_command = &#x27;cp /archive/%f %p&#x27;<br>recovery_target_xid = &#x27;742&#x27;<br>:wq<br><span class="hljs-meta prompt_">#</span><span class="language-bash">也可以通过下面方式指定还原至的位置</span><br>recovery_target_time = &#x27;2022-11-03 11:39:07&#x27;<br>recovery_target_lsn = &#x27;0/04000290&#x27;<br><br>[postgres@test ~]$pg_ctl start<br><br>[postgres@test ~]$psql<br>postgres=# \l             #可以看到test1数据库已恢复<br>                                  List of databases<br>   Name    |  Owner   | Encoding |   Collate   |    Ctype    |   Access privileges   <br>-----------+----------+----------+-------------+-------------+-----------------------<br> postgres  | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | <br> template0 | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/postgres          +<br>           |          |          |             |             | postgres=CTc/postgres<br> template1 | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/postgres          +<br>           |          |          |             |             | postgres=CTc/postgres<br> test1     | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | <br>test1=# select * from student;         #删库前的所有数据已恢复<br> id |              name              <br>----+--------------------------------<br>  1 | zhang                         <br>  2 | song                          <br>  3 | li                            <br>  4 | wang                          <br>  5 | liu                           <br>  6 | han <br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">当前无法写入</span><br>test1=# insert into student values(7,&#x27;sun&#x27;);<br>2022-11-03 12:02:08.031 CST [35762] ERROR:  cannot execute INSERT in a read-only transaction<br>2022-11-03 12:02:08.031 CST [35762] STATEMENT:  insert into student values(7,&#x27;sun&#x27;);<br>ERROR:  cannot execute INSERT in a read-only transaction<br><span class="hljs-meta prompt_">#</span><span class="language-bash">查看此时的状态</span><br>[root@test ~]#pg_controldata<br>pg_control version number:            1300<br>Catalog version number:               202107181<br>Database system identifier:           7160103462514775493<br>Database cluster state:               in archive recovery     #此时状态不是production<br><br>test1=# select pg_wal_replay_resume();       #执行此命令可恢复到写状态<br>test1=# insert into student values(7,&#x27;sun&#x27;);  #可以添加数据了<br>INSERT 0 1<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">查看此时的状态</span><br>[root@test ~]#pg_controldata<br>pg_control version number:            1300<br>Catalog version number:               202107181<br>Database system identifier:           7160103462514775493<br>Database cluster state:               in production<br></code></pre></td></tr></table></figure>
+
+<h3 id="四、规划高可用的LAMP，要求wordpress网站放在NFS共享存储上，并且用户可以正常发布博客，上传图片。尝试更新wordpress版本，测试网站仍可用"><a href="#四、规划高可用的LAMP，要求wordpress网站放在NFS共享存储上，并且用户可以正常发布博客，上传图片。尝试更新wordpress版本，测试网站仍可用" class="headerlink" title="四、规划高可用的LAMP，要求wordpress网站放在NFS共享存储上，并且用户可以正常发布博客，上传图片。尝试更新wordpress版本，测试网站仍可用"></a>四、规划高可用的LAMP，要求wordpress网站放在NFS共享存储上，并且用户可以正常发布博客，上传图片。尝试更新wordpress版本，测试网站仍可用</h3><h4 id="4-1、环境准备"><a href="#4-1、环境准备" class="headerlink" title="4.1、环境准备"></a>4.1、环境准备</h4><figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs dns">共设<span class="hljs-number">6</span>台主机<br>两台是web服务器，分别是：<br>LAP1              <span class="hljs-number">10.0.0.184</span><br>LAP2              <span class="hljs-number">10.0.0.185</span><br>一台是数据库服务器<br>mysql            <span class="hljs-number">10.0.0.186</span><br>两台是NFS服务器，分别是<br>NFS1（主服务器）    <span class="hljs-number">10.0.0.216</span><br>NFS2（备份服务器）  <span class="hljs-number">10.0.0.217</span><br>一台是DNS服务器<br>DNS               <span class="hljs-number">10.0.0.218</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="4-2、服务器配置"><a href="#4-2、服务器配置" class="headerlink" title="4.2、服务器配置"></a>4.2、服务器配置</h4><h5 id="4-2-1、web服务器配置"><a href="#4-2-1、web服务器配置" class="headerlink" title="4.2.1、web服务器配置"></a>4.2.1、web服务器配置</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs sh">安装LAP，需先安装以下包<br>[root@LAP1 ~]<span class="hljs-comment">#yum -y install httpd php php-mysqlnd php-json</span><br>[root@LAP1 ~]<span class="hljs-comment">#systemctl enable --now httpd       #设置开机启动，并立即启动</span><br><br><span class="hljs-comment">#下载wordpress软件，官网https://cn.wordpress.org/download/</span><br>[root@LAP1 ~]<span class="hljs-comment">#wget https://cn.wordpress.org/latest-zh_CN.tar.gz</span><br>[root@LAP1 ~]<span class="hljs-comment">#ls                  #查看已下载完成</span><br>anaconda-ks.cfg  latest-zh_CN.tar.gz<br>[root@LAP1 ~]<span class="hljs-comment">#tar xf latest-zh_CN.tar.gz     #解压到当前文件夹</span><br>[root@LAP1 ~]<span class="hljs-comment">#ls                             #解压后是wordpress文件</span><br>anaconda-ks.cfg  latest-zh_CN.tar.gz  wordpress<br>[root@LAP1 ~]<span class="hljs-comment">#mv wordpress/* /var/www/html   </span><br>[root@LAP1 ~]<span class="hljs-comment">#chown apache.apache /var/www/html -R    #将html文件的权限授予apache</span><br><br>[root@LAP2 ~]<span class="hljs-comment">#yum -y install httpd php php-mysqlnd php-json</span><br>[root@LAP2 ~]<span class="hljs-comment">#systemctl enable --now httpd</span><br>[root@LAP2 ~]<span class="hljs-comment">#wget https://cn.wordpress.org/latest-zh_CN.tar.gz</span><br>[root@LAP2 ~]<span class="hljs-comment">#tar xf latest-zh_CN.tar.gz</span><br>[root@LAP2 ~]<span class="hljs-comment">#ls</span><br>anaconda-ks.cfg  latest-zh_CN.tar.gz  wordpress<br>[root@LAP2 ~]<span class="hljs-comment">#mv wordpress/* /var/www/html</span><br>[root@LAP2 ~]<span class="hljs-comment">#chown apache.apache /var/www/html -R</span><br><br><span class="hljs-comment">#NFS服务器配置完成后，wep服务器需进行以下操作</span><br>[root@LAP1 html]<span class="hljs-comment">#yum -y install nfs-utils</span><br>[root@LAP1 html]<span class="hljs-comment">#showmount -e 10.0.0.216      #查看是否可以看到10.0.0.216的共享</span><br>Export list <span class="hljs-keyword">for</span> 10.0.0.216:<br>/data/www *<br>[root@LAP1 ~]<span class="hljs-comment">#cd /var/www/html/wp-content</span><br>[root@LAP1 wp-content]<span class="hljs-comment">#mkdir uploads         #创建文件夹</span><br>[root@LAP1 wp-content]<span class="hljs-comment">#chown apache.apache uploads  #更改所属用户和组</span><br>[root@LAP1 html]<span class="hljs-comment">#vim /etc/fstab              #永久挂载</span><br>10.0.0.216:/data/www    /var/www/html/wp-content/uploads   nfs   _netdev  0 0<br><span class="hljs-comment">#挂载文件                  挂载目录                          协议  没有网络不挂载</span><br>:wq<br>[root@LAP1 wp-content]<span class="hljs-comment">#mount -a      #将/etc/fstab的所有内容重新加载</span><br><br>[root@LAP2 html]<span class="hljs-comment">#yum -y install nfs-utils</span><br>[root@LAP2 html]<span class="hljs-comment">#showmount -e 10.0.0.216       #查看是否可以看到10.0.0.216的共享</span><br>Export list <span class="hljs-keyword">for</span> 10.0.0.216:<br>/data/www *                                    <span class="hljs-comment">#可以看到</span><br>[root@LAP2 ~]<span class="hljs-comment">#cd /var/www/html/wp-content</span><br>[root@LAP2 wp-content]<span class="hljs-comment">#mkdir uploads         #创建文件夹</span><br>[root@LAP2 wp-content]<span class="hljs-comment">#chown apache.apache uploads  #更改所属用户和组</span><br>[root@LAP2 html]<span class="hljs-comment">#vim /etc/fstab              #永久挂载</span><br>10.0.0.216:/data/www    /var/www/html/wp-content/uploads   nfs   _netdev  0 0<br>:wq<br>[root@LAP2 wp-content]<span class="hljs-comment">#mount -a      #将/etc/fstab的所有内容重新加载</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="4-2-2、NFS服务器配置"><a href="#4-2-2、NFS服务器配置" class="headerlink" title="4.2.2、NFS服务器配置"></a>4.2.2、NFS服务器配置</h5><h6 id="4-2-2-1、NFS1基于存储wordpress图片设置"><a href="#4-2-2-1、NFS1基于存储wordpress图片设置" class="headerlink" title="4.2.2.1、NFS1基于存储wordpress图片设置"></a>4.2.2.1、NFS1基于存储wordpress图片设置</h6><p>如果不设置NFS服务器，那wordpress里面的图片只储存在web服务器上（/var/www/html/wp-content/uploads)，如果服务器坏了，则图片会丢失（其他数据不会丢失，其他数据存储在mysql数据库里）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs shell">[root@nfs1 ~]#mkdir -p /data/www                      #此文件夹是存放共享图片的<br>[root@nfs1 ~]#useradd -u 666 www                      #创建id号为666的用户www，此账号用于后面的压榨账号<br>[root@nfs1 ~]#vim /etc/exports<br>/data/www  *(rw,all_squash,anonuid=666,anonuid=666)<br><span class="hljs-meta prompt_"># </span><span class="language-bash"> 共享地址    读写权限，压榨所有用户，指定压榨后映射的用户uid为666的用户</span><br>:wq<br><span class="hljs-meta prompt_">#</span><span class="language-bash">在往共享文件里存放图片，需要给权限</span><br>[root@nfs1 ~]#chown www.www /data/www       #将文件给与www用户权限<br>[root@nfs1 ~]#yum -y install nfs-utils      #安装nfs<br>[root@nfs1 ~]#systemctl enable --now nfs-server   #设置开机启动，并立即启动<br></code></pre></td></tr></table></figure>
+
+<h6 id="4-2-2-2、基于主NFS服务器和备份NFS服务器进行配置"><a href="#4-2-2-2、基于主NFS服务器和备份NFS服务器进行配置" class="headerlink" title="4.2.2.2、基于主NFS服务器和备份NFS服务器进行配置"></a>4.2.2.2、基于主NFS服务器和备份NFS服务器进行配置</h6><p>rsync 常用于做为 linux系统下的数据镜像备份工具，实现远程同步，支持本地复制，或者与其他SSH、rsync主机同步数据，支持增量备份，配合任务计划，rsync能实现定时或间隔同步，配合inotify或sersync，可以实现触发式的实时数据同步</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@nfs2 ~]<span class="hljs-comment">#yum -y install rsync       #用于在备份NFS服务器上开启远程监听端口873（centos8安装rsync-daemon）</span><br>[root@nfs2 ~]<span class="hljs-comment">#systemctl enable --now  rsyncd.service</span><br>[root@nfs2 ~]<span class="hljs-comment">#ss -ntl                   #查看873端口已开启</span><br>State       Recv-Q Send-Q    Local Address:Port         Peer Address:Port           <br>LISTEN      0      128                   *:22           *:*                  <br>LISTEN      0      100           127.0.0.1:25           *:*                  <br>LISTEN      0      5                     *:873          *:*<br>[root@nfs2 ~]<span class="hljs-comment">#vim /etc/rsyncd.conf</span><br>uid = root       <span class="hljs-comment">#提定以哪个用户来访问共享目录，将之指定为生成的文件所有者，默认为nobody</span><br>gid = root       <span class="hljs-comment">#默认为nobody,Ubuntu中为nogroup</span><br>max connections = 0<br>ignore errors<br>exclude = lost+found/<br><span class="hljs-built_in">log</span> file = /var/log/rsyncd.log<br>pid file = /var/run/rsyncd.pid<br>lock file = /var/run/rsyncd.lock<br>reverse lookup = no<br><br>[backup]                  <span class="hljs-comment">#每个模块名对应一个不同的path目录，如果同名后面模块生效</span><br>path = /data/backup/      <span class="hljs-comment">#备份服务器共享的文件夹</span><br>comment = backup <span class="hljs-built_in">dir</span><br><span class="hljs-built_in">read</span> only = no           <span class="hljs-comment">#默认是yes,即只读</span><br>auth <span class="hljs-built_in">users</span> = rsyncuser   <span class="hljs-comment">#默认anonymous可以访问rsync服务器，指定访问账号rsyncuser</span><br>secrets file = /etc/rsync.pas  <span class="hljs-comment">#账号密码存放路径</span><br>:wq<br>[root@nfs2 ~]<span class="hljs-comment">#mkdir -p /data/backup    #创建共享文件夹</span><br><br><span class="hljs-comment">#此时在主NFS服务器上就可以看到备份服务器的共享文件了</span><br>[root@nfs1 ~]<span class="hljs-comment">#yum -y install rsync</span><br>[root@nfs1 ~]<span class="hljs-comment">#systemctl enable --now  rsyncd.service</span><br>[root@nfs1 ~]<span class="hljs-comment">#rsync rsync://10.0.0.217</span><br>backup         	backup <span class="hljs-built_in">dir</span><br><br><span class="hljs-comment">#服务器端生成验证文件</span><br>[root@nfs2 ~]<span class="hljs-comment">#echo &quot;rsyncuser:magedu&quot; &gt; /etc/rsync.pas</span><br><span class="hljs-comment">#                         用户：密码</span><br>[root@nfs2 ~]<span class="hljs-comment">#chmod 600 /etc/rsync.pas      #指定只允许root用户读写</span><br><span class="hljs-comment">#此时主NFS服务器端想连接备份服务器，需要输入密码</span><br>[root@nfs1 ~]<span class="hljs-comment">#echo &quot;magedu&quot; &gt; /etc/rsync.pas   #直接创建个密码文件</span><br>[root@nfs1 ~]<span class="hljs-comment">#chmod 600 /etc/rsync.pas     #指定只允许root用户访问</span><br><br><br><span class="hljs-comment">#在数据服务器上下载sersync，并拷贝至相应的目录，</span><br>[root@nfs1 ~]<span class="hljs-comment">#tar xf sersync2.5.4_64bit_binary_stable_final.tar.gz  -C /opt/</span><br>    <span class="hljs-comment">#将包解压到/opt/目录下</span><br>[root@nfs1 ~]<span class="hljs-comment">#cd /opt</span><br>[root@nfs1 opt]<span class="hljs-comment">#ls</span><br>GNU-Linux-x86<br>[root@nfs1 opt]<span class="hljs-comment">#cd GNU-Linux-x86/</span><br>[root@nfs1 GNU-Linux-x86]<span class="hljs-comment">#ls</span><br>confxml.xml  sersync2              <br><span class="hljs-comment">#直接修改confxml.xml文件，后者将本地的直接拉进来</span><br>[root@nfs1 GNU-Linux-x86]<span class="hljs-comment">#mv confxml.xml&#123;,.bak&#125;</span><br>[root@nfs1 GNU-Linux-x86]<span class="hljs-comment">#ls</span><br>confxml.xml  confxml.xml.bak  sersync2<br>[root@nfs1 GNU-Linux-x86]<span class="hljs-comment">#./sersync2 -h     查看sersync2的帮助</span><br><span class="hljs-built_in">set</span> the system param<br>execute：<span class="hljs-built_in">echo</span> 50000000 &gt; /proc/sys/fs/inotify/max_user_watches<br>execute：<span class="hljs-built_in">echo</span> 327679 &gt; /proc/sys/fs/inotify/max_queued_events<br>parse the <span class="hljs-built_in">command</span> param<br>_______________________________________________________<br>参数-d:启用守护进程模式<br>参数-r:在监控前，将监控目录与远程主机用rsync命令推送一遍<br>c参数-n: 指定开启守护线程的数量，默认为10个<br>参数-o:指定配置文件，默认使用confxml.xml文件<br>参数-m:单独启用其他模块，使用 -m refreshCDN 开启刷新CDN模块<br>参数-m:单独启用其他模块，使用 -m socket 开启socket模块<br>参数-m:单独启用其他模块，使用 -m http 开启http模块<br>不加-m参数，则默认执行同步程序<br>________________________________________________________________<br>[root@nfs1 GNU-Linux-x86]<span class="hljs-comment">#./sersync2 -dro /opt/GNU-Linux-x86/confxml.xml</span><br><span class="hljs-comment">#d是后台执行   r是先同步一遍  o是指的文件路径</span><br><br><span class="hljs-comment">#为了实现开机启动此服务，可以将此命令写入/etc/rc.local，实现开机启动</span><br>[root@nfs1 ~]<span class="hljs-comment">#vim /etc/rc.local       </span><br>/opt/GNU-Linux-x86/sersync2 -dro /opt/GNU-Linux-x86/confxml.xml<br>:wq<br>[root@nfs1 ~]<span class="hljs-comment">#chmod +x /etc/rc.local</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="4-2-3、DNS配置"><a href="#4-2-3、DNS配置" class="headerlink" title="4.2.3、DNS配置"></a>4.2.3、DNS配置</h5><p>设置DNS，主要是为了将ip地址解析为网址</p>
+<h6 id="4-2-3-1、DNS服务器配置"><a href="#4-2-3-1、DNS服务器配置" class="headerlink" title="4.2.3.1、DNS服务器配置"></a>4.2.3.1、DNS服务器配置</h6><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@dns ~]<span class="hljs-comment">#yum -y install bind bind-utils      #安装DNS</span><br>[root@dns ~]<span class="hljs-comment">#vim /etc/named.conf                #修改配置文件</span><br>listen-on port 53 &#123; localhost; &#125;;               <span class="hljs-comment">#将172.0.0.1改为localhost，localhost表示本机所有IP；或者将此行用//注释掉；或者在127.0.0.1；后面添加其他允许访问的IP地址</span><br>allow-query     &#123; any; &#125;;                       <span class="hljs-comment">#将localhost改为any，localhost说的是只允许本机访问，需让其他机器也可以访问，方法有三种：①加//将此行注释，所有机器都可以访问②将localhost更改为any，所有机器都允许③在localhost;添加允许访问的IP地址</span><br>:wq<br>[root@dns ~]<span class="hljs-comment">#vim  /etc/named.rfc1912.zones      #修改配置文件，增加magedu.org</span><br>zone <span class="hljs-string">&quot;jiagoukecheng.org&quot;</span> IN &#123;<br>        <span class="hljs-built_in">type</span> master;<br>        file <span class="hljs-string">&quot;jiagoukecheng.org.zone&quot;</span>;<br>&#125;;<br>:wq<br>[root@dns named]<span class="hljs-comment">#named-checkconf            #检查配置文件是否有语法错误</span><br>[root@dns ~]<span class="hljs-comment">#cd /var/named</span><br>[root@dns named]<span class="hljs-comment">#vim jiagoukecheng.org.zone        #创建编辑magedu.org所属文件数据库</span><br><span class="hljs-variable">$TTL</span> 1D<br>@         IN      SOA      master       admin ( 0  1D 1H 1W 3H )<br>                  NS       master<br>master            A        10.0.0.218  <br>www               A        10.0.0.185<br>www               A        10.0.0.184<br>:wq<br>[root@dns named]<span class="hljs-comment">#chmod 640 jiagoukecheng.org.zone        #修改文件权限</span><br>[root@dns named]<span class="hljs-comment">#chgrp named jiagoukecheng.org.zone      #修改所属组</span><br>[root@dns named]<span class="hljs-comment">#ll</span><br>total 20<br>drwxrwx--- 2 named named    6 Oct 13  2020 data<br>drwxrwx--- 2 named named    6 Oct 13  2020 dynamic<br>-rw-r----- 1 root  named  225 Nov  5 16:02 magedu.org.zone<br>-rw-r----- 1 root  named 2253 Apr  5  2018 named.ca<br>-rw-r----- 1 root  named  152 Dec 15  2009 named.empty<br>-rw-r----- 1 root  named  152 Jun 21  2007 named.localhost<br>-rw-r----- 1 root  named  168 Dec 15  2009 named.loopback<br>drwxrwx--- 2 named named    6 Oct 13  2020 slaves<br>[root@dns named]<span class="hljs-comment">#named-checkzone jiagoukecheng.org /var/named/jiagoukecheng.org.zone  #检查是否有语法错误</span><br>zone magedu.org/IN: loaded serial 0<br>OK                                              <span class="hljs-comment">#没有错误</span><br>[root@dns named]<span class="hljs-comment">#systemctl enable --now named     #将DNS设为开机启动，并立即启动</span><br></code></pre></td></tr></table></figure>
+
+<h6 id="4-2-3-2、本地DNS配置"><a href="#4-2-3-2、本地DNS配置" class="headerlink" title="4.2.3.2、本地DNS配置"></a>4.2.3.2、本地DNS配置</h6><p>将本地的DNS指向10.0.0.218</p>
+<p><a href=""><img src="image-20221105162739622.png" srcset="/img/loading.gif" lazyload alt="image-20221105162739622"></a></p>
+<h5 id="4-2-4、mysql服务器配置"><a href="#4-2-4、mysql服务器配置" class="headerlink" title="4.2.4、mysql服务器配置"></a>4.2.4、mysql服务器配置</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@mysql ~]<span class="hljs-comment">#yum -y install mysql-server</span><br>[root@mysql ~]<span class="hljs-comment">#systemctl enable --now mysqld</span><br>[root@mysql ~]<span class="hljs-comment">#mysql</span><br>mysql&gt; create user wordpress@<span class="hljs-string">&#x27;10.0.0.%&#x27;</span> identified by <span class="hljs-string">&#x27;123456&#x27;</span>;  <span class="hljs-comment">#创建账号密码</span><br>mysql&gt; create database wordpress;              <span class="hljs-comment">#创建存放wordpress数据的数据库</span><br>mysql&gt; grant all on wordpress.* to wordpress@<span class="hljs-string">&#x27;10.0.0.%&#x27;</span>;    <span class="hljs-comment">#授权</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="4-3、登录wordpress"><a href="#4-3、登录wordpress" class="headerlink" title="4.3、登录wordpress"></a>4.3、登录wordpress</h4><p>注意：网站创建完成后，登录前台网址是：<a target="_blank" rel="noopener" href="http://www.jiagoukecheng.org/">www.jiagoukecheng.org</a></p>
+<p>​                                          登录后台网址是：<a target="_blank" rel="noopener" href="http://www.jiagoukecheng.org/wp-admin">www.jiagoukecheng.org/wp-admin</a></p>
+<p>①浏览器输入网址：<a target="_blank" rel="noopener" href="http://www.jiagoukecheng.org/">www.jiagoukecheng.org</a></p>
+<p><a href=""><img src="image-20221105171422005.png" srcset="/img/loading.gif" lazyload alt="image-20221105171422005"></a></p>
+<p>②连接数据库</p>
+<p><a href=""><img src="image-20221105171532771.png" srcset="/img/loading.gif" lazyload alt="image-20221105171532771"></a></p>
+<p>③运行安装程序，设置网站的用户名和密码</p>
+<p><a href=""><img src="image-20221105171914241.png" srcset="/img/loading.gif" lazyload alt="image-20221105171914241"></a></p>
+<p>④登录网站</p>
+<p><a href=""><img src="image-20221105172032598.png" srcset="/img/loading.gif" lazyload alt="image-20221105172032598"></a></p>
+<p><a href=""><img src="image-20221105172059569.png" srcset="/img/loading.gif" lazyload alt="image-20221105172059569"></a></p>
+<h4 id="4-4、编写文章，并查看"><a href="#4-4、编写文章，并查看" class="headerlink" title="4.4、编写文章，并查看"></a>4.4、编写文章，并查看</h4><p>①写文章插入图片</p>
+<p><a href=""><img src="image-20221105183302080.png" srcset="/img/loading.gif" lazyload alt="image-20221105183302080"></a></p>
+<p>②直接网址查看</p>
+<p><a href=""><img src="image-20221105183351587.png" srcset="/img/loading.gif" lazyload alt="image-20221105183351587"></a></p>
+<p>③web服务器查看存储位置</p>
+<p><a href=""><img src="image-20221105183552699.png" srcset="/img/loading.gif" lazyload alt="image-20221105183552699"></a></p>
+<p>④nfs服务器查看是否存储</p>
+<p><a href=""><img src="image-20221105183536464.png" srcset="/img/loading.gif" lazyload alt="image-20221105183536464"></a></p>
+<p>⑤查看NFS备份服务器是否共享</p>
+<p><a href=""><img src="image-20221105205416647.png" srcset="/img/loading.gif" lazyload alt="image-20221105205416647"></a></p>
+<h3 id="五、redis数据类型有哪些"><a href="#五、redis数据类型有哪些" class="headerlink" title="五、redis数据类型有哪些"></a>五、redis数据类型有哪些</h3><p>共有5中类型：<strong>字符串string、列表list、集合set、有序集合sorted set、哈希hash</strong></p>
+<h4 id="5-1、字符串string"><a href="#5-1、字符串string" class="headerlink" title="5.1、字符串string"></a>5.1、字符串string</h4><p>字符串是一种最基本的Redis值类型。Redis字符串是二进制安全的，这意味着一个Redis字符串能包含任意类型的数据，例如： 一张JPEG格式的图片或者一个序列化的Ruby对象。一个字符串类型的值最多能存储512M字节的内容。Redis 中所有 key 都是字符串类型的。此数据类型最为常用</p>
+<p><a href=""><img src="image-20221107101739910.png" srcset="/img/loading.gif" lazyload alt="image-20221107101739910"></a></p>
+<p>利用INCR命令簇（INCR, DECR, INCRBY,DECRBY)来把字符串当作原子计数器使用。</p>
+<h4 id="5-2、列表list"><a href="#5-2、列表list" class="headerlink" title="5.2、列表list"></a>5.2、列表list</h4><p>①Redis列表就是简单的字符串数组，按照插入顺序排序. 支持双向读写,可以添加一个元素到列表的头部（左边）或者尾部（右边），一个列表最多可以包含2^32-1=4294967295个元素，每个列表元素有下标来标识,下标 0 表示列表的第一个元素，以 1 表示列表的第二个元素，以此类推。 也可以使用负数下标，以 -1 表示列表的最后一个元素， -2 表示列表的倒数第二个元素，元素值可以重复，常用于存入日志等场景，此数据类型比较常用</p>
+<p>②列表特点：<strong>有序、可重复、左右都可以操作</strong></p>
+<p><a href=""><img src="image-20221107102111856.png" srcset="/img/loading.gif" lazyload alt="image-20221107102111856"></a></p>
+<h4 id="5-3、集合set"><a href="#5-3、集合set" class="headerlink" title="5.3、集合set"></a>5.3、集合set</h4><p>①Set 是一个无序的字符串合集，同一个集合中的每个元素是唯一无重复的，支持在两个不同的集合中对数据进行逻辑处理，常用于取交集,并集,统计等场景,例如: 实现共同的朋友</p>
+<p>②集合特点：<strong>无序、无重复、集合间操作</strong></p>
+<p><a href=""><img src="image-20221107102353593.png" srcset="/img/loading.gif" lazyload alt="image-20221107102353593"></a></p>
+<h4 id="5-4、有序集合sorted-set"><a href="#5-4、有序集合sorted-set" class="headerlink" title="5.4、有序集合sorted set"></a>5.4、有序集合sorted set</h4><p>①Redis有序集合和Redis集合类似，是不包含相同字符串的合集。它们的差别是，每个有序集合的成员都关联着一个双精度浮点型的评分，这个评分用于把有序集合中的成员按最低分到最高分排序。有序集合的成员不能重复,但评分可以重复,一个有序集合中最多的成员数为 2^32 - 1=4294967295个，经常用于排行榜的场景</p>
+<p>②有序集合特点：<strong>有序、无重复元素、每个元素是由score和value组成、score 可以重复、value 不可以重复</strong></p>
+<p><a href=""><img src="image-20221107102549480.png" srcset="/img/loading.gif" lazyload alt="image-20221107102549480"></a></p>
+<h4 id="5-5、哈希hash"><a href="#5-5、哈希hash" class="headerlink" title="5.5、哈希hash"></a>5.5、哈希hash</h4><p>①hash 即字典, 用于保存字符串字段field和字符串值value之间的映射，即key/value做为数据部分,hash特别适合用于存储对象场景。一个hash最多可以包含2^32-1 个key/value键值对</p>
+<p>②哈希特点：<strong>无序、k/v 对、适用于存放相关的数据</strong></p>
+<p><a href=""><img src="image-20221107102749619.png" srcset="/img/loading.gif" lazyload alt="image-20221107102749619"></a></p>
+<h3 id="六、redis-RDB和AOF比较"><a href="#六、redis-RDB和AOF比较" class="headerlink" title="六、redis RDB和AOF比较"></a>六、redis RDB和AOF比较</h3><h4 id="6-1、RDB的优缺点"><a href="#6-1、RDB的优缺点" class="headerlink" title="6.1、RDB的优缺点"></a>6.1、RDB的优缺点</h4><h5 id="6-1-1、RDB的优点"><a href="#6-1-1、RDB的优点" class="headerlink" title="6.1.1、RDB的优点"></a>6.1.1、RDB的优点</h5><p>①RDB快照只保存某个时间点的数据，恢复的时候直接加载到内存即可，不用做其他处理，这种文件适合用于做灾备处理.可以通过自定义时间点执行redis指令bgsave或者save保存快照，实现多个版本的备份。</p>
+<p>比如: 可以在最近的24小时内，每小时备份一次RDB文件，并且在每个月的每一天，也备份一个RDB文件。这样的话，即使遇上问题，也可以随时将数据集还原到指定的不同的版本。</p>
+<p>②RDB在大数据集时恢复的速度比AOF方式要快</p>
+<h5 id="6-1-2、RDB的缺点"><a href="#6-1-2、RDB的缺点" class="headerlink" title="6.1.2、RDB的缺点"></a>6.1.2、RDB的缺点</h5><p>①不能实时保存数据，可能会丢失自上一次执行RDB备份到当前的内存数据</p>
+<p>如果需要尽量避免在服务器故障时丢失数据，那么RDB并不适合。虽然Redis允许设置不同的保存点（save point）来控制保存RDB文件的频率，但是，因为RDB文件需要保存整个数据集的状态，所以它可能并不是一个非常快速的操作。因此一般会超过5分钟以上才保存一次RDB文件。在这种情况下，一旦发生故障停机，就可能会丢失较长时间的数据。</p>
+<p>②在数据集比较庞大时，fork()子进程可能会非常耗时，造成服务器在一定时间内停止处理客户端请求,如果数据集非常巨大，并且CPU时间非常紧张的话，那么这种停止时间甚至可能会长达整整一秒或更久。另外子进程完成生成RDB文件的时间也会花更长时间</p>
+<h4 id="6-2、AOF的优缺点"><a href="#6-2、AOF的优缺点" class="headerlink" title="6.2、AOF的优缺点"></a>6.2、AOF的优缺点</h4><h5 id="6-2-1、AOF的优点"><a href="#6-2-1、AOF的优点" class="headerlink" title="6.2.1、AOF的优点"></a>6.2.1、AOF的优点</h5><p>①数据安全性相对较高，根据所使用的fsync策略(fsync是同步内存中redis所有已经修改的文件到存储设备)，默认是appendfsync everysec，即每秒执行一次 fsync,在这种配置下，Redis 仍然可以保持良好的性能，并且就算发生故障停机，也最多只会丢失一秒钟的数据( fsync会在后台线程执行，所以主线程可以继续努力地处理命令请求)</p>
+<p>②由于该机制对日志文件的写入操作采用的是append模式，因此在写入过程中不需要seek, 即使出现宕机现象，也不会破坏日志文件中已经存在的内容。然而如果本次操作只是写入了一半数据就出现了系统崩溃问题，不用担心，在Redis下一次启动之前，可以通过 redis-check-aof 工具来解决数据一致性的问题</p>
+<p>③Redis可以在 AOF文件体积变得过大时，自动地在后台对AOF进行重写,重写后的新AOF文件包含了恢复当前数据集所需的最小命令集合。整个重写操作是绝对安全的，因为Redis在创建新 AOF文件的过程中，append模式不断的将修改数据追加到现有的 AOF文件里面，即使重写过程中发生停机，现有的 AOF文件也不会丢失。而一旦新AOF文件创建完毕，Redis就会从旧AOF文件切换到新AOF文件，并开始对新AOF文件进行追加操作。</p>
+<p>④AOF包含一个格式清晰、易于理解的日志文件用于记录所有的修改操作。事实上，也可以通过该文件完成数据的重建</p>
+<p>AOF文件有序地保存了对数据库执行的所有写入操作，这些写入操作以Redis协议的格式保存，因此 AOF文件的内容非常容易被人读懂，对文件进行分析(parse)也很轻松。导出（export)AOF文件也非常简单:举个例子，如果不小心执行了FLUSHALL.命令，但只要AOF文件未被重写，那么只要停止服务器，移除 AOF文件末尾的FLUSHAL命令，并重启Redis ,就可以将数据集恢复到FLUSHALL执行之前的状态。</p>
+<h5 id="6-2-2、AOF的缺点"><a href="#6-2-2、AOF的缺点" class="headerlink" title="6.2.2、AOF的缺点"></a>6.2.2、AOF的缺点</h5><p>①即使有些操作是重复的也会全部记录，AOF 的文件大小一般要大于 RDB 格式的文件</p>
+<p>②AOF 在恢复大数据集时的速度比 RDB 的恢复速度要慢</p>
+<p>③如果 fsync 策略是appendfsync no, AOF保存到磁盘的速度甚至会可能会慢于RDB</p>
+<p>④bug 出现的可能性更多</p>
+<h4 id="6-3、RDB和AOF的选择"><a href="#6-3、RDB和AOF的选择" class="headerlink" title="6.3、RDB和AOF的选择"></a>6.3、RDB和AOF的选择</h4><p>①如果主要充当缓存功能,或者可以承受较长时间,比如数分钟数据的丢失, 通常生产环境一般只需启用RDB</p>
+<p>即可,此也是默认值</p>
+<p>②如果一点数据都不能丢失,可以选择同时开启RDB和AOF</p>
+<p>③一般不建议只开启AOF</p>
+<h3 id="七、redis配置文件详解"><a href="#七、redis配置文件详解" class="headerlink" title="七、redis配置文件详解"></a>七、redis配置文件详解</h3><p>resdis.conf文件内容的解释</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">bind</span> 0.0.0.0 <span class="hljs-comment">#指定监听地址，支持用空格隔开的多个监听IP</span><br><br>protected-mode <span class="hljs-built_in">yes</span> <span class="hljs-comment">#redis3.2之后加入的新特性，在没有设置bind IP和密码的时候,redis只允许访问127.0.0.1:6379，可以远程连接，但当访问将提示警告信息并拒绝远程访问</span><br><br>port 6379 <span class="hljs-comment">#监听端口,默认6379/tcp</span><br><br>tcp-backlog 511 <span class="hljs-comment">#三次握手的时候server端收到client ack确认号之后的队列值，即全连接队列长度</span><br><br><span class="hljs-built_in">timeout</span> 0 <span class="hljs-comment">#客户端和Redis服务端的连接超时时间，默认是0，表示永不超时</span><br><br>tcp-keepalive 300 <span class="hljs-comment">#tcp 会话保持时间300s</span><br><br>daemonize no <span class="hljs-comment">#默认no,即直接运行redis-server程序时,不作为守护进程运行，而是以前台方式运行，如果想在后台运行需改成yes,当redis作为守护进程运行的时候，它会写一个 pid 到/var/run/redis.pid 文件</span><br><br>supervised no <span class="hljs-comment">#和OS相关参数，可设置通过upstart和systemd管理Redis守护进程，centos7后都使用systemd</span><br><br>pidfile /var/run/redis_6379.pid <span class="hljs-comment">#pid文件路径,可以修改为/apps/redis/run/redis_6379.pid</span><br><br>loglevel notice <span class="hljs-comment">#日志级别</span><br><br>logfile <span class="hljs-string">&quot;/path/redis.log&quot;</span> <span class="hljs-comment">#日志路径,示例:logfile &quot;/apps/redis/log/redis_6379.log&quot;</span><br><br>databases 16 <span class="hljs-comment">#设置数据库数量，默认：0-15，共16个库</span><br><br>always-show-logo <span class="hljs-built_in">yes</span> <span class="hljs-comment">#在启动redis 时是否显示或在日志中记录记录redis的logo</span><br><br>save 900 1 <span class="hljs-comment">#在900秒内有1个key内容发生更改,就执行快照机制</span><br>save 300 10 <span class="hljs-comment">#在300秒内有10个key内容发生更改,就执行快照机制</span><br>save 60 10000  <span class="hljs-comment">#60秒内如果有10000个key以上的变化，就自动快照备份</span><br><br>stop-writes-on-bgsave-error <span class="hljs-built_in">yes</span> <span class="hljs-comment">#默认为yes时,可能会因空间满等原因快照无法保存出错时，会禁止redis写入操作，生产建议为no</span><br> <span class="hljs-comment">#此项只针对配置文件中的自动save有效</span><br> <br>rdbcompression <span class="hljs-built_in">yes</span> <span class="hljs-comment">#持久化到RDB文件时，是否压缩，&quot;yes&quot;为压缩，&quot;no&quot;则反之</span><br><br>rdbchecksum <span class="hljs-built_in">yes</span> <span class="hljs-comment">#是否对备份文件开启RC64校验，默认是开启</span><br><br>dbfilename dump.rdb <span class="hljs-comment">#快照文件名</span><br><br><span class="hljs-built_in">dir</span> ./ <span class="hljs-comment">#快照文件保存路径，示例：dir &quot;/apps/redis/data&quot;</span><br><br><span class="hljs-comment">#主从复制相关</span><br><span class="hljs-comment"># replicaof &lt;masterip&gt; &lt;masterport&gt; #指定复制的master主机地址和端口，5.0版之前的指令为</span><br>slaveof <br><span class="hljs-comment"># masterauth &lt;master-password&gt; #指定复制的master主机的密码</span><br><br>replica-serve-stale-data <span class="hljs-built_in">yes</span> <span class="hljs-comment">#当从库同主库失去连接或者复制正在进行，从机库有两种运行方式：</span><br>1、设置为<span class="hljs-built_in">yes</span>(默认设置)，从库会继续响应客户端的读请求，此为建议值<br>2、设置为no，除去特定命令外的任何请求都会返回一个错误<span class="hljs-string">&quot;SYNC with master in progress&quot;</span>。<br><br>replica-read-only <span class="hljs-built_in">yes</span> <span class="hljs-comment">#是否设置从库只读，建议值为yes,否则主库同步从库时可能会覆盖数据，造成数据丢失</span><br><br>repl-diskless-sync no <span class="hljs-comment">#是否使用socket方式复制数据(无盘同步)，新slave第一次连接master时需要做数据的全量同步，redis server就要从内存dump出新的RDB文件，然后从master传到slave，有两种方式把RDB文件传输给客户端：</span><br>1、基于硬盘（disk-backed）：为no时，master创建一个新进程dump生成RDB磁盘文件，RDB完成之后由<br>父进程（即主进程）将RDB文件发送给slaves，此为默认值<br>2、基于socket（diskless）：master创建一个新进程直接dump RDB至slave的网络socket，不经过主<br>进程和硬盘<br><span class="hljs-comment">#推荐使用基于硬盘（为no），是因为RDB文件创建后，可以同时传输给更多的slave，但是基于socket(为yes)， 新slave连接到master之后得逐个同步数据。只有当磁盘I/O较慢且网络较快时，可用diskless(yes),否则一般建议使用磁盘(no)</span><br><br>repl-diskless-sync-delay 5 <span class="hljs-comment">#diskless时复制的服务器等待的延迟时间，设置0为关闭，在延迟时间内到达的客户端，会一起通过diskless方式同步数据，但是一旦复制开始，master节点不会再接收新slave的复制请求，直到下一次同步开始才再接收新请求。即无法为延迟时间后到达的新副本提供服务，新副本将排队等待下一次RDB传输，因此服务器会等待一段时间才能让更多副本到达。推荐值：30-60</span><br><br>repl-ping-replica-period 10 <span class="hljs-comment">#slave根据master指定的时间进行周期性的PING master,用于监测master状态,默认10s</span><br><br>repl-timeout 60 <span class="hljs-comment">#复制连接的超时时间，需要大于repl-ping-slave-period，否则会经常报超时</span><br><br>repl-disable-tcp-nodelay no <span class="hljs-comment">#是否在slave套接字发送SYNC之后禁用 TCP_NODELAY，如果选择&quot;yes&quot;，Redis将合并多个报文为一个大的报文，从而使用更少数量的包向slaves发送数据，但是将使数据传输到slave上有延迟，Linux内核的默认配置会达到40毫秒，如果 &quot;no&quot; ，数据传输到slave的延迟将会减少，但要使用更多的带宽</span><br><br>repl-backlog-size 512mb <span class="hljs-comment">#复制缓冲区内存大小，当slave断开连接一段时间后，该缓冲区会累积复制副本数据，因此当slave 重新连接时，通常不需要完全重新同步，只需传递在副本中的断开连接后没有同步的部分数据即可。只有在至少有一个slave连接之后才分配此内存空间,建议建立主从时此值要调大一些或在低峰期配置,否则会导致同步到slave失败</span><br><br>repl-backlog-ttl 3600 <span class="hljs-comment">#多长时间内master没有slave连接，就清空backlog缓冲区</span><br><br>replica-priority 100 <span class="hljs-comment">#当master不可用，哨兵Sentinel会根据slave的优先级选举一个master，此值最低的slave会优先当选master，而配置成0，永远不会被选举，一般多个slave都设为一样的值，让其自动选择</span><br><br><span class="hljs-comment">#min-replicas-to-write 3 #至少有3个可连接的slave，mater才接受写操作</span><br><span class="hljs-comment">#min-replicas-max-lag 10 #和上面至少3个slave的ping延迟不能超过10秒，否则master也将停止写操作</span><br><br>requirepass foobared <span class="hljs-comment">#设置redis连接密码，之后需要AUTH pass,如果有特殊符号，用&quot; &quot;引起来,生产建议设置</span><br><br>rename-command <span class="hljs-comment">#重命名一些高危命令，示例：rename-command FLUSHALL &quot;&quot; 禁用命令</span><br>   <span class="hljs-comment">#示例: rename-command del magedu</span><br>   <br>maxclients 10000 <span class="hljs-comment">#Redis最大连接客户端</span><br><br>maxmemory &lt;bytes&gt; <span class="hljs-comment">#redis使用的最大内存，单位为bytes字节，0为不限制，建议设为物理内存一半，8G内存的计算方式8(G)*1024(MB)1024(KB)*1024(Kbyte)，需要注意的是缓冲区是不计算在maxmemory内,生产中如果不设置此项,可能会导致OOM</span><br><br><span class="hljs-comment">#maxmemory-policy noeviction 此为默认值</span><br><span class="hljs-comment"># MAXMEMORY POLICY：当达到最大内存时，Redis 将如何选择要删除的内容。您可以从以下行为中选择一种：</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># volatile-lru -&gt; Evict 使用近似 LRU，只有设置了过期时间的键。</span><br><span class="hljs-comment"># allkeys-lru -&gt; 使用近似 LRU 驱逐任何键。</span><br><span class="hljs-comment"># volatile-lfu -&gt; 使用近似 LFU 驱逐，只有设置了过期时间的键。</span><br><span class="hljs-comment"># allkeys-lfu -&gt; 使用近似 LFU 驱逐任何键。</span><br><span class="hljs-comment"># volatile-random -&gt; 删除设置了过期时间的随机密钥。</span><br><span class="hljs-comment"># allkeys-random -&gt; 删除一个随机密钥，任何密钥。</span><br><span class="hljs-comment"># volatile-ttl -&gt; 删除过期时间最近的key（次TTL）</span><br><span class="hljs-comment"># noeviction -&gt; 不要驱逐任何东西，只是在写操作时返回一个错误。</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># LRU 表示最近最少使用</span><br><span class="hljs-comment"># LFU 表示最不常用</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># LRU、LFU 和 volatile-ttl 都是使用近似随机算法实现的。</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># 注意：使用上述任何一种策略，当没有合适的键用于驱逐时，Redis 将在需要更多内存的写操作时返回错误。这些通常是创建新密钥、添加数据或修改现有密钥的命令。一些示例是：SET、INCR、HSET、LPUSH、SUNIONSTORE、SORT（由于 STORE 参数）和 EXEC（如果事务包括任何需要内存的命令）。</span><br><br><span class="hljs-comment">#MAXMEMORY POLICY：当达到最大内存时，Redis 将如何选择要删除的内容。可以从下面行为中进行选择：</span><br><span class="hljs-comment"># volatile-lru -&gt; 在具有过期集的键中使用近似 LRU 驱逐。</span><br><span class="hljs-comment"># allkeys-lru -&gt; 使用近似 LRU 驱逐任何键。</span><br><span class="hljs-comment"># volatile-lfu -&gt; 在具有过期集的键中使用近似 LFU 驱逐。</span><br><span class="hljs-comment"># allkeys-lfu -&gt; 使用近似 LFU 驱逐任何键。</span><br><span class="hljs-comment"># volatile-random -&gt; 从具有过期设置的密钥中删除一个随机密钥。</span><br><span class="hljs-comment"># allkeys-random -&gt; 删除一个随机密钥，任何密钥。</span><br><span class="hljs-comment"># volatile-ttl -&gt; 删除过期时间最近的key（次TTL）</span><br><span class="hljs-comment"># noeviction -&gt; 不要驱逐任何东西，只是在写操作时返回一个错误。</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># LRU 表示最近最少使用</span><br><span class="hljs-comment"># LFU 表示最不常用</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># LRU、LFU 和 volatile-ttl 均使用近似实现随机算法。</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># 注意：使用上述任何一种策略，Redis 都会在写入时返回错误操作，当没有合适的键用于驱逐时。</span><br><br>appendonly no <span class="hljs-comment">#是否开启AOF日志记录，默认redis使用的是rdb方式持久化，这种方式在许多应用中已经足够用了，但是redis如果中途宕机，会导致可能有几分钟的数据丢失(取决于dump数据的间隔时间)，根据save来策略进行持久化，Append Only File是另一种持久化方式，可以提供更好的持久化特性，Redis会把每次写入的数据在接收后都写入 appendonly.aof 文件，每次启动时Redis都会先把这个文件的数据读入内存里，先忽略RDB文件。默认不启用此功能</span><br><br>appendfilename <span class="hljs-string">&quot;appendonly.aof&quot;</span> <span class="hljs-comment">#文本文件AOF的文件名，存放在dir指令指定的目录中</span><br><br>appendfsync everysec <span class="hljs-comment">#aof持久化策略的配置</span><br><span class="hljs-comment">#no表示由操作系统保证数据同步到磁盘,Linux的默认fsync策略是30秒，最多会丢失30s的数据</span><br><span class="hljs-comment">#always表示每次写入都执行fsync，以保证数据同步到磁盘,安全性高,性能较差</span><br><span class="hljs-comment">#everysec表示每秒执行一次fsync，可能会导致丢失这1s数据,此为默认值,也生产建议值</span><br><br><span class="hljs-comment">#同时在执行bgrewriteaof操作和主进程写aof文件的操作，两者都会操作磁盘，而bgrewriteaof往往会涉及大量磁盘操作，这样就会造成主进程在写aof文件的时候出现阻塞的情形,以下参数实现控制</span><br>no-appendfsync-on-rewrite no <span class="hljs-comment">#在aof rewrite期间,是否对aof新记录的append暂缓使用文件同步策略,主要考虑磁盘IO开支和请求阻塞时间。</span><br><span class="hljs-comment">#默认为no,表示&quot;不暂缓&quot;,新的aof记录仍然会被立即同步到磁盘，是最安全的方式，不会丢失数据，但是要忍受阻塞的问题</span><br><span class="hljs-comment">#为yes,相当于将appendfsync设置为no，这说明并没有执行磁盘操作，只是写入了缓冲区，因此这样并不会造成阻塞（因为没有竞争磁盘），但是如果这个时候redis挂掉，就会丢失数据。丢失多少数据呢？Linux的默认fsync策略是30秒，最多会丢失30s的数据,但由于yes性能较好而且会避免出现阻塞因此比较推荐</span><br><br><span class="hljs-comment">#rewrite 即对aof文件进行整理,将空闲空间回收,从而可以减少恢复数据时间</span><br><br>auto-aof-rewrite-percentage 100 <span class="hljs-comment">#当Aof log增长超过指定百分比例时，重写AOF文件，设置为0表示不自动重写Aof日志，重写是为了使aof体积保持最小，但是还可以确保保存最完整的数据</span><br><br>auto-aof-rewrite-min-size 64mb <span class="hljs-comment">#触发aof rewrite的最小文件大小</span><br><br>aof-load-truncated <span class="hljs-built_in">yes</span> <span class="hljs-comment">#是否加载由于某些原因导致的末尾异常的AOF文件(主进程被kill/断电等)，建议yes</span><br><br>aof-use-rdb-preamble no <span class="hljs-comment">#redis4.0新增RDB-AOF混合持久化格式，在开启了这个功能之后，AOF重写产生的文件将同时包含RDB格式的内容和AOF格式的内容，其中RDB格式的内容用于记录已有的数据，而AOF格式的内容则用于记录最近发生了变化的数据，这样Redis就可以同时兼有RDB持久化和AOF持久化的优点（既能够快速地生成重写文件，也能够在出现问题时，快速地载入数据）,默认为no,即不启用此功能</span><br><br>lua-time-limit 5000 <span class="hljs-comment">#lua脚本的最大执行时间，单位为毫秒</span><br><br>cluster-enabled <span class="hljs-built_in">yes</span> <span class="hljs-comment">#是否开启集群模式，默认不开启,即单机模式</span><br><br>cluster-config-file nodes-6379.conf <span class="hljs-comment">#由node节点自动生成的集群配置文件名称</span><br><br>cluster-node-timeout 15000 <span class="hljs-comment">#集群中node节点连接超时时间，单位ms,超过此时间，会踢出集群</span><br><br>cluster-replica-validity-factor 10 <span class="hljs-comment">#单位为次,在执行故障转移的时候可能有些节点和master断开一段时间导致数据比较旧，这些节点就不适用于选举为master，超过这个时间的就不会被进行故障转移,不能当选master，计算公式：(node-timeout * replica-validity-factor) + repl-pingreplica-period</span><br><br>cluster-migration-barrier 1 <span class="hljs-comment">#集群迁移屏障，一个主节点至少拥有1个正常工作的从节点，即如果主节点的slave节点故障后会将多余的从节点分配到当前主节点成为其新的从节点。</span><br><br>cluster-require-full-coverage <span class="hljs-built_in">yes</span> <span class="hljs-comment">#集群请求槽位全部覆盖，如果一个主库宕机且没有备库就会出现集群槽位不全，那么yes时redis集群槽位验证不全,就不再对外提供服务(对key赋值时,会出现CLUSTERDOWN The cluster is down的提示,cluster_state:fail,但ping 仍PONG)，而no则可以继续使用,但是会出现查询数据查不到的情况(因为有数据丢失)。生产建议为no</span><br><br>cluster-replica-no-failover no <span class="hljs-comment">#如果为yes,此选项阻止在主服务器发生故障时尝试对其主服务器进行故障转移。 但是，主服务器仍然可以执行手动强制故障转移，一般为no</span><br><br><span class="hljs-comment">#Slow log 是 Redis 用来记录超过指定执行时间的日志系统，执行时间不包括与客户端交谈，发送回复等I/O操作，而是实际执行命令所需的时间（在该阶段线程被阻塞并且不能同时为其它请求提供服务）,由于slow log 保存在内存里面，读写速度非常快，因此可放心地使用，不必担心因为开启 slow log 而影响Redis 的速度</span><br><br>slowlog-log-slower-than 10000 <span class="hljs-comment">#以微秒为单位的慢日志记录，为负数会禁用慢日志，为0会记录每个命令操作。默认值为10ms,一般一条命令执行都在微秒级,生产建议设为1ms-10ms之间</span><br><br>slowlog-max-len 128 <span class="hljs-comment">#最多记录多少条慢日志的保存队列长度，达到此长度后，记录新命令会将最旧的命令从命令队列中删除，以此滚动删除,即,先进先出,队列固定长度,默认128,值偏小,生产建议设为1000以上</span><br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+<span id="more"></span>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/11/07/%E7%AC%AC%E5%85%AB%E5%91%A8%E4%BD%9C%E4%B8%9A/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">第八周作业</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/10/22/%E7%AC%AC%E5%85%AD%E5%91%A8%E4%BD%9C%E4%B8%9A/">
+                        <span class="hidden-mobile">第六周作业</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

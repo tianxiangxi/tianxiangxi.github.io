@@ -1,0 +1,601 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="[TOC] 1、2、3、4、10、公司内部搭建自己的DNS服务器用来上网1234567891011121314151617181920212223242526272829303132333435363738394041424344454647两台机器，其中一台做DNS服务器[root@Rocky8 ~]#dnf -y install bind bind-utils           #安装DNS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="练习">
+<meta property="og:url" content="http://example.com/2022/09/27/%E7%BB%83%E4%B9%A0/index.html">
+<meta property="og:site_name" content="5-12 23:30">
+<meta property="og:description" content="[TOC] 1、2、3、4、10、公司内部搭建自己的DNS服务器用来上网1234567891011121314151617181920212223242526272829303132333435363738394041424344454647两台机器，其中一台做DNS服务器[root@Rocky8 ~]#dnf -y install bind bind-utils           #安装DNS">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/09/27/%E7%BB%83%E4%B9%A0/image-20220928111609509.png">
+<meta property="og:image" content="http://example.com/2022/09/27/%E7%BB%83%E4%B9%A0/image-20220928112113407.png">
+<meta property="og:image" content="http://example.com/2022/09/27/%E7%BB%83%E4%B9%A0/image-20220928112950256.png">
+<meta property="og:image" content="http://example.com/2022/09/27/%E7%BB%83%E4%B9%A0/image-20221008101309023.png">
+<meta property="og:image" content="http://example.com/2022/09/27/%E7%BB%83%E4%B9%A0/image-20221110184631270.png">
+<meta property="article:published_time" content="2022-09-27T16:52:18.000Z">
+<meta property="article:modified_time" content="2022-12-18T04:04:09.409Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/09/27/%E7%BB%83%E4%B9%A0/image-20220928111609509.png">
+  
+  
+  <title>练习 - 5-12 23:30</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="练习">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-09-27 16:52" pubdate>
+        September 27, 2022 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      29k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      238 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">练习</h1>
+            
+            <div class="markdown-body">
+              <p>[TOC]</p>
+<h3 id="1、"><a href="#1、" class="headerlink" title="1、"></a>1、</h3><h3 id="2、"><a href="#2、" class="headerlink" title="2、"></a>2、</h3><h3 id="3、"><a href="#3、" class="headerlink" title="3、"></a>3、</h3><h3 id="4、"><a href="#4、" class="headerlink" title="4、"></a>4、</h3><h3 id="10、公司内部搭建自己的DNS服务器用来上网"><a href="#10、公司内部搭建自己的DNS服务器用来上网" class="headerlink" title="10、公司内部搭建自己的DNS服务器用来上网"></a>10、公司内部搭建自己的DNS服务器用来上网</h3><figure class="highlight perl"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></div></td><td class="code"><pre><code class="hljs perl">两台机器，其中一台做DNS服务器<br>[root@Rocky8 ~]<span class="hljs-comment">#dnf -y install bind bind-utils           #安装DNS</span><br>[root@Rocky8 ~]<span class="hljs-comment">#systemctl status named                   #查看DNS服务是否启动</span><br>[root@Rocky8 ~]<span class="hljs-comment">#systemctl enable --now named             #设置DNS为开机启动，且立即启动</span><br>[root@Rocky8 ~]<span class="hljs-comment">#vim /etc/sysconfig/network-scripts/ifcfg-eth0</span><br>DNS1=<span class="hljs-number">127.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">1</span>                                           <span class="hljs-comment">#将自己的机器设置为DNS</span><br>：w<span class="hljs-string">q</span><br><span class="hljs-string">[root@Rocky8 network-scripts]</span><span class="hljs-comment">#nmcli connection reload</span><br>[root@Rocky8 network-scripts]<span class="hljs-comment">#nmcli connection up eth0   #通过两步命令保存生效</span><br><span class="hljs-comment">#此时已经将此机器设置为DNS服务器了</span><br><br>[root@Centos7 ~]<span class="hljs-comment">#yum -y install bind-utils               #在另一台机器上安装DNS客户端</span><br>[root@Centos7 ~]<span class="hljs-comment">#vim /etc/sysconfig/network-scripts/ifcfg-eth0</span><br>DNS1=<span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">128</span>                                   <span class="hljs-comment">#访问公司的DNS网址，并将其他DNS删除</span><br>：w<span class="hljs-string">q</span><br><span class="hljs-string">[root@Centos7 ~]</span><span class="hljs-comment">#systemctl restart network</span><br>[root@Centos7 ~]<span class="hljs-comment">#host www.baidu.com</span><br>;; connection timed out; <span class="hljs-keyword">no</span> servers could be reached    <span class="hljs-comment">#表示无法连接DNS服务器</span><br><span class="hljs-comment">#说明自己设置的DNS器有限制</span><br><br>[root@Rocky8 ~]<span class="hljs-comment">#ss -ntlu                  #显示只有127.0.0.1（本机地址）机器在监听</span><br>Netid  State  Recv-Q   Send-Q   Local Address:Port   Peer Address:Port  Process<br> udp  UNCONN    <span class="hljs-number">0</span>        <span class="hljs-number">0</span>         <span class="hljs-number">127.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">1</span>:<span class="hljs-number">53</span>             <span class="hljs-number">0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">0</span>:*<br>[root@Rocky8 ~]<span class="hljs-comment">#vim /etc/named.conf</span><br><span class="hljs-keyword">listen</span>-on port <span class="hljs-number">53</span> &#123; localhost;  &#125;;          <span class="hljs-comment">#将127.0.0.1改为localhost，localhost表示本机所有IP；或者将此行用//注释掉；或者在127.0.0.1；后面添加其他允许访问的IP地址</span><br>：w<span class="hljs-string">q</span><br><span class="hljs-string">[root@Rocky8 ~]</span><span class="hljs-comment">#named-checkconf             #此命令可以检查语法错误</span><br><span class="hljs-comment">#更改完文件后重新加载文件，或者用命令systemctl restart named重新启动DNS</span><br>[root@Rocky8 ~]<span class="hljs-comment">#rndc reload</span><br>server reload successful                   <span class="hljs-comment">#表示加载成功</span><br>[root@Rocky8 ~]<span class="hljs-comment">#ss -ntlu                   #本机所有IP已添加</span><br>Netid  State  Recv-Q   Send-Q   Local Address:Port   Peer Address:Port  Process<br> udp  UNCONN    <span class="hljs-number">0</span>        <span class="hljs-number">0</span>         <span class="hljs-number">127.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">1</span>:<span class="hljs-number">53</span>           <span class="hljs-number">0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">0</span>:*<br> udp  UNCONN    <span class="hljs-number">0</span>        <span class="hljs-number">0</span>         <span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">128</span>:<span class="hljs-number">53</span>          <span class="hljs-number">0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">0</span>:*<br>[root@Centos7 ~]<span class="hljs-comment">#host www.baidu.com</span><br>Host www.baidu.com.zhang.org <span class="hljs-keyword">not</span> found: <span class="hljs-number">5</span>(REFUSED)        <span class="hljs-comment">#访问被拒绝</span><br>[root@Rocky8 ~]<span class="hljs-comment">#vim /etc/named.conf</span><br>//   allow-query     &#123; localhost; &#125;;       <span class="hljs-comment">#此行说的是只允许本机访问，需让其他机器也可以访问，方法有三种：①加//将此行注释，所有机器都可以访问②将localhost更改为any，所有机器都允许③在localhost;添加允许访问的IP地址</span><br>：w<span class="hljs-string">q</span><br><span class="hljs-string">[root@Rocky8 ~]</span><span class="hljs-comment">#named-checkconf             #此命令可以检查语法错误</span><br>[root@Rocky8 ~]<span class="hljs-comment">#rndc reload</span><br>[root@Centos7 ~]<span class="hljs-comment">#host www.baidu.com         #此时访问成功，dig命令更详细</span><br>www.baidu.com is an alias <span class="hljs-keyword">for</span> www.a.shifen.com.<br>www.a.shifen.com has address <span class="hljs-number">220.181</span>.<span class="hljs-number">38.150</span><br>www.a.shifen.com has address <span class="hljs-number">220.181</span>.<span class="hljs-number">38.149</span><br><span class="hljs-comment">#此时公司内的机器可以通过公司内自己搭建的DNS访问网络了</span><br><br></code></pre></td></tr></table></figure>
+
+<h3 id="11、公司内部机器互相访问（正向解析）"><a href="#11、公司内部机器互相访问（正向解析）" class="headerlink" title="11、公司内部机器互相访问（正向解析）"></a>11、公司内部机器互相访问（正向解析）</h3><p>假设：公司内部都使用的是magedu.org域名，</p>
+<p>​                   其他机器分别是<a target="_blank" rel="noopener" href="http://www.magedu.org/">www.magedu.org</a>           10.0.0.184      (是一个对外提供服务的网站)</p>
+<p>​                                              k8s.magedu.org</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs tap">[root@Rocky ~]<span class="hljs-comment">#yum -y install httpd              #10.0.0.184机器安装http</span><br>[root@Rocky ~]<span class="hljs-comment">#systemctl enable --now httpd ;echo hello &gt; /var/www/html/index.html        #开机启动且立即启动，并在网页上输入内容hello</span><br><span class="hljs-comment">#此时已经可以在浏览器上直接通过IP地址访问网页了</span><br><span class="hljs-comment">#下一步希望可以直接通过域名www.magedu.org直接访问网页需要搭建DNS</span><br>[root@Rocky8 ~]<span class="hljs-comment">#cd /var/named        #在公司搭建DNS的机器上添加解析域名的数据库文件</span><br>[root@Rocky8 named]<span class="hljs-comment">#ll               #可以看见数据库文件权限是640，账号是root组是named</span><br>-rw-r-----<span class="hljs-number"> 1 </span>root  named<span class="hljs-number"> 2253 </span>4月 <span class="hljs-number"> 13 </span>05:31 named.ca<br>-rw-r-----<span class="hljs-number"> 1 </span>root  named <span class="hljs-number"> 152 </span>4月 <span class="hljs-number"> 13 </span>05:31 named.empty<br>-rw-r-----<span class="hljs-number"> 1 </span>root  named <span class="hljs-number"> 152 </span>4月 <span class="hljs-number"> 13 </span>05:31 named.localhost<br>-rw-r-----<span class="hljs-number"> 1 </span>root  named <span class="hljs-number"> 168 </span>4月 <span class="hljs-number"> 13 </span>05:31 named.loopback<br>[root@Rocky8 named]<span class="hljs-comment">#touch magedu.org.zone        #创建magedu.org所属文件数据库</span><br>[root@Rocky8 named]<span class="hljs-comment">#chmod 640 magedu.org.zone    #修改文件权限</span><br>[root@Rocky8 named]<span class="hljs-comment">#chgrp named magedu.org.zone  #修改文件所属组</span><br>[root@Rocky8 named]<span class="hljs-comment">#ll magedu.org.zone</span><br>-rw-r-----<span class="hljs-number"> 1 </span>root named<span class="hljs-number"> 0 </span>9月 <span class="hljs-number"> 28 </span>09:43 magedu.org.zone<br>[root@Rocky8 named]<span class="hljs-comment">#vim magedu.org.zone          #编写数据库文件</span><br>$TTL 1D                                          <span class="hljs-comment">#记录的缓存周期TTL  一天</span><br>@         IN    SOA   master  admin.magedu.org. (<span class="hljs-number"> 0 </span> 1D  10M  1D  6H  )<br>magedu.org.     NS    master     <span class="hljs-comment">#magedu.org.可省略，NS名称解析服务器</span><br>                NS    slave1     <span class="hljs-comment">#slave1表示从DNS服务器</span><br>master          A     10.0.0.128   <span class="hljs-comment">#A表示是IPV4，AAAA表示为IPV6</span><br>slave1          A     10.0.0.216                                                 www             A     10.0.0.184<br>k8s             A     10.0.0.217<br><span class="hljs-comment">#@表示当前的域名（magedu.org.）两者可以互换（使用@更便捷，如果域名更改了，文件内不需要更改）；</span><br><span class="hljs-comment">#SOA类型必须在第一行（TTL除外）；</span><br><span class="hljs-comment">#master表示主DNS服务器的名称（全名称是master.magedu.org.）；</span><br><span class="hljs-comment">#admin.magedu.org.是邮箱（admin@magedu.org.）；</span><br><span class="hljs-comment">#0表示的版本号，更改一次文件版本号需增加1（版本号发生变化，主服务器推送到从服务器。另外从服务器固定时间间隔检测发现版本号发生变化时，从服务器拉取数据）；</span><br><span class="hljs-comment">#1D表示每隔1天从服务器拉去一次数据；</span><br><span class="hljs-comment">#10M表示第一次拉取失败后，每隔10分钟从新拉取一次直至成功；</span><br><span class="hljs-comment">#1D表示过期时间，1天时间从服务器联系不上主服务器后，从服务器也不再提供服务避免数据错误（主服务器可能已经更新数据了）；</span><br><span class="hljs-comment">#6H表示错误数据的缓存时间（访问错误网址时，将此错误网址缓存下来，下次访问直接反馈，减少时间）。[root@Rocky8 etc]#named-checkzone magedu.org /var/named/magedu.org.zone</span><br>zone magedu.org/IN: loaded serial 0<br><span class="hljs-symbol">OK</span>                                       <span class="hljs-comment">#检查语法是否错误，没有错误</span><br></code></pre></td></tr></table></figure>
+
+<p> 配置好解析数据库文件后，但DNS无法识别，需要再编辑DNS配置文件                                             </p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs perl">[root@Rocky8 ~]<span class="hljs-comment">#vim /etc/named.conf          #编辑DNS配置文件，增加magedu.org</span><br>zone <span class="hljs-string">&quot;magedu.org&quot;</span> IN &#123;                                                                             <br>      type master;<br>      file <span class="hljs-string">&quot;magedu.org.zone&quot;</span>;<br>&#125;;                    <span class="hljs-comment">#IN可以省略不写</span><br><span class="hljs-comment">#或者可以直接将zone写到其他文件里，不用写到named.conf</span><br>[root@Rocky8 ~]<span class="hljs-comment">#vim /etc/named.rfc1912.zones</span><br>zone <span class="hljs-string">&quot;magedu.org&quot;</span>  &#123;                                                                             <br>      type master;<br>      file <span class="hljs-string">&quot;magedu.org.zone&quot;</span>;<br>&#125;;<br>：w<span class="hljs-string">q</span><br><span class="hljs-string">[root@Rocky8 ~]</span><span class="hljs-comment">#vim /etc/named.conf         #编辑配置文件</span><br><span class="hljs-keyword">listen</span>-on port <span class="hljs-number">53</span> &#123; localhost;  &#125;;          <span class="hljs-comment">#将127.0.0.1改为localhost，localhost表示本机所有IP；或者将此行用//注释掉；或者在127.0.0.1；后面添加其他允许访问的IP地址</span><br>//   allow-query     &#123; localhost; &#125;;       <span class="hljs-comment">#此行说的是只允许本机访问，需让其他机器也可以访问，方法有三种：①加//将此行注释，所有机器都可以访问②将localhost更改为any，所有机器都允许③在localhost;添加允许访问的IP地址</span><br>：w<span class="hljs-string">q</span><br><span class="hljs-string">[root@Rocky8 etc]</span><span class="hljs-comment">#named-checkconf             #检查DNS配置文件的语法是否错误</span><br>[root@Rocky8 etc]<span class="hljs-comment">#rndc reload</span><br>server reload successful                      <span class="hljs-comment">#重新加载数据，加载成功</span><br>[root@Centos7 ~]<span class="hljs-comment">#host www.magedu.org</span><br>www.magedu.org has address <span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">184</span>         <span class="hljs-comment">#此时其他机器就可以访问到了</span><br></code></pre></td></tr></table></figure>
+
+<p>此时用浏览器访问<a target="_blank" rel="noopener" href="http://www.magedu.org,无法访问/">www.magedu.org，无法访问</a></p>
+<p><a href=""><img src="image-20220928111609509.png" srcset="/img/loading.gif" lazyload alt="image-20220928111609509"></a></p>
+<p>无法访问是因为windows的DNS没有指向10.0.0.128，所以不成功，需更改其DNS</p>
+<p><a href=""><img src="image-20220928112113407.png" srcset="/img/loading.gif" lazyload alt="image-20220928112113407"></a></p>
+<p>此时可以查看是否可以访问</p>
+<p>方法1直接浏览器访问</p>
+<p>方法2使用管理员命令提示符查找：nslookup <a target="_blank" rel="noopener" href="http://www.magedu.org/">www.magedu.org</a></p>
+<p>如果访问不成功说明有其他DNS，需更改其他网络的DNS</p>
+<p><a href=""><img src="image-20220928112950256.png" srcset="/img/loading.gif" lazyload alt="image-20220928112950256"></a></p>
+<h3 id="12、公司内部机器互相访问（反向解析）"><a href="#12、公司内部机器互相访问（反向解析）" class="headerlink" title="12、公司内部机器互相访问（反向解析）"></a>12、公司内部机器互相访问（反向解析）</h3><p>把IP地址解析成网址         10.0.0.184     –&gt;   <a target="_blank" rel="noopener" href="http://www.magedu.org/">www.magedu.org</a></p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs stylus">   <span class="hljs-number">10.0</span>.<span class="hljs-number">0.184</span>                 --&gt;   www<span class="hljs-selector-class">.magedu</span><span class="hljs-selector-class">.org</span><br>   <span class="hljs-number">10.0</span>.<span class="hljs-number">0.217</span>                 --&gt;   k8s<span class="hljs-selector-class">.magedu</span><span class="hljs-selector-class">.org</span><br>即 <span class="hljs-number">184.0</span>.<span class="hljs-number">0.10</span><span class="hljs-selector-class">.in-addr</span><span class="hljs-selector-class">.arpa</span>.   --&gt;   www<span class="hljs-selector-class">.magedu</span><span class="hljs-selector-class">.org</span><br>   <span class="hljs-number">217.0</span>.<span class="hljs-number">0.10</span><span class="hljs-selector-class">.in-addr</span><span class="hljs-selector-class">.arpa</span>.   --&gt;   k8s<span class="hljs-selector-class">.magedu</span>.org<br></code></pre></td></tr></table></figure>
+
+<p>编辑配置文件和解析数据库</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs perl">[root@Rocky8 ~]<span class="hljs-comment">#vim /etc/named.rfc1912.zones         #编辑配置文件</span><br>zone <span class="hljs-string">&quot;0.0.10.in-addr.arpa&quot;</span> &#123;<br>        type master;<br>        file <span class="hljs-string">&quot;10.0.0.zone&quot;</span>;<br>&#125;;<br>:w<span class="hljs-string">q</span><br><span class="hljs-string">[root@Rocky8 ~]</span><span class="hljs-comment">#vim /etc/named.conf</span><br><span class="hljs-keyword">listen</span>-on port <span class="hljs-number">53</span> &#123; localhost;  &#125;;          <span class="hljs-comment">#将127.0.0.1改为localhost，localhost表示本机所有IP；或者将此行用//注释掉；或者在127.0.0.1；后面添加其他允许访问的IP地址</span><br>//   allow-query     &#123; localhost; &#125;;       <span class="hljs-comment">#此行说的是只允许本机访问，需让其他机器也可以访问，方法有三种：①加//将此行注释，所有机器都可以访问②将localhost更改为any，所有机器都允许③在localhost;添加允许访问的IP地址</span><br>：w<span class="hljs-string">q</span><br><span class="hljs-string">[root@Rocky8 ~]</span><span class="hljs-comment">#named-checkconf                      #检查语法错误</span><br>[root@Rocky8 ~]<span class="hljs-comment">#cd /var/named</span><br>[root@Rocky8 named]<span class="hljs-comment">#vim 10.0.0.zone                  #添加解析数据库</span><br>$TTL <span class="hljs-number">1</span>D<br>@         IN    SOA   master  admin.magedu.org ( <span class="hljs-number">3</span>  <span class="hljs-number">1</span>D  <span class="hljs-number">10</span>M  <span class="hljs-number">1</span>D  <span class="hljs-number">6</span>H  )<br>                NS    master<br>master          A     <span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">128</span><br><span class="hljs-number">184</span>             PTR   www.magedu.org.<br><span class="hljs-number">217</span>             PTR   k8s.magedu.org.<br>:w<span class="hljs-string">q</span><br><span class="hljs-string">[root@Rocky8 named]</span><span class="hljs-comment">#chmod 640 10.0.0.zone            #修改权限</span><br>[root@Rocky8 named]<span class="hljs-comment">#chgrp named 10.0.0.zone          #修改所属组</span><br>[root@Rocky8 named]<span class="hljs-comment">#named-checkzone 0.0.10.in-addr.arpa /var/named/10.0.0.zone</span><br>zone <span class="hljs-number">0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">10</span>.in-addr.arpa/IN: loaded serial <span class="hljs-number">3</span><br>OK                                                   <span class="hljs-comment">#检查语法是否有误，语法正确</span><br>[root@Rocky8 named]<span class="hljs-comment">#rndc reload</span><br>server reload successful                             <span class="hljs-comment">#重新加载数据，成功加载</span><br>[root@Centos7 ~]<span class="hljs-comment">#dig -t ptr 184.0.0.10.in-addr.arpa  #用其他机器访问成功</span><br>;; ANSWER SECTION:<br><span class="hljs-number">184.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">10</span>.in-addr.arpa. <span class="hljs-number">86400</span>	IN	PTR	www.magedu.org.<br><span class="hljs-comment">#或者用以下两种命令访问</span><br>[root@Centos7 ~]<span class="hljs-comment">#dig -x 10.0.0.184                   #此命令更简洁</span><br>;; ANSWER SECTION:<br><span class="hljs-number">184.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">10</span>.in-addr.arpa. <span class="hljs-number">86400</span>	IN	PTR	www.magedu.org.<br>[root@Centos7 ~]<span class="hljs-comment">#host 10.0.0.184                     #此命令更简洁</span><br><span class="hljs-number">184.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">10</span>.in-addr.arpa domain name pointer www.magedu.org.<br></code></pre></td></tr></table></figure>
+
+<h3 id="13、搭建从DNS服务器"><a href="#13、搭建从DNS服务器" class="headerlink" title="13、搭建从DNS服务器"></a>13、搭建从DNS服务器</h3><figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs perl"><span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">184</span>当从服务器<br>[root@Rocky ~]<span class="hljs-comment">#yum -y install bind                 #安装DNS服务器</span><br>[root@Rocky ~]<span class="hljs-comment">#vim /etc/named.conf                 #编辑配置文件</span><br>//      <span class="hljs-keyword">listen</span>-on port <span class="hljs-number">53</span> &#123; <span class="hljs-number">127.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">1</span>; &#125;;<br><span class="hljs-regexp">//</span>      allow-query     &#123; localhost; &#125;;<br>：w<span class="hljs-string">q</span><br><span class="hljs-string">[root@Rocky ~]</span><span class="hljs-comment">#vim /etc/named.rfc1912.zones        #配置文件里添加以下内容</span><br>zone <span class="hljs-string">&quot;magedu.org&quot;</span> &#123;<br>      type slave;<br>      master &#123;<span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">128</span>;&#125;;<br>      file <span class="hljs-string">&quot;slaves/magedu.org.zone.slave&quot;</span>;<br>&#125;;                                                 <span class="hljs-comment">#有这个文件夹（从服务器）：slaves/</span><br>：w<span class="hljs-string">q</span><br><span class="hljs-string">[root@Rocky ~]</span><span class="hljs-comment">#named-checkconf</span><br>[root@Rocky ~]<span class="hljs-comment">#systemctl enable --now named    #启动服务，就把magedu.org.zone.slave文件复制过来了</span><br>[root@Rocky ~]<span class="hljs-comment">#ls /var/named/slaves/ -l</span><br>total <span class="hljs-number">4</span><br>-rw-r--r-- <span class="hljs-number">1</span> named named <span class="hljs-number">374</span> Sep <span class="hljs-number">28</span> <span class="hljs-number">18</span>:<span class="hljs-number">32</span> magedu.org.zone.slave<br></code></pre></td></tr></table></figure>
+
+<p>此时我们可以从其他机器从此从服务器访问了</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs perl">[root@Centos7 ~]<span class="hljs-comment">#vim /etc/sysconfig/network-scripts/ifcfg-eth0</span><br>DNS2=<span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">184</span>                              <span class="hljs-comment">#添加此DNS</span><br>：w<span class="hljs-string">q</span><br><span class="hljs-string">[root@Centos7 ~]</span><span class="hljs-comment">#systemctl restart network   #重新启动</span><br>[root@Rocky8 named]<span class="hljs-comment">#systemctl stop named     #先将主服务器关闭</span><br>[root@Centos7 ~]<span class="hljs-comment">#dig www.magedu.org</span><br>;; ANSWER SECTION:<br>www.magedu.org.		<span class="hljs-number">86400</span>	IN	A	<span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">184</span><br>;; SERVER: <span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">184</span><span class="hljs-comment">#53(10.0.0.184)</span><br></code></pre></td></tr></table></figure>
+
+<p>但是如果主服务器发生变化时，从服务器接收不到，需在主服务器进行以下设置</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs perl">[root@Rocky8 named]<span class="hljs-comment">#systemctl start named     #前面刚关闭了，需开启</span><br>[root@Rocky8 named]<span class="hljs-comment">#vim /var/named/magedu.org.zone</span><br>                NS    slave1<br>slave1          A     <span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">184</span>              <span class="hljs-comment">#在主服务器里面增加从服务器的地址（没有地址，主服务器不知道推送到哪）</span><br>www             A     <span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">185</span>              <span class="hljs-comment">#将184改为185</span><br>：w<span class="hljs-string">q</span><br><span class="hljs-string">[root@Rocky8 named]</span><span class="hljs-comment">#named-checkzone magedu.org /var/named/magedu.org.zone</span><br>[root@Rocky8 named]<span class="hljs-comment">#rndc reload</span><br>[root@Centos7 ~]<span class="hljs-comment">#dig www.magedu.org @10.0.0.184</span><br>;; ANSWER SECTION:<br>www.magedu.org.		<span class="hljs-number">86400</span>	IN	A	<span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">185</span>     <span class="hljs-comment">#此时可以查到网址的IP地址已发生变化</span><br></code></pre></td></tr></table></figure>
+
+<p>此时发现从服务器从主服务器拉取数据时不经过主服务器的允许，不安全（任何人都可以获取）。</p>
+<p>而且根本不需要设置从节点就可以把数据获取，如下：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-selector-attr">[root@Centos7 ~]</span><span class="hljs-selector-id">#dig</span> -t axfr magedu<span class="hljs-selector-class">.org</span><br>magedu<span class="hljs-selector-class">.org</span>.		<span class="hljs-number">86400</span>	IN	NS	master<span class="hljs-selector-class">.magedu</span><span class="hljs-selector-class">.org</span>.<br>magedu<span class="hljs-selector-class">.org</span>.		<span class="hljs-number">86400</span>	IN	NS	slave1<span class="hljs-selector-class">.magedu</span><span class="hljs-selector-class">.org</span>.<br>k8s<span class="hljs-selector-class">.magedu</span><span class="hljs-selector-class">.org</span>.		<span class="hljs-number">86400</span>	IN	A	<span class="hljs-number">10.0</span>.<span class="hljs-number">0.217</span><br>master<span class="hljs-selector-class">.magedu</span><span class="hljs-selector-class">.org</span>.	<span class="hljs-number">86400</span>	IN	A	<span class="hljs-number">10.0</span>.<span class="hljs-number">0.128</span><br>slave1<span class="hljs-selector-class">.magedu</span><span class="hljs-selector-class">.org</span>.	<span class="hljs-number">86400</span>	IN	A	<span class="hljs-number">10.0</span>.<span class="hljs-number">0.184</span><br>www<span class="hljs-selector-class">.magedu</span><span class="hljs-selector-class">.org</span>.		<span class="hljs-number">86400</span>	IN	A	<span class="hljs-number">10.0</span>.<span class="hljs-number">0.184</span><br></code></pre></td></tr></table></figure>
+
+<p>为了安全需要在主服务器增加设置</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs perl">[root@Rocky8 ~]<span class="hljs-comment">#vim /etc/named.conf</span><br>//      allow-query     &#123; localhost; &#125;;<br>        allow-transfer  &#123;<span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">184</span>; &#125;;          <span class="hljs-comment">#增加此命令，表示只允许10.0.0.184获取数据</span><br>：w<span class="hljs-string">q</span><br><span class="hljs-string">[root@Rocky8 ~]</span><span class="hljs-comment">#named-checkconf</span><br>[root@Rocky8 ~]<span class="hljs-comment">#rndc reload</span><br>server reload successful<br>[root@Centos7 ~]<span class="hljs-comment">#dig -t axfr magedu.org</span><br>; &lt;&lt;&gt;&gt; DiG <span class="hljs-number">9.11</span>.<span class="hljs-number">4</span>-P2-RedHat-<span class="hljs-number">9.11</span>.<span class="hljs-number">4</span>-<span class="hljs-number">26</span>.P2.el7_9.<span class="hljs-number">9</span> &lt;&lt;&gt;&gt; -t axfr magedu.org<br>;; global options: +cmd<br>; Transfer failed.          <span class="hljs-comment">#其他机器已经无法在主服务器抓取了</span><br><br>[root@Centos7 ~]<span class="hljs-comment">#dig -t axfr magedu.org @10.0.0.184</span><br>magedu.org.		<span class="hljs-number">86400</span>	IN	NS	master.magedu.org.<br>magedu.org.		<span class="hljs-number">86400</span>	IN	NS	slave1.magedu.org.<br>k8s.magedu.org.		<span class="hljs-number">86400</span>	IN	A	<span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">217</span><br>master.magedu.org.	<span class="hljs-number">86400</span>	IN	A	<span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">128</span><br>slave1.magedu.org.	<span class="hljs-number">86400</span>	IN	A	<span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">184</span><br>www.magedu.org.		<span class="hljs-number">86400</span>	IN	A	<span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">184</span><br><span class="hljs-comment">#但其他机器可以从‘从服务器’抓取</span><br></code></pre></td></tr></table></figure>
+
+<p>此时需要更改从服务器</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs perl">[root@Rocky ~]<span class="hljs-comment">#vim /etc/named.conf</span><br>//      allow-query     &#123; localhost; &#125;;<br>        allow-transfer  &#123;none; &#125;;                <span class="hljs-comment">#增加此命令，表示不允许任何人抓取数据</span><br>：w<span class="hljs-string">q</span><br><span class="hljs-string">[root@Rocky ~]</span><span class="hljs-comment">#named-checkconf</span><br>[root@Rocky ~]<span class="hljs-comment">#rndc reload</span><br>server reload successful<br><br>[root@Centos7 ~]<span class="hljs-comment">#dig -t axfr magedu.org @10.0.0.184</span><br>; &lt;&lt;&gt;&gt; DiG <span class="hljs-number">9.11</span>.<span class="hljs-number">4</span>-P2-RedHat-<span class="hljs-number">9.11</span>.<span class="hljs-number">4</span>-<span class="hljs-number">26</span>.P2.el7_9.<span class="hljs-number">9</span> &lt;&lt;&gt;&gt; -t axfr magedu.org @10.<span class="hljs-number">0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">184</span><br>;; global options: +cmd<br>; Transfer failed.<br><span class="hljs-comment">#从服务器也无法整体抓取数据</span><br><span class="hljs-comment">#如果知道完整的域名，还是可以获取IP地址的</span><br><br></code></pre></td></tr></table></figure>
+
+<h3 id="14、泛域名解析（"><a href="#14、泛域名解析（" class="headerlink" title="14、泛域名解析（"></a>14、泛域名解析（</h3><p>比如客户输错网址，输入ww.magedu.org任何网页都打不开，无论是想访问<a target="_blank" rel="noopener" href="http://www.magedu.org还是访问k8s.magedu.org,只要magedu.org输入没问题,我就强制让你访问www.magedu.org,此为泛域名解析./">www.magedu.org还是访问k8s.magedu.org，只要magedu.org输入没问题，我就强制让你访问www.magedu.org，此为泛域名解析。</a></p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs perl">[root@Rocky8 ~]<span class="hljs-comment">#cd /var/named/</span><br>[root@Rocky8 named]<span class="hljs-comment">#vim magedu.org.zone               #在DNS服务器端编辑数据库</span><br>*               A     <span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">184</span>                      <span class="hljs-comment">#增加此项，即可完成泛域名解析</span><br>：w<span class="hljs-string">q</span><br><span class="hljs-string">[root@Rocky8 named]</span><span class="hljs-comment">#rndc reload</span><br>server reload successful<br>[root@Centos7 ~]<span class="hljs-comment">#dig wwww.magedu.org</span><br>;; ANSWER SECTION:<br>wwww.magedu.org.	<span class="hljs-number">86400</span>	IN	A	<span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">184</span><br></code></pre></td></tr></table></figure>
+
+<p>有时候客户只输入magedu.org，此时也希望可以打开网站</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs perl">[root@Rocky8 named]<span class="hljs-comment">#vim magedu.org.zone               #在DNS服务器端编辑数据库</span><br>@               A     <span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">184</span>                      <span class="hljs-comment">#增加此项，即可完成泛域名解析</span><br>：w<span class="hljs-string">q</span><br><span class="hljs-string">[root@Rocky8 named]</span><span class="hljs-comment">#rndc reload</span><br>server reload successful<br>[root@Centos7 ~]<span class="hljs-comment">#dig magedu.org</span><br>;; ANSWER SECTION:<br>magedu.org.		<span class="hljs-number">86400</span>	IN	A	<span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">184</span><br></code></pre></td></tr></table></figure>
+
+<p>15、子域委派</p>
+<p>比如：本部是magedu.org.     访问本部网址：<a target="_blank" rel="noopener" href="http://www.magedu.org/">www.magedu.org</a> .</p>
+<p>要在深圳开分公司，需要派发子域可以设为sz.magedu.org.      访问分部网址：<a target="_blank" rel="noopener" href="http://www.sz.magedu.org/">www.sz.magedu.org</a>.</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs perl"><span class="hljs-comment">#首先在本部DNS设置解析数据库</span><br>[root@Rocky8 named]<span class="hljs-comment">#vim magedu.org.zone</span><br>sz              NS    slave2      <span class="hljs-comment">#sz.magedu.org.可省略为sz；slave2也可以写成其他名字</span><br>slave2          A     <span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">216</span><br>：w<span class="hljs-string">q</span><br><span class="hljs-string">[root@Rocky8 named]</span><span class="hljs-comment">#rndc reload</span><br>server reload successful<br><br><span class="hljs-comment">#然后设置分部的DNS</span><br>[root@Centos7 ~]<span class="hljs-comment">#yum -y install bind bind-utils        #安装DNS</span><br>[root@Centos7 ~]<span class="hljs-comment">#vim /etc/named.conf                   #编辑配置文件</span><br>//      <span class="hljs-keyword">listen</span>-on port <span class="hljs-number">53</span> &#123; <span class="hljs-number">127.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">1</span>; &#125;;<br><span class="hljs-regexp">//</span>      allow-query     &#123; localhost; &#125;;<br>：w<span class="hljs-string">q</span><br><span class="hljs-string">[root@Centos7 ~]</span><span class="hljs-comment">#vim /etc/named.rfc1912.zones         #编辑配置文件</span><br>zone <span class="hljs-string">&quot;sz.magedu.org&quot;</span> &#123;<br>       type master;<br>       file <span class="hljs-string">&quot;sz.magedu.org.zone&quot;</span>;<br>&#125;;                                               <span class="hljs-comment">#此DNS是分部的主DNS所以是master</span><br>：w<span class="hljs-string">q</span><br><span class="hljs-string">[root@Centos7 ~]</span><span class="hljs-comment">#vim /var/named/sz.magedu.org.zone     #添加sz.mageu.org.zone数据库</span><br>$TTL <span class="hljs-number">1</span>D<br>@           IN   SOA  slave2  admin.sz.magedu.org. (  <span class="hljs-number">0</span>  <span class="hljs-number">1</span>H  <span class="hljs-number">10</span>M   <span class="hljs-number">1</span>D  <span class="hljs-number">2</span>H  )<br>                 NS   slave2<br>slave2           A    <span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">216</span><br>www              A    <span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">129</span><br>：w<span class="hljs-string">q</span><br><span class="hljs-string">[root@Centos7 ~]</span><span class="hljs-comment">#chmod 640 /var/named/sz.magedu.org.zone</span><br>[root@Centos7 ~]<span class="hljs-comment">#chgrp named /var/named/sz.magedu.org.zone</span><br><span class="hljs-comment">#配置完成后启动DNS服务</span><br>[root@Centos7 named]<span class="hljs-comment">#systemctl enable --now named</span><br><br></code></pre></td></tr></table></figure>
+
+<h3 id="15、客户端是否有缓存"><a href="#15、客户端是否有缓存" class="headerlink" title="15、客户端是否有缓存"></a>15、客户端是否有缓存</h3><p>ubuntu客户端有缓存，</p>
+<p>centos客户端没有缓存，centos需要单独安装缓存软件（如nscd软件）</p>
+<h3 id="16、实现内网访问可以访问外网-反之禁止"><a href="#16、实现内网访问可以访问外网-反之禁止" class="headerlink" title="16、实现内网访问可以访问外网,反之禁止"></a>16、实现内网访问可以访问外网,反之禁止</h3><p>环境准备：</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs gherkin">外部网络：eth0 仅主机 192.168.10.216/24  GW：192.168.10.184<br>防火墙firewall：eth0 NAT模式 10.0.0.184/24<br>               eth1 仅主机  192.168.10.184/24<br>内部机器：eth0 NAT模式 10.0.0.217/24  GW:10.0.0.184<br><br>为了便于识别<br>[root<span class="hljs-meta">@Rocky</span> ~]<span class="hljs-comment">#hostnamectl set-hostname firewall</span><br>[root<span class="hljs-meta">@Rocky</span> ~]<span class="hljs-comment">#exit</span><br>[root<span class="hljs-meta">@firewall</span> ~]<span class="hljs-comment">#            #已经主机名改为firewall</span><br>[root<span class="hljs-meta">@firewall</span> ~]<span class="hljs-comment">#ip a</span><br>3: eth1: <span class="hljs-variable">&lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt;</span> <br>    inet 192.168.10.131/24       <span class="hljs-comment">#IP地址不符，需更改</span><br>[root<span class="hljs-meta">@firewall</span> ~]<span class="hljs-comment">#nmcli connection</span><br>NAME                UUID                                  TYPE      DEVICE <br>eth0                d1dec401-b113-419c-af2b-e95046f315f5  ethernet  eth0   <br>Wired connection 2  99ed1792-006d-38f8-976b-1a356bd3efad  ethernet  eth1<br>[root<span class="hljs-meta">@firewall</span> ~]<span class="hljs-comment">#nmcli connection modify Wired\ connection\ 2 con-name eth1                          #更改名字为eth1</span><br>[root<span class="hljs-meta">@firewall</span> ~]<span class="hljs-comment">#nmcli connection modify eth1 ipv4.method manual ipv4.addresses 192.168.10.184/24    #更改IP地址</span><br>[root<span class="hljs-meta">@firewall</span> ~]<span class="hljs-comment">#nmcli connection reload</span><br>[root<span class="hljs-meta">@firewall</span> ~]<span class="hljs-comment">#nmcli connection up eth1     #两步命令加载生效</span><br><br>安装服务<br>[root<span class="hljs-meta">@centos</span> ~]<span class="hljs-comment">#yum -y install httpd      #192.168.10.216/24</span><br>[root<span class="hljs-meta">@Centos7</span> ~]<span class="hljs-comment">#hostname internet        #192.168.10.216/24</span><br>[root<span class="hljs-meta">@centos</span> ~]<span class="hljs-comment">#yum -y install httpd      #10.0.0.217/24</span><br>[root<span class="hljs-meta">@centos</span> ~]<span class="hljs-comment">#hostname lan              #10.0.0.217/24</span><br><br>[root<span class="hljs-meta">@internet</span> network-scripts]<span class="hljs-comment">#vim ifcfg-eth0</span><br>IPADDR=192.168.10.216<br>NETMASK=255.255.255.0<br>GATEWAY=192.168.10.184<br>[root<span class="hljs-meta">@Centos7</span> network-scripts]<span class="hljs-comment">#systemctl restart network</span><br></code></pre></td></tr></table></figure>
+
+<p>准备实验</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs perl">[root@lan ~]<span class="hljs-comment">#ping 192.168.10.216        #发现ping不通</span><br>[root@firewall network-scripts]<span class="hljs-comment">#tcpdump -i eth0 -nn icmp   #发现防火墙收到包但没有回应</span><br>dropped privs to tcpdump<br>tcpdump: verbose output suppressed, <span class="hljs-keyword">use</span> -v <span class="hljs-keyword">or</span> -vv <span class="hljs-keyword">for</span> full protocol decode<br>listening on eth<span class="hljs-number">0</span>, <span class="hljs-keyword">link</span>-type EN10MB (Ethernet), capture size <span class="hljs-number">262144</span> bytes<br>09:<span class="hljs-number">16</span>:<span class="hljs-number">58.972265</span> IP <span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">219</span> &gt; <span class="hljs-number">192.168</span>.<span class="hljs-number">10.216</span>: ICMP echo request, id <span class="hljs-number">6931</span>, seq <span class="hljs-number">206</span>, <span class="hljs-keyword">length</span> <span class="hljs-number">64</span><br>09:<span class="hljs-number">16</span>:<span class="hljs-number">59.972323</span> IP <span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">219</span> &gt; <span class="hljs-number">192.168</span>.<span class="hljs-number">10.216</span>: ICMP echo request, id <span class="hljs-number">6931</span>, seq <span class="hljs-number">207</span>, <span class="hljs-keyword">length</span> <span class="hljs-number">64</span><br><br><span class="hljs-comment">#此时需要允许包通过，所以需要设置forward</span><br>[root@firewall ~]<span class="hljs-comment">#sysctl -a | grep ip_for</span><br>net.ipv4.ip_forward = <span class="hljs-number">0</span><br>[root@firewall ~]<span class="hljs-comment">#vim /etc/sysctl.conf</span><br>net.ipv4.ip_forward = <span class="hljs-number">1</span><br>[root@firewall ~]<span class="hljs-comment">#sysctl -p             #加载生效</span><br>net.ipv4.ip_forward = <span class="hljs-number">1</span><br><span class="hljs-comment">#此时已经可以ping通了</span><br><br><span class="hljs-comment">#但此时是双向可以ping，需要设置forward链的规则</span><br>[root@firewall ~]<span class="hljs-comment">#iptables -A FORWARD -j REJECT   #添加拒绝所有的访问，双方互不相通</span><br>[root@firewall ~]<span class="hljs-comment">#iptables -I FORWARD -s 10.0.0.0/24 ! -d 10.0.0.0/24 -m state --state NEW -j ACCEPT     #允许10.0.0.0/24网段给非此网段的发起请求（注意此时只是允许首次连接的发起请求允许通过，目标的回应不允许通过）</span><br>[root@firewall ~]<span class="hljs-comment">#iptables -I FORWARD -m state --state ESTABLISHED -j ACCEPT      #允许所有网段的二次响应的通过（即目标的回应允许通过）</span><br><span class="hljs-comment">#此时内部可以访问外部，但外部不能访问内部</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="17、内部大部分机器不允许外部访问，但各别机器允许访问"><a href="#17、内部大部分机器不允许外部访问，但各别机器允许访问" class="headerlink" title="17、内部大部分机器不允许外部访问，但各别机器允许访问"></a>17、内部大部分机器不允许外部访问，但各别机器允许访问</h3><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs autoit">在上面的设置中，再添加一条规则即可<br>[root<span class="hljs-symbol">@firewall</span> ~]<span class="hljs-meta">#iptables -I FORWARD 3 ! -s 10.0.0.0/24 -d 10.0.0.129 -m state --state NEW -j ACCEPT</span><br><span class="hljs-meta">#即允许外部访问内部的10.0.0.129机器</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>需注意的是公司其实不采用此方法，因为公司内部的机器IP地址是私有IP地址，私有地址无法访问公有地址</strong></p>
+<p><strong>私有IP地址：局域网使用，10.0.0.0/8    172.16.0.0/12    192.168.0.0/16</strong></p>
+<p><strong>公有IP地址：互联网主机使用，全球唯一</strong></p>
+<h3 id="18、为了实现内部私网地址与外部的公网地址互通"><a href="#18、为了实现内部私网地址与外部的公网地址互通" class="headerlink" title="18、为了实现内部私网地址与外部的公网地址互通"></a>18、为了实现内部私网地址与外部的公网地址互通</h3><p>此时采用的是NAT设置（只是用IP地址进行转换，因内部机器不是只有一台，回应无法识别，所以需要增加端口号的识别。端口号范围：0-65535）</p>
+<p><a href=""><img src="image-20221008101309023.png" srcset="/img/loading.gif" lazyload alt="image-20221008101309023"></a></p>
+<p>环境准备</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs gherkin">外部网络：eth0 仅主机 192.168.10.216/24<br>防火墙firewall：eth0 NAT模式 10.0.0.184/24<br>               eth1 仅主机  192.168.10.184/24<br>内部机器：eth0 NAT模式 10.0.0.217/24  GW:10.0.0.184<br><br>为了便于识别<br>[root<span class="hljs-meta">@Rocky</span> ~]<span class="hljs-comment">#hostnamectl set-hostname firewall</span><br>[root<span class="hljs-meta">@Rocky</span> ~]<span class="hljs-comment">#exit</span><br>[root<span class="hljs-meta">@firewall</span> ~]<span class="hljs-comment">#            #已经主机名改为firewall</span><br>[root<span class="hljs-meta">@firewall</span> ~]<span class="hljs-comment">#ip a</span><br>3: eth1: <span class="hljs-variable">&lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt;</span> <br>    inet 192.168.10.131/24       <span class="hljs-comment">#IP地址不符，需更改</span><br>[root<span class="hljs-meta">@firewall</span> ~]<span class="hljs-comment">#nmcli connection</span><br>NAME                UUID                                  TYPE      DEVICE <br>eth0                d1dec401-b113-419c-af2b-e95046f315f5  ethernet  eth0   <br>Wired connection 2  99ed1792-006d-38f8-976b-1a356bd3efad  ethernet  eth1<br>[root<span class="hljs-meta">@firewall</span> ~]<span class="hljs-comment">#nmcli connection modify Wired\ connection\ 2 con-name eth1                          #更改名字为eth1</span><br>[root<span class="hljs-meta">@firewall</span> ~]<span class="hljs-comment">#nmcli connection modify eth1 ipv4.method manual ipv4.addresses 192.168.10.184/24    #更改IP地址</span><br>[root<span class="hljs-meta">@firewall</span> ~]<span class="hljs-comment">#nmcli connection reload</span><br>[root<span class="hljs-meta">@firewall</span> ~]<span class="hljs-comment">#nmcli connection up eth1     #两步命令加载生效</span><br><br>安装服务<br>[root<span class="hljs-meta">@centos</span> ~]<span class="hljs-comment">#yum -y install httpd      #192.168.10.216/24</span><br>[root<span class="hljs-meta">@Centos7</span> ~]<span class="hljs-comment">#hostname internet        #192.168.10.216/24</span><br>[root<span class="hljs-meta">@centos</span> ~]<span class="hljs-comment">#yum -y install httpd      #10.0.0.217/24</span><br>[root<span class="hljs-meta">@centos</span> ~]<span class="hljs-comment">#hostname lan              #10.0.0.217/24</span><br><br>[root<span class="hljs-meta">@internet</span> network-scripts]<span class="hljs-comment">#vim ifcfg-eth0   #不添加网关和子掩码</span><br>IPADDR=192.168.10.216<br>NETMASK=255.255.255.0<br>[root<span class="hljs-meta">@Centos7</span> network-scripts]<span class="hljs-comment">#systemctl restart network</span><br><br>[root<span class="hljs-meta">@firewall</span> ~]<span class="hljs-comment">#sysctl -a | grep ip_for</span><br>net.ipv4.ip_forward = 0<br>[root<span class="hljs-meta">@firewall</span> ~]<span class="hljs-comment">#vim /etc/sysctl.conf</span><br>net.ipv4.ip_forward = 1<br>[root<span class="hljs-meta">@firewall</span> ~]<span class="hljs-comment">#sysctl -p             #加载生效</span><br>net.ipv4.ip_forward = 1<br><span class="hljs-comment">#此时已经可以ping通了</span><br></code></pre></td></tr></table></figure>
+
+<p>现在需要配置NAT表</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs autoit"><span class="hljs-meta">#设置SNAT</span><br>专线网络（需要开启ip_forward）<br>iptables -t nat -A POSTROUTING -s LocalNET ! -d LocalNet -j SNAT --<span class="hljs-keyword">to</span>-source<br>ExtIP<br>例如：[root<span class="hljs-symbol">@firewall</span> ~]<span class="hljs-meta">#iptables -t nat -A POSTROUTING -s 10.0.0.0/24 ! –d 10.0.0.0/24 -j SNAT --to-source 192.168.10.184    #添加此命令后就可以实现互通</span><br><br>拨号网络<br>iptables -t nat -A POSTROUTING -s LocalNET ! -d LocalNet -j MASQUERADE<br>例如：[root<span class="hljs-symbol">@firewall</span> ~]<span class="hljs-meta">#iptables -t nat -A POSTROUTING -s 10.0.0.0/24 ! -d 10.0.0.0/24 -j MASQUERADE   #添加此命令后就可以实现ping通外网</span><br><br><span class="hljs-meta">#可以查看自己所在的端口的公网地址</span><br>[root<span class="hljs-symbol">@firewall</span> ~]<span class="hljs-meta">#curl http://ipinfo.io/ip/</span><br><span class="hljs-number">106.117</span><span class="hljs-number">.126</span><span class="hljs-number">.159</span><br>[root<span class="hljs-symbol">@firewall</span> ~]<span class="hljs-meta">#curl http://ifconfig.me</span><br><span class="hljs-number">106.117</span><span class="hljs-number">.126</span><span class="hljs-number">.159</span><br>[root<span class="hljs-symbol">@firewall</span> ~]<span class="hljs-meta">#curl -L http://tool.lu/ip</span><br>当前IP: <span class="hljs-number">106.117</span><span class="hljs-number">.126</span><span class="hljs-number">.159</span><br>归属地: 中国 河北省 石家庄市<br><br><span class="hljs-meta">#设置DNAT</span><br>iptables -t nat -A PREROUTING -d ExtIP -p tcp|udp --dport PORT -j DNAT --<span class="hljs-keyword">to</span>-destination InterSeverIP[:PORT]<br>例如：iptables -t nat -A PREROUTING -d <span class="hljs-number">192.168</span><span class="hljs-number">.10</span><span class="hljs-number">.184</span> -p tcp --dport <span class="hljs-number">80</span> -j DNAT --<span class="hljs-keyword">to</span>-destination <span class="hljs-number">10.0</span><span class="hljs-number">.0</span><span class="hljs-number">.217</span>:<span class="hljs-number">80</span><br><span class="hljs-meta">#此时外网访问就可以通过了（注意外网访问的依旧是公网地址，只不过防火墙通过转换把公网地址转换为了私有地址）</span><br><br><span class="hljs-meta">#如果私有地址中http的端口是8080而不是80时，如果管理防火墙的人员不能立即更改时，为了快速解决,可以自己在自己的机器上添加规则，此为REDIRECT 转发</span><br>例如：iptables -t nat -A PREROUTING -d <span class="hljs-number">10.0</span><span class="hljs-number">.0</span><span class="hljs-number">.217</span> -p tcp --dport <span class="hljs-number">80</span> -j REDIRECT --<span class="hljs-keyword">to</span>-ports <span class="hljs-number">8080</span><br><span class="hljs-meta">#增加此规则后即可访问</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="19、搭建一个lamp-网站"><a href="#19、搭建一个lamp-网站" class="headerlink" title="19、搭建一个lamp 网站"></a>19、搭建一个lamp 网站</h3><p>lamp：表示linux  apache mysql php</p>
+<p>(网上有开源的PHP项目，可以直接在网上下载一个wordpress)</p>
+<h3 id="20、mysqldump备份还原实战案例"><a href="#20、mysqldump备份还原实战案例" class="headerlink" title="20、mysqldump备份还原实战案例"></a>20、mysqldump备份还原实战案例</h3><h3 id="21、mysql的高可用实现MHA实战案例（99-9-，基于主从复制）"><a href="#21、mysql的高可用实现MHA实战案例（99-9-，基于主从复制）" class="headerlink" title="21、mysql的高可用实现MHA实战案例（99.9%，基于主从复制）"></a>21、mysql的高可用实现MHA实战案例（99.9%，基于主从复制）</h3><h3 id="22、mysql的高可用，实战案例：Percona-XtraDB-Cluster（金融级99-999-，不需要主从复制，实现多主读写）"><a href="#22、mysql的高可用，实战案例：Percona-XtraDB-Cluster（金融级99-999-，不需要主从复制，实现多主读写）" class="headerlink" title="22、mysql的高可用，实战案例：Percona XtraDB Cluster（金融级99.999%，不需要主从复制，实现多主读写）"></a>22、mysql的高可用，实战案例：Percona XtraDB Cluster（金融级99.999%，不需要主从复制，实现多主读写）</h3><h3 id="23、实现将多个机器的日志都存储到一台mysql数据库中"><a href="#23、实现将多个机器的日志都存储到一台mysql数据库中" class="headerlink" title="23、实现将多个机器的日志都存储到一台mysql数据库中"></a>23、实现将多个机器的日志都存储到一台mysql数据库中</h3><h4 id="1-1、实现步骤"><a href="#1-1、实现步骤" class="headerlink" title="1.1、实现步骤"></a>1.1、实现步骤</h4><p>①利用网络日志功能将所有机器的日志数据传输到一台机器上</p>
+<p>②利用rsyslog日志服务，将收集的日志记录与mysql数据库中</p>
+<h4 id="1-2、环境准备"><a href="#1-2、环境准备" class="headerlink" title="1.2、环境准备"></a>1.2、环境准备</h4><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs armasm">三台主机<br>一台：正常机器（客户端），<span class="hljs-built_in">IP</span>：<span class="hljs-number">10</span>.<span class="hljs-number">0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">184</span><br>一台：rsyslog日志服务器，<span class="hljs-built_in">IP</span>：<span class="hljs-number">10</span>.<span class="hljs-number">0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">185</span><br>一台：mysql数据库服务器，<span class="hljs-built_in">IP</span>：<span class="hljs-number">10</span>.<span class="hljs-number">0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">186</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="1-3、实现步骤"><a href="#1-3、实现步骤" class="headerlink" title="1.3、实现步骤"></a>1.3、实现步骤</h4><h5 id="1-3-1、利用网络日志功能将10-0-0-184上的日志数据传输到10-0-0-185上"><a href="#1-3-1、利用网络日志功能将10-0-0-184上的日志数据传输到10-0-0-185上" class="headerlink" title="1.3.1、利用网络日志功能将10.0.0.184上的日志数据传输到10.0.0.185上"></a>1.3.1、利用网络日志功能将10.0.0.184上的日志数据传输到10.0.0.185上</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#在日志服务器上打开接受其他机器的远程端口</span><br>[root@rsyslog ~]<span class="hljs-comment">#vim /etc/rsyslog.conf</span><br><span class="hljs-comment">## MODULES ####</span><br>...省略...<br><span class="hljs-comment"># Provides UDP syslog reception</span><br><span class="hljs-comment"># for parameters see http://www.rsyslog.com/doc/imudp.html</span><br>module(load=<span class="hljs-string">&quot;imudp&quot;</span>) <span class="hljs-comment"># needs to be done just once     #局域网内一般使用UDP</span><br>input(<span class="hljs-built_in">type</span>=<span class="hljs-string">&quot;imudp&quot;</span> port=<span class="hljs-string">&quot;514&quot;</span>)<br><br><span class="hljs-comment"># Provides TCP syslog reception</span><br><span class="hljs-comment"># for parameters see http://www.rsyslog.com/doc/imtcp.html</span><br>module(load=<span class="hljs-string">&quot;imtcp&quot;</span>) <span class="hljs-comment"># needs to be done just once     #跨局域网一般使用TCP</span><br>input(<span class="hljs-built_in">type</span>=<span class="hljs-string">&quot;imtcp&quot;</span> port=<span class="hljs-string">&quot;514&quot;</span>)<br>:wq<br>[root@rsyslog ~]<span class="hljs-comment">#systemctl restart rsyslog           #重新启动服务</span><br>[root@rsyslog ~]<span class="hljs-comment">#ss -ntlu                #可看见UDP和TCP的514端口已开启</span><br>Netid  State   Recv-Q    Send-Q    Local Address:Port    Peer Address:Port  Process <br>udp   UNCONN   0          0          127.0.0.1:323        0.0.0.0:*                 <br>udp   UNCONN   0          0          0.0.0.0:514          0.0.0.0:*                 <br>udp   UNCONN   0          0          [::1]:323            [::]:*                    <br>udp   UNCONN   0          0          [::]:514             [::]:*                    <br>tcp   LISTEN   0          25         0.0.0.0:514          0.0.0.0:*                 <br>tcp   LISTEN   0          25         [::]:514             [::]:*   <br><br><span class="hljs-comment">#在客户端将日志发送到远程的TCP、UDP的日志服务器</span><br>[root@Rocky ~]<span class="hljs-comment">#vim /etc/rsyslog.conf    #表示将所有日志级别在info及以上的都远程复制到10.0.0.185</span><br>*.info                              @@10.0.0.185:514     <span class="hljs-comment">#@@表示TCP</span><br>*.info                              @10.0.0.185:514      <span class="hljs-comment">#@表示UDP</span><br>:wq<br>[root@Rocky ~]<span class="hljs-comment">#systemctl restart rsyslog</span><br><br><span class="hljs-comment">#此时10.0.0.185就可以看到10.0.0.184的日志了</span><br><span class="hljs-comment">#用一台机器远程登录10.0.0.184，此时10.0.0.185就可以记录到登录信息</span><br>[root@Centos7 ~]<span class="hljs-comment">#ssh 10.0.0.184</span><br>[root@rsyslog ~]<span class="hljs-comment">#cat /var/log/secure       #可以看到远程登录信息</span><br>Nov  5 10:23:01 Rocky sshd[1908]: Accepted password <span class="hljs-keyword">for</span> root from 10.0.0.216 port 37884 ssh2<br>Nov  5 10:23:01 Rocky sshd[1908]: pam_unix(sshd:session): session opened <span class="hljs-keyword">for</span> user root by (uid=0)<br>Nov  5 10:23:01 Rocky sshd[1908]: Accepted password <span class="hljs-keyword">for</span> root from 10.0.0.216 port 37884 ssh2<br>Nov  5 10:23:01 Rocky sshd[1908]: pam_unix(sshd:session): session opened <span class="hljs-keyword">for</span> user root by (uid=0)<br></code></pre></td></tr></table></figure>
+
+<h5 id="1-3-2、利用rsyslog日志服务，将收集的日志记录与mysql数据库中"><a href="#1-3-2、利用rsyslog日志服务，将收集的日志记录与mysql数据库中" class="headerlink" title="1.3.2、利用rsyslog日志服务，将收集的日志记录与mysql数据库中"></a>1.3.2、利用rsyslog日志服务，将收集的日志记录与mysql数据库中</h5><h6 id="1-3-2-1、在rsyslog服务器上安装连接mysql模块相关的程序包"><a href="#1-3-2-1、在rsyslog服务器上安装连接mysql模块相关的程序包" class="headerlink" title="1.3.2.1、在rsyslog服务器上安装连接mysql模块相关的程序包"></a>1.3.2.1、在rsyslog服务器上安装连接mysql模块相关的程序包</h6><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@rsyslog ~]<span class="hljs-comment">#yum -y install rsyslog-mysql</span><br>[root@rsyslog ~]<span class="hljs-comment">#rpm -ql rsyslog-mysql</span><br>/usr/lib/.build-id<br>/usr/lib/.build-id/09<br>/usr/lib/.build-id/09/927b14f8ca6dfdeca2c2bbe1369b56e6470382<br>/usr/lib64/rsyslog/ommysql.so                         <span class="hljs-comment">#此模块是用来连接数据库的</span><br>/usr/share/doc/rsyslog/mysql-createDB.sql             <span class="hljs-comment">#一个脚本，是在数据库里用的</span><br><br>[root@rsyslog ~]<span class="hljs-comment">#cat /usr/share/doc/rsyslog/mysql-createDB.sql</span><br>CREATE DATABASE Syslog;                   <span class="hljs-comment">#创建数据库syslog</span><br><br><span class="hljs-comment">#将sql脚本复制到数据库服库上</span><br>[root@rsyslog ~]<span class="hljs-comment">#scp /usr/share/doc/rsyslog/mysql-createDB.sql 10.0.0.186:</span><br></code></pre></td></tr></table></figure>
+
+<h6 id="1-3-2-2、准备mysql-server"><a href="#1-3-2-2、准备mysql-server" class="headerlink" title="1.3.2.2、准备mysql-server"></a>1.3.2.2、准备mysql-server</h6><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@mysql ~]<span class="hljs-comment">#yum -y install mysql-server</span><br>[root@mysql ~]<span class="hljs-comment">#systemctl enable --now mysqld</span><br>[root@mysql ~]<span class="hljs-comment">#mysql</span><br>mysql&gt; create user rsyslog@<span class="hljs-string">&#x27;10.0.0.%&#x27;</span> identified by <span class="hljs-string">&#x27;123456&#x27;</span>;<br>mysql&gt; grant all on Syslog.* to rsyslog@<span class="hljs-string">&#x27;10.0.0.%&#x27;</span>;<br>mysql&gt; <span class="hljs-built_in">source</span> /root/mysql-createDB.sql<br><br><span class="hljs-comment">#查看Syslog数据库已创建</span><br>mysql&gt; show databases;<br>+--------------------+<br>| Database           |<br>+--------------------+<br>| Syslog             |<br>| information_schema |<br>| mysql              |<br>| performance_schema |<br>| sys                |<br>+--------------------+<br><br><span class="hljs-comment">#数据库里的表也创建完成</span><br>mysql&gt; use Syslog<br>mysql&gt; show tables;<br>+------------------------+<br>| Tables_in_Syslog       |<br>+------------------------+<br>| SystemEvents           |<br>| SystemEventsProperties |<br>+------------------------+<br><br><span class="hljs-comment">#但此时两个表里没有内容</span><br></code></pre></td></tr></table></figure>
+
+<h6 id="1-3-2-3、配置日志服务器将日志发送至指定数据库"><a href="#1-3-2-3、配置日志服务器将日志发送至指定数据库" class="headerlink" title="1.3.2.3、配置日志服务器将日志发送至指定数据库"></a>1.3.2.3、配置日志服务器将日志发送至指定数据库</h6><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#配置rsyslog将日志保存到mysql中</span><br>[root@rsyslog ~]<span class="hljs-comment">#vim /etc/rsyslog.conf</span><br><span class="hljs-comment">####MODULES####</span><br><span class="hljs-comment">#在 MODULES 语言下面，如果是 CentOS 8 加下面行</span><br>module(load=<span class="hljs-string">&quot;ommysql&quot;</span>)<br><span class="hljs-comment">#在 MODULES 语言下面，如果是 CentOS 7，6 加下面行</span><br><span class="hljs-variable">$ModLoad</span> ommysql<br><br><span class="hljs-comment">#在RULES语句块加下面行的格式</span><br>*.info 				:ommysql:10.0.0.186,Syslog,rsyslog,123456<br><span class="hljs-comment">#                    模块名    数据库ip    数据库  用户     密码</span><br>:wq<br><br>[root@rsyslog ~]<span class="hljs-comment">#systemctl restart rsyslog</span><br></code></pre></td></tr></table></figure>
+
+<h6 id="1-3-2-4、测试"><a href="#1-3-2-4、测试" class="headerlink" title="1.3.2.4、测试"></a>1.3.2.4、测试</h6><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#客户端生成日志文件</span><br>[root@Rocky ~]<span class="hljs-comment">#logger &quot; I am zhang &quot;</span><br><br><span class="hljs-comment">#在数据库上可以查询到上面的测试日志</span><br>mysql&gt; select * from SystemEvents\G<br>*************************** 9. row ***************************<br>                ID: 9<br>        CustomerID: NULL<br>        ReceivedAt: 2022-11-05 11:09:07<br>DeviceReportedTime: 2022-11-05 11:09:07<br>          Facility: 1<br>          Priority: 5<br>          FromHost: Rocky<br>           Message:  I am zhang<br>        NTSeverity: NULL<br>        Importance: NULL<br>       EventSource: NULL<br>         EventUser: NULL<br>     EventCategory: NULL<br>           EventID: NULL<br>   EventBinaryData: NULL<br>      MaxAvailable: NULL<br>         CurrUsage: NULL<br>          MinUsage: NULL<br>          MaxUsage: NULL<br>        InfoUnitID: 1<br>         SysLogTag: root[1968]:<br>      EventLogType: NULL<br>   GenericFileName: NULL<br>          SystemID: NULL<br><br><span class="hljs-comment">#可以使用模糊搜索，直接找到具体位置</span><br>mysql&gt; select * from SystemEvents <span class="hljs-built_in">where</span> Message like <span class="hljs-string">&#x27;%am%&#x27;</span>\G<br></code></pre></td></tr></table></figure>
+
+<h3 id="24、redis的编译安装"><a href="#24、redis的编译安装" class="headerlink" title="24、redis的编译安装"></a>24、redis的编译安装</h3><p>Redis 源码包官方下载链接：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">http:<span class="hljs-regexp">//</span>download.redis.io<span class="hljs-regexp">/releases/</span><br></code></pre></td></tr></table></figure>
+
+<p>官方的安装方法：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">https:<span class="hljs-regexp">//</span>redis.io/download<br></code></pre></td></tr></table></figure>
+
+<h4 id="1-1、编译安装"><a href="#1-1、编译安装" class="headerlink" title="1.1、编译安装"></a>1.1、编译安装</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#如果支持systemd需要安装下面包</span><br>[root@Rocky ~]<span class="hljs-comment">#yum -y install gcc jemalloc-devel systemd-devel</span><br>[root@ubuntu2004 ~]<span class="hljs-comment">#apt -y install make gcc libjemalloc-dev libsystemd-dev</span><br><br><span class="hljs-comment">#下载源码</span><br>[root@Rocky ~]<span class="hljs-comment">#wget http://download.redis.io/releases/redis-6.2.4.tar.gz</span><br>[root@Rocky ~]<span class="hljs-comment">#tar xf redis-6.2.7.tar.gz </span><br>[root@Rocky ~]<span class="hljs-comment">#ls</span><br>anaconda-ks.cfg  redis-6.2.7  redis-6.2.7.tar.gz<br><br><span class="hljs-comment">#编译安装</span><br>[root@Rocky ~]<span class="hljs-comment">#cd redis-6.2.7</span><br>[root@Rocky redis-6.2.7]<span class="hljs-comment">#mkdir /apps/redis -p    #创建软件安装路径</span><br>[root@Rocky redis-6.2.7]<span class="hljs-comment">#make -j 2 USE_SYSTEMD=yes PREFIX=/apps/redis install</span><br>[root@Rocky redis-6.2.7]<span class="hljs-comment">#tree /apps/redis       #查看已经编译生成文件了</span><br>/apps/redis<br>└── bin<br>    ├── redis-benchmark<br>    ├── redis-check-aof -&gt; redis-server<br>    ├── redis-check-rdb -&gt; redis-server<br>    ├── redis-cli<br>    ├── redis-sentinel -&gt; redis-server<br>    └── redis-server<br><br><span class="hljs-comment">#配置环境变量（为了访问时不用输入路径）</span><br>[root@Rocky redis-6.2.7]<span class="hljs-comment">#echo &#x27;PATH=/apps/redis/bin:$PATH&#x27; &gt; /etc/profile.d/redis.sh</span><br>[root@Rocky redis-6.2.7]<span class="hljs-comment">#. /etc/profile.d/redis.sh</span><br><br><span class="hljs-comment">#准备相关目录和配置文件</span><br>[root@Rocky redis-6.2.7]<span class="hljs-comment">#mkdir /apps/redis/&#123;etc,log,data,run&#125;</span><br>[root@Rocky redis-6.2.7]<span class="hljs-comment">#cp redis.conf /apps/redis/etc/</span><br><span class="hljs-comment">#此时就可以启动程序了</span><br><br><span class="hljs-comment">#但此时启动会有两个报警提示（不影响操作）</span><br><span class="hljs-comment"># WARNING（报警）: The TCP backlog setting of 511 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 128.</span><br><span class="hljs-comment">#WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add &#x27;vm.overcommit_memory = 1&#x27; to /etc/sysctl.conf and then reboot or run the command &#x27;sysctl vm.overcommit_memory=1&#x27; for this to take effect.</span><br>[root@Rocky redis-6.2.7]<span class="hljs-comment">#vim /etc/sysctl.conf</span><br>net.core.somaxconn = 511<br>vm.overcommit_memory = 1<br>:wq<br>[root@Rocky redis-6.2.7]<span class="hljs-comment">#sysctl -p                   #重新加载生效</span><br>net.core.somaxconn = 511<br>vm.overcommit_memory = 1<br><br><span class="hljs-comment">#此时输入命令redis-server /apps/redis/etc/redis.conf就可以启动，但此时是前台运行</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="1-2、创建Redis用户和设置数据目录权限"><a href="#1-2、创建Redis用户和设置数据目录权限" class="headerlink" title="1.2、创建Redis用户和设置数据目录权限"></a>1.2、创建Redis用户和设置数据目录权限</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@Rocky redis-6.2.7]<span class="hljs-comment">#useradd -s /sbin/nologin -r redis</span><br><span class="hljs-comment">#s:指定用户登入后所使用的shell类型  r：建立系统帐号</span><br><br><span class="hljs-comment">#设置目录权限</span><br>[root@Rocky redis-6.2.7]<span class="hljs-comment">#chown -R redis.redis /apps/redis/</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="1-3、创建Redis服务Service文件"><a href="#1-3、创建Redis服务Service文件" class="headerlink" title="1.3、创建Redis服务Service文件"></a>1.3、创建Redis服务Service文件</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@Rocky redis-6.2.7]<span class="hljs-comment">#vim /lib/systemd/system/redis.service</span><br>[Unit]<br>Description=Redis persistent key-value database<br>After=network.target<br><br>[Service]<br>ExecStart=/apps/redis/bin/redis-server /apps/redis/etc/redis.conf --supervised<br>systemd<br>ExecStop=/bin/kill -s QUIT <span class="hljs-variable">$MAINPID</span><br>Type=notify <span class="hljs-comment">#如果支持systemd可以启用此行</span><br>User=redis<br>Group=redis<br>RuntimeDirectory=redis<br>RuntimeDirectoryMode=0755<br>LimitNOFILE=1000000   <span class="hljs-comment">#指定此值才支持更大的maxclients值</span><br><br>[Install]<br>WantedBy=multi-user.target<br>:wq<br>[root@Rocky redis-6.2.7]<span class="hljs-comment">#systemctl enable --now redis</span><br><br><span class="hljs-comment">#此时就可以后台运行了，但此时仍不能远程连接，</span><br>[root@Rocky ~]<span class="hljs-comment">#vim /apps/redis/etc/redis.conf</span><br><span class="hljs-built_in">bind</span> 0.0.0.0  -::1                          <span class="hljs-comment">#将127.0.0.1改为0.0.0.0</span><br><span class="hljs-comment"># requirepass foobared                      #在此行下添加程序密码</span><br>requirepass 123456<br><span class="hljs-comment"># Note that you must specify a directory here, not a file name.</span><br><span class="hljs-built_in">dir</span> ./apps/redis/data/                     <span class="hljs-comment">#将数据存放位置改为/apps/redis/data/</span><br><span class="hljs-comment"># output for logging but daemonize, logs will be sent to /dev/null</span><br>logfile <span class="hljs-string">&quot;/apps/redis/log/redis-6379.log&quot;</span><br><span class="hljs-comment"># and should be used instead.</span><br>pidfile /apps/redis/run/redis_6379.pid  <span class="hljs-comment">#将/var/run/redis_6379.pid路径改为/apps/redis/run/redis_6379.pid</span><br>:wq<br>[root@Rocky ~]<span class="hljs-comment">#systemctl restart redis</span><br>[root@Rocky ~]<span class="hljs-comment">#ss -ntl</span><br>State     Recv-Q     Send-Q    Local Address:Port   Peer Address:Port       Process <br>LISTEN    0          128         0.0.0.0:22           0.0.0.0:*                     <br>LISTEN    0          511         0.0.0.0:6379         0.0.0.0:*                     <br>LISTEN    0          128         [::]:22              [::]:*                        <br>LISTEN    0          511         [::1]:6379           [::]:*                         <br>LISTEN    0          128         *:80                 *:*    <br></code></pre></td></tr></table></figure>
+
+<h4 id="1-4、持久化"><a href="#1-4、持久化" class="headerlink" title="1.4、持久化"></a>1.4、持久化</h4><p>Redis支持两种数据持久化保存方法：<strong>RDB和AOF两种方法</strong></p>
+<h5 id="1-4-1、实现RDB的方法"><a href="#1-4-1、实现RDB的方法" class="headerlink" title="1.4.1、实现RDB的方法"></a>1.4.1、实现RDB的方法</h5><p>①save: 同步,不推荐使用，使用主进程完成快照，因此会阻赛其它命令执行</p>
+<p>②bgsave: 异步后台执行,不影响其它命令的执行，会开启独立的子进程，因此不会阻赛其它命令执行</p>
+<p>③配置文件实现自动保存: 在配置文件中制定规则,自动执行bgsave</p>
+<p>注意：RDB是以快照的形式自动备份（满足条件的情况下）</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@Rocky ~]<span class="hljs-comment">#redis-cli -a 123456</span><br>127.0.0.1:6379&gt; config get save<br>1) <span class="hljs-string">&quot;save&quot;</span><br>2) <span class="hljs-string">&quot;3600 1 300 100 60 10000&quot;</span><br><span class="hljs-comment">#3600秒发生过1次数据变化或者300秒发生过100次数据变化或者60秒发生过10000次变化，就进行快照备份</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="1-4-2、实现AOF的方法"><a href="#1-4-2、实现AOF的方法" class="headerlink" title="1.4.2、实现AOF的方法"></a>1.4.2、实现AOF的方法</h5><p>①在第一次启用AOF功能时，会做一次完全备份，后续将执行增量性备份，相当于完全数据备份+增量变化</p>
+<p>②如果同时启用RDB和AOF,进行恢复时,默认AOF文件优先级高于RDB文件,即会使用AOF文件进行恢复</p>
+<p>③在第一次开启AOF功能时,会自动备份所有数据到AOF文件中,后续只会记录数据的更新指令</p>
+<p>注意: <strong>AOF模式默认是关闭的,第一次开启AOF后,并重启服务生效后,会因为AOF的优先级高于RDB,而AOF默认没有数据文件存在,从而导致所有数据丢失</strong></p>
+<h6 id="1-4-2-1、在没有数据的情况下开启AOF"><a href="#1-4-2-1、在没有数据的情况下开启AOF" class="headerlink" title="1.4.2.1、在没有数据的情况下开启AOF"></a>1.4.2.1、在没有数据的情况下开启AOF</h6><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#直接修改配置文件</span><br>[root@Rocky ~]<span class="hljs-comment">#vim /apps/redis/etc/redis.conf</span><br>appendonly <span class="hljs-built_in">yes</span>                      <span class="hljs-comment">#将no改为yes</span><br>:wq<br>[root@Rocky ~]<span class="hljs-comment">#systemctl restart redis</span><br></code></pre></td></tr></table></figure>
+
+<h6 id="1-4-2-2、在有RDB数据的情况下"><a href="#1-4-2-2、在有RDB数据的情况下" class="headerlink" title="1.4.2.2、在有RDB数据的情况下"></a>1.4.2.2、在有RDB数据的情况下</h6><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#首先临时启动AOF</span><br>[root@Rocky ~]<span class="hljs-comment">#redis-cli -a 123456</span><br>127.0.0.1:6379&gt; config <span class="hljs-built_in">set</span> appendonly <span class="hljs-built_in">yes</span>    <span class="hljs-comment">#自动触发AOF重写,会自动备份所有数据到AOF文件</span><br><span class="hljs-comment">#等数据备份完成后，在更改配置文件</span><br>[root@Rocky ~]<span class="hljs-comment">#vim /apps/redis/etc/redis.conf</span><br>appendonly <span class="hljs-built_in">yes</span>                      <span class="hljs-comment">#将no改为yes</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="25、redis实现主从复制"><a href="#25、redis实现主从复制" class="headerlink" title="25、redis实现主从复制"></a>25、redis实现主从复制</h3><p>①Redis Server 默认为 master节点，如果要配置为从节点,需要指定master服务器的IP,端口及连接密码</p>
+<p>②在从节点执行 REPLICAOF MASTER_IP PORT 指令可以启用主从同步复制功能,早期版本使用 SLAVEOF </p>
+<p>指令</p>
+<p><strong>#以下操作均在从节点操作</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@Rocky ~]<span class="hljs-comment">#redis-cli -a 123456</span><br>127.0.0.1:6379&gt; REPLICAOF MASTER_IP PORT <span class="hljs-comment">#新版推荐使用</span><br>127.0.0.1:6379&gt; SLAVEOF MasterIP Port   <span class="hljs-comment">#旧版使用，将被淘汰</span><br>127.0.0.1:6379&gt; CONFIG SET masterauth &lt;masterpass&gt;<br><br>例如：<br>[root@Rocky ~]<span class="hljs-comment">#redis-cli -a 123456</span><br>127.0.0.1:6379&gt; replicaof 10.0.0.184 6379    <span class="hljs-comment">#将此机设置为10.0.0.184（主服务器）的从服务器</span><br>127.0.0.1:6379&gt; config <span class="hljs-built_in">set</span> masterauth 123456 <span class="hljs-comment">#必须指定主服务器的登录密码</span><br><br><span class="hljs-comment">#为了永久生效，需更改配置文件</span><br>[root@Rocky ~]<span class="hljs-comment">#vim /apps/redis/etc/redis.conf</span><br><span class="hljs-comment"># replicaof &lt;masterip&gt; &lt;masterport&gt;</span><br>replicaof 10.0.0.184 6379<br>masterauth 123456<br>:wq<br><br><span class="hljs-comment">#此时就实现了主从复制</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="26、实现哨兵（sentinel）架构"><a href="#26、实现哨兵（sentinel）架构" class="headerlink" title="26、实现哨兵（sentinel）架构"></a>26、实现哨兵（sentinel）架构</h3><p><a href=""><img src="image-20221110184631270.png" srcset="/img/loading.gif" lazyload alt="image-20221110184631270"></a></p>
+<p><strong>环境配置：</strong></p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">master</span>：<span class="hljs-number">10.0.0.184</span><br><span class="hljs-attribute">slave1</span>：<span class="hljs-number">10.0.0.185</span><br><span class="hljs-attribute">slave2</span>：<span class="hljs-number">10.0.0.216</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="1-1、先实现主从复制"><a href="#1-1、先实现主从复制" class="headerlink" title="1.1、先实现主从复制"></a>1.1、先实现主从复制</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#主节点设置，便于后期转为从节点</span><br>[root@master ~]<span class="hljs-comment">#vim /apps/redis/etc/redis.conf</span><br>masterauth 123456<br>:wq<br>[root@master ~]<span class="hljs-comment">#systemctl restart redis</span><br><br><span class="hljs-comment">#从节点设置</span><br>[root@slave1 ~]<span class="hljs-comment">#vim /apps/redis/etc/redis.conf</span><br><span class="hljs-comment"># replicaof &lt;masterip&gt; &lt;masterport&gt;</span><br>replicaof 10.0.0.184 6379<br>masterauth 123456<br>:wq<br>[root@slave1 ~]<span class="hljs-comment">#systemctl restart redis</span><br>[root@slave2 ~]<span class="hljs-comment">#vim /apps/redis/etc/redis.conf</span><br><span class="hljs-comment"># replicaof &lt;masterip&gt; &lt;masterport&gt;</span><br>replicaof 10.0.0.184 6379<br>masterauth 123456<br>:wq<br>[root@slave2 ~]<span class="hljs-comment">#systemctl restart redis</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="1-2、编辑哨兵（sentinel）配置"><a href="#1-2、编辑哨兵（sentinel）配置" class="headerlink" title="1.2、编辑哨兵（sentinel）配置"></a>1.2、编辑哨兵（sentinel）配置</h4><p>①Sentinel实际上是一个特殊的redis服务器,有些redis指令支持,但很多指令并不支持.默认监听在26379/tcp端口.</p>
+<p>②哨兵服务可以和Redis服务器分开部署在不同主机，但为了节约成本一般会部署在一起</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#如果是编译安装，在源码目录有sentinel.conf（解压缩文件夹下），复制到安装目录即可，</span><br>[root@master ~]<span class="hljs-comment">#cp redis-6.2.7/sentinel.conf  /apps/redis/etc/</span><br>[root@master ~]<span class="hljs-comment">#chown redis. /apps/redis/etc/*</span><br>[root@master ~]<span class="hljs-comment">#ll /apps/redis/etc</span><br>total 108<br>-rw-r--r-- 1 redis redis 93939 Nov 10 19:00 redis.conf<br>-rw-r--r-- 1 redis redis 13768 Nov 10 19:14 sentinel.conf<br>[root@master ~]<span class="hljs-comment">#vim /apps/redis/etc/sentinel.conf</span><br><span class="hljs-built_in">bind</span> 0.0.0.0                               <span class="hljs-comment">#添加此项</span><br>daemonize <span class="hljs-built_in">yes</span>                              <span class="hljs-comment">#后台运行，将no改为yes</span><br>pidfile /apps/redis/run/sentinel.pid<br>logfile <span class="hljs-string">&quot;/apps/redis/log/sentinel.log&quot;</span><br>sentinel monitor mymaster 10.0.0.184 6379 2 <span class="hljs-comment">#将127.0.0.1改为主节点ip地址10.0.0.184</span><br><span class="hljs-comment">#mymaster是集群的名称，此行指定当前mymaster集群中master服务器的地址和端口</span><br><span class="hljs-comment">#2为法定人数限制(quorum)，即有几个sentinel认为master down了就进行故障转移，一般此值是所有sentinel节点(一般总数是&gt;=3的 奇数,如:3,5,7等)的一半以上的整数值，比如，总数是3，即3/2=1.5，取整为2,是master的ODOWN客观下线的依据</span><br>sentinel auth-pass mymaster 123456          <span class="hljs-comment">#添加此项</span><br><span class="hljs-comment">#mymaster集群中master的密码，注意此行要在上面行的下面</span><br>sentinel down-after-milliseconds mymaster 3000 <span class="hljs-comment">#将30000毫秒（30秒）改为3秒</span><br><span class="hljs-comment">#判断mymaster集群中所有节点的主观下线(SDOWN)的时间，此项为优化，可不设置</span><br>:wq<br><br><br>[root@slave1 ~]<span class="hljs-comment">#cp /usr/local/src/redis-6.2.7/sentinel.conf  /apps/redis/etc/     #此机器解压到了/usr/local/src/下</span><br>[root@slave1 ~]<span class="hljs-comment">#chown redis. /apps/redis/etc/*</span><br>[root@slave1 ~]<span class="hljs-comment">#ll /apps/redis/etc</span><br>total 108<br>-rw-r--r-- 1 redis redis 93960 Nov 10 18:55 redis.conf<br>-rw-r--r-- 1 redis redis 13768 Nov 10 19:33 sentinel.conf<br>[root@slave1 ~]<span class="hljs-comment">#vim /apps/redis/etc/sentinel.conf</span><br><span class="hljs-built_in">bind</span> 0.0.0.0                              <br>daemonize <span class="hljs-built_in">yes</span>                              <br>pidfile /apps/redis/run/sentinel.pid<br>logfile <span class="hljs-string">&quot;/apps/redis/log/sentinel.log&quot;</span><br>sentinel monitor mymaster 10.0.0.184 6379 2<br>sentinel auth-pass mymaster 123456         <br>sentinel down-after-milliseconds mymaster 3000<br>:wq<br><br>[root@slave2 ~]<span class="hljs-comment">#cp /usr/local/src/redis-6.2.7/sentinel.conf  /apps/redis/etc/</span><br>[root@slave2 ~]<span class="hljs-comment">#chown redis. /apps/redis/etc/*</span><br>[root@slave2 ~]<span class="hljs-comment">#ll /apps/redis/etc</span><br>total 108<br>-rw-r--r-- 1 redis redis 93960 Nov 10 18:56 redis.conf<br>-rw-r--r-- 1 redis redis 13768 Nov 10 19:41 sentinel.conf<br>[root@slave2 ~]<span class="hljs-comment">#vim /apps/redis/etc/sentinel.conf</span><br><span class="hljs-built_in">bind</span> 0.0.0.0                              <br>daemonize <span class="hljs-built_in">yes</span>                              <br>pidfile /apps/redis/run/sentinel.pid<br>logfile <span class="hljs-string">&quot;/apps/redis/log/sentinel.log&quot;</span><br>sentinel monitor mymaster 10.0.0.184 6379 2<br>sentinel auth-pass mymaster 123456         <br>sentinel down-after-milliseconds mymaster 3000<br>:wq<br></code></pre></td></tr></table></figure>
+
+<h4 id="1-3、哨兵（sentinel）的启动"><a href="#1-3、哨兵（sentinel）的启动" class="headerlink" title="1.3、哨兵（sentinel）的启动"></a>1.3、哨兵（sentinel）的启动</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#由于是编译安装，没有service文件，所以无法systemctl启动</span><br><span class="hljs-comment">#可以使用以下命令启动，但此命令不能开机启动</span><br>[root@master ~]<span class="hljs-comment">#/apps/redis/bin/redis-sentinel /apps/redis/etc/sentinel.conf</span><br><br><span class="hljs-comment">#为了开机也能启动，可以自己编辑service文件，在所有节点生成新的service文件</span><br>[root@master ~]<span class="hljs-comment">#vim /lib/systemd/system/redis-sentinel.service</span><br>[Unit]<br>Description=Redis Sentinel<br>After=network.target<br><br>[Service]<br>ExecStart=/apps/redis/bin/redis-sentinel /apps/redis/etc/sentinel.conf --supervised systemd<br>ExecStop=/bin/kill -s QUIT <span class="hljs-variable">$MAINPID</span><br>Type=notify<br>User=redis<br>Group=redis<br>RuntimeDirectory=redis<br>RuntimeDirectoryMode=0755<br><br>[Install]<br>WantedBy=multi-user.target<br>:wq<br>[root@master ~]<span class="hljs-comment">#scp /lib/systemd/system/redis-sentinel.service 10.0.0.185:/lib/systemd/system/</span><br>[root@master ~]<span class="hljs-comment">#scp /lib/systemd/system/redis-sentinel.service 10.0.0.216:/lib/systemd/system/</span><br>[root@master ~]<span class="hljs-comment">#systemctl enable --now redis-sentinel.service</span><br>[root@slave1 ~]<span class="hljs-comment">#systemctl enable --now redis-sentinel.service</span><br>[root@slave2 ~]<span class="hljs-comment">#systemctl enable --now redis-sentinel.service</span><br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span id="more"></span>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/10/22/%E7%AC%AC%E5%85%AD%E5%91%A8%E4%BD%9C%E4%B8%9A/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">第六周作业</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/09/20/%E7%AC%AC%E4%BA%94%E5%91%A8%E4%BD%9C%E4%B8%9A/">
+                        <span class="hidden-mobile">第五周作业</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

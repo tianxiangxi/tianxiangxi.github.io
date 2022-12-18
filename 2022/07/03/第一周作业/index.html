@@ -1,0 +1,571 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="背景一、开源许可的区别 1、BSD许可证BSD 代码鼓励代码共享，但需要尊重代码作者的著作权。BSD由于允许使用者修改和重新发布代码，也允许使用或在BSD代码上开发商业软件发布和销售，因此是对商业集成很友好的协议。 2、MIT许可证MIT是和BSD一样宽范的许可协议。你必须在你的发行版里包含原许可协议的声明，无论你是以二进制发布的还是以源代码发布的。作者只想保留版权，而无任何其他了限制，较BSD协">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第一周作业">
+<meta property="og:url" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/index.html">
+<meta property="og:site_name" content="5-12 23:30">
+<meta property="og:description" content="背景一、开源许可的区别 1、BSD许可证BSD 代码鼓励代码共享，但需要尊重代码作者的著作权。BSD由于允许使用者修改和重新发布代码，也允许使用或在BSD代码上开发商业软件发布和销售，因此是对商业集成很友好的协议。 2、MIT许可证MIT是和BSD一样宽范的许可协议。你必须在你的发行版里包含原许可协议的声明，无论你是以二进制发布的还是以源代码发布的。作者只想保留版权，而无任何其他了限制，较BSD协">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701103613401.png">
+<meta property="og:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701103849188.png">
+<meta property="og:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701104214104.png">
+<meta property="og:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701104241200.png">
+<meta property="og:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701104328742.png">
+<meta property="og:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701104403465.png">
+<meta property="og:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701104448052.png">
+<meta property="og:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701104524464.png">
+<meta property="og:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701104746584.png">
+<meta property="og:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701104830508.png">
+<meta property="og:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701104905861.png">
+<meta property="og:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701104939128.png">
+<meta property="og:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701105018316.png">
+<meta property="og:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701105053083.png">
+<meta property="og:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701105139134.png">
+<meta property="og:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701105231450.png">
+<meta property="og:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701105306722.png">
+<meta property="og:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701105427959.png">
+<meta property="og:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701105459283.png">
+<meta property="og:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701105531440.png">
+<meta property="og:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701105600914.png">
+<meta property="og:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701105629215.png">
+<meta property="og:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701105701743.png">
+<meta property="og:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701105819361.png">
+<meta property="og:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701105937639.png">
+<meta property="article:published_time" content="2022-07-03T15:01:46.000Z">
+<meta property="article:modified_time" content="2022-12-18T04:04:09.245Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/07/03/%E7%AC%AC%E4%B8%80%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220701103613401.png">
+  
+  
+  <title>第一周作业 - 5-12 23:30</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="第一周作业">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-07-03 15:01" pubdate>
+        July 3, 2022 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      34 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">第一周作业</h1>
+            
+            <div class="markdown-body">
+              <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><h1 id="一、开源许可的区别"><a href="#一、开源许可的区别" class="headerlink" title="一、开源许可的区别"></a>一、开源许可的区别</h1><p><a href=""><img src="image-20220701103613401.png" srcset="/img/loading.gif" lazyload alt="image-20220701103613401"></a></p>
+<h2 id="1、BSD许可证"><a href="#1、BSD许可证" class="headerlink" title="1、BSD许可证"></a>1、BSD许可证</h2><p>BSD 代码鼓励代码共享，但需要尊重代码作者的著作权。BSD由于允许使用者修改和重新发布代码，也允许使用或在BSD代码上开发商业软件发布和销售，因此是对商业集成很友好的协议。</p>
+<h2 id="2、MIT许可证"><a href="#2、MIT许可证" class="headerlink" title="2、MIT许可证"></a>2、MIT许可证</h2><p>MIT是和BSD一样宽范的许可协议。你必须在你的发行版里包含原许可协议的声明，无论你是以二进制发布的还是以源代码发布的。作者只想保留版权，而无任何其他了限制，较BSD协议宽松。</p>
+<p>一般使用 MIT 授权的项目，需在源文件头部增加以下内容：</p>
+<p>Copyright [yyyy] [name of copyright owner]. All rights reserved.</p>
+<p>//[yyyy] 表示该源文件创建的年份。紧随其后的是 [name of copyright owner]，即版权所有者。如果为个人项目，就写个人名称；若为团队项目，则宜写团队名称。</p>
+<h2 id="3、Apache许可证"><a href="#3、Apache许可证" class="headerlink" title="3、Apache许可证"></a>3、Apache许可证</h2><p>Apache Licence是著名的非盈利开源组织Apache采用的协议。该协议和BSD类似，同样鼓励代码共享和尊重原作者的著作权，同样允许代码修改，再发布（作为开源或商业软件）。需要满足的条件也和BSD类似：</p>
+<p>需要给代码的用户一份Apache Licence；<br>如果你修改了代码，需要再被修改的文件中说明。<br>在延伸的代码中（修改和有源代码衍生的代码中）需要带有原来代码中的协议，商标，专利声明和其他原来作者规定需要包含的说明。<br>如果再发布的产品中包含一个Notice文件，则在Notice文件中需要带有Apache Licence。你可以在Notice中增加自己的许可，但不可以表现为对Apache Licence构成更改。<br>Apache Licence也是对商业应用友好的许可。使用者也可以在需要的时候修改代码来满足需要并作为开源或商业产品发布/销售。</p>
+<p>该许可证要求在所有的源文件中的头部放置以下内容才能算协议对该文件有效：</p>
+<p>Copyright [yyyy] [name of copyright owner]</p>
+<p>//[yyyy] 表示该源文件创建的年份。紧随其后的是 [name of copyright owner]，即版权所有者。如果为个人项目，就写个人名称；若为团队项目，则宜写团队名称。</p>
+<h2 id="4、GPL许可证"><a href="#4、GPL许可证" class="headerlink" title="4、GPL许可证"></a>4、GPL许可证</h2><p>GPL许可证的核心含义是：允许任何人观看、修改，并散播程序软件里的原始程序码，条件是如果你要发布修改后的版本就要连源代码一起公布，不允许修改后和衍生的代码做为闭源的商业软件发布和销售。</p>
+<p>GPL协议的主要内容是只要在一个软件中使用（”使用”指类库引用，修改后的代码或者衍生代码）GPL 协议的产品，则该软件产品必须也采用GPL协议，即必须也是开源和免费。这就是所谓的”传染性”。GPL协议的产品作为一个单独的产品使用没有任何问题，还可以享受免费的优势。</p>
+<h2 id="5、LGPL许可证"><a href="#5、LGPL许可证" class="headerlink" title="5、LGPL许可证"></a>5、LGPL许可证</h2><p>LGPL 允许以动态链接使用开源库。采用LGPL的代码，一般情况下它本身就是一个第三方库（LGPL最早的名字就是Library GPL），这时候开发人员仅仅用到了它的功能，而没有对库本身进行任何修改，那么开发人员也不必公布自己的商业源代码。但是如果修改LGPL协议的代码或者衍生，则所有修改的代码，涉及修改部分的额外代码和衍生的代码都必须开源，并且采用LGPL协议。</p>
+<h2 id="6、Mozilla许可证"><a href="#6、Mozilla许可证" class="headerlink" title="6、Mozilla许可证"></a>6、Mozilla许可证</h2><p>Mozilla公共许可证(英语:Mozilla Public License,简称MPL)  允许免费重发布、免费修改，但要求修改后的代码版权归软件的发起者。要求所有再发布者都得有一个专门的文件就对源代码程序修改的时间和修改的方式有描述。允许一个企业在自己已有的源代码库上加一个接口，除了接口程序的源代码以MPL 许可证的形式对外许可外，源代码库中的源代码就可以不用MPL许可证的方式强制对外许可。</p>
+<h1 id="二、centos、rocky、ubuntu系统安装过程"><a href="#二、centos、rocky、ubuntu系统安装过程" class="headerlink" title="二、centos、rocky、ubuntu系统安装过程"></a>二、centos、rocky、ubuntu系统安装过程</h1><h2 id="1、centos安装过程"><a href="#1、centos安装过程" class="headerlink" title="1、centos安装过程"></a>1、centos安装过程</h2><p>①阿里云镜像站下载centos7（下载地址<a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/centos/7.9.2009/isos/x86_64/">centos-7.9.2009-isos-x86_64安装包下载_开源镜像站-阿里云 (aliyun.com)</a></p>
+<p><a href=""><img src="image-20220701103849188.png" srcset="/img/loading.gif" lazyload alt="image-20220701103849188"></a></p>
+<p>②创建新的虚拟机</p>
+<p><a href=""><img src="image-20220701104214104.png" srcset="/img/loading.gif" lazyload alt="image-20220701104214104"></a></p>
+<p><a href=""><img src="image-20220701104241200.png" srcset="/img/loading.gif" lazyload alt="image-20220701104241200"></a></p>
+<p><a href=""><img src="image-20220701104328742.png" srcset="/img/loading.gif" lazyload alt="image-20220701104328742"></a></p>
+<p><a href=""><img src="image-20220701104403465.png" srcset="/img/loading.gif" lazyload alt="image-20220701104403465"></a></p>
+<p><a href=""><img src="image-20220701104448052.png" srcset="/img/loading.gif" lazyload alt="image-20220701104448052"></a></p>
+<p><a href=""><img src="image-20220701104524464.png" srcset="/img/loading.gif" lazyload alt="image-20220701104524464"></a> ③安装centos系统</p>
+<p>选择第二项检测安装包并安装    第一项为直接安装</p>
+<p><a href=""><img src="image-20220701104746584.png" srcset="/img/loading.gif" lazyload alt="image-20220701104746584"></a></p>
+<p>quit：退出   continue：继续</p>
+<p><a href=""><img src="image-20220701104830508.png" srcset="/img/loading.gif" lazyload alt="image-20220701104830508"></a></p>
+<p>选择时区：亚洲</p>
+<p><a href=""><img src="image-20220701104905861.png" srcset="/img/loading.gif" lazyload alt="image-20220701104905861"></a></p>
+<p>最小化安装（不选择安装图形）</p>
+<p><a href=""><img src="image-20220701104939128.png" srcset="/img/loading.gif" lazyload alt="image-20220701104939128"></a></p>
+<p>安装分区：维持原状</p>
+<p><a href=""><img src="image-20220701105018316.png" srcset="/img/loading.gif" lazyload alt="image-20220701105018316"></a></p>
+<p> 网络：点击启用             更改域名 </p>
+<p><a href=""><img src="image-20220701105053083.png" srcset="/img/loading.gif" lazyload alt="image-20220701105053083"></a></p>
+<p>  设置root密码</p>
+<p><a href=""><img src="image-20220701105139134.png" srcset="/img/loading.gif" lazyload alt="image-20220701105139134"></a></p>
+<p>设置普通用户账号和密码</p>
+<p><a href=""><img src="image-20220701105231450.png" srcset="/img/loading.gif" lazyload alt="image-20220701105231450"></a></p>
+<p> 快照备份init</p>
+<p> <a href=""><img src="image-20220701105306722.png" srcset="/img/loading.gif" lazyload alt="image-20220701105306722"></a> </p>
+<h2 id="2、rocky安装过程"><a href="#2、rocky安装过程" class="headerlink" title="2、rocky安装过程"></a>2、rocky安装过程</h2><p>①下载地址<a target="_blank" rel="noopener" href="https://rockylinux.org/download">Downloads | Rocky Linux</a></p>
+<p>②同centos安装步骤相同</p>
+<h2 id="3、Ubuntu安装过程"><a href="#3、Ubuntu安装过程" class="headerlink" title="3、Ubuntu安装过程"></a>3、Ubuntu安装过程</h2><p>①下载地址<a target="_blank" rel="noopener" href="https://rockylinux.org/download"><a target="_blank" rel="noopener" href="https://cn.ubuntu.com/download/server/step1">获取Ubuntu服务器版 | Ubuntu</a></a></p>
+<p>阿里云下载地址<a target="_blank" rel="noopener" href="https://mirrors.aliyun.com/ubuntu-releases/">ubuntu-releases安装包下载_开源镜像站-阿里云 (aliyun.com)</a></p>
+<p>②创建虚拟机同centos相同</p>
+<p>③安装系统</p>
+<p><a href=""><img src="image-20220701105427959.png" srcset="/img/loading.gif" lazyload alt="image-20220701105427959"></a></p>
+<p>不更新</p>
+<p><a href=""><img src="image-20220701105459283.png" srcset="/img/loading.gif" lazyload alt="image-20220701105459283"></a></p>
+<p>地址由官网更改为阿里云地址</p>
+<p><a href=""><img src="image-20220701105531440.png" srcset="/img/loading.gif" lazyload alt="image-20220701105531440"></a></p>
+<p><img src="image-20220701105600914.png" srcset="/img/loading.gif" lazyload alt="image-20220701105600914"></p>
+<p>设置普通用户账号与密码</p>
+<p><a href=""><img src="image-20220701105629215.png" srcset="/img/loading.gif" lazyload alt="image-20220701105629215"></a></p>
+<p> 按空格键选中远程连接</p>
+<p><a href=""><img src="image-20220701105701743.png" srcset="/img/loading.gif" lazyload alt="image-20220701105701743"></a></p>
+<p> <a href=""><img src="image-20220701105819361.png" srcset="/img/loading.gif" lazyload alt="image-20220701105819361"></a></p>
+<h1 id="三、Linux总结"><a href="#三、Linux总结" class="headerlink" title="三、Linux总结"></a>三、Linux总结</h1><h2 id="1、获取相关命令"><a href="#1、获取相关命令" class="headerlink" title="1、获取相关命令"></a>1、获取相关命令</h2><p>man -k ‘process’|grep’(1|8)’</p>
+<h2 id="2、获取命令的man文档"><a href="#2、获取命令的man文档" class="headerlink" title="2、获取命令的man文档"></a>2、获取命令的man文档</h2><p>man 7 man</p>
+<h2 id="3、man的组成及解释"><a href="#3、man的组成及解释" class="headerlink" title="3、man的组成及解释"></a>3、man的组成及解释</h2><p>①man分9部分：用户命令、系统调用、C库调用、设备文件及特殊文件、配置文件格式、游戏、杂项、管理类的命令、Linux内核API</p>
+<p>②man的解释：</p>
+<p>Name: man页面描述的命令名<br>Synopsis:  语法<br>Configuration: 设备配置详情<br>Description: 程序的作用描述<br>Options:  命令行选项描述<br>Exit Status: 命令退出状态码相关<br>Return Value: man页面是 2和3相关的，库进行调用之后返回啥？<br>Errors:  错误相关<br>Environment: 程序可以接受哪些环境变量<br>Files:  程序会使用哪些配置文件<br>Attributes:  命令的相关属性<br>Versions:  程序某些库显著改变相关的版本<br>Notes: 一些备注<br>Bugs: 已知bug，提交bug<br>Examples: 命令使用示例<br>Authors:  编写，维护命令的作者们<br>See also: 命令相关的命令</p>
+<p>[] 可以选的<br>&lt;&gt; 必选内容<br>[[] &lt;&gt;]   使用括号中的内容时，选项可以省略，值不能省略。如果有多个此类形式，就需要参数。如果此形式在命令紧随其后，我们可以省略选项<br>一般运行一个命令，可以忽略所有[]中的内容</p>
+<h2 id="4、根据语法写简要操作"><a href="#4、根据语法写简要操作" class="headerlink" title="4、根据语法写简要操作"></a>4、根据语法写简要操作</h2><h1 id="四、解释fstab字符的含义"><a href="#四、解释fstab字符的含义" class="headerlink" title="四、解释fstab字符的含义"></a>四、解释fstab字符的含义</h1><p> <a href=""><img src="image-20220701105937639.png" srcset="/img/loading.gif" lazyload alt="image-20220701105937639"></a></p>
+<p>①<code>&lt;file system&gt;</code>- 要挂载的分区或存储设备</p>
+<p>②<code>&lt;mount point&gt;</code>-<code>&lt;file system&gt;</code>的挂载位置</p>
+<p>③<code>&lt;type&gt;</code>-要挂载设备或是分区的文件系统类型，支持许多种不同的文件系统：ext2, ext3, ext4, reiserfs, xfs, jfs, smbfs, iso9660, vfat, ntfs, swap 及 auto。 设置成auto类型，mount 命令会猜测使用的文件系统类型，对 CDROM 和 DVD 等移动设备是非常有用的。</p>
+<p>④<code>&lt;options&gt;</code>-指定挂载的选项，默认为defaults，其他可用选项包括acl、noauto、ro等</p>
+<p>⑤<code>&lt;dump&gt;</code>-表示该挂载后的文件系统能否被dump备份命令作用。0表示不能；1表示备份</p>
+<p>⑥<code>&lt;pass&gt;</code>-表示开机过程中是否校检扇区。0表示不校检；1表示优先校检（一般为根目录）；2表示在1级别校检完成后再校检</p>
+<h1 id="五、简要说明FHS结构"><a href="#五、简要说明FHS结构" class="headerlink" title="五、简要说明FHS结构"></a>五、简要说明FHS结构</h1><p>①Filesystem Hierarchy Standard（文件系统目录标准）的缩写，多数Linux版本采用这种文件组织形式，类似于Windows操作系统中c盘的文件目录，FHS采用<strong>树形</strong>结构组织文件。</p>
+<p>②FHS ：文件系统层级结构</p>
+<p>/：根目录，所有的目录、文件、设备都在/之下，/就是Linux文件系统的组织者，也是最上级的领导者。</p>
+<p>/bin 可执行文件，binary，用户命令</p>
+<p>/boot 系统启动相关的文件</p>
+<p>/dev device、设备文件因为在这个目录中包含了所有linux系统中使用的外部设备。它实际上是一个访问这些外部设备的端口。</p>
+<p>/etc 配置文件，纯文本文件的配置文件要用到的网络配置文件，文件系统，x系统配置文件，设备配置信息，设置用户信息等都在这个目录下。</p>
+<p>/home 家目录，root用户的家目录不在/home目录</p>
+<p>/lib library，库文件和内核模块文件,这个目录是用来存放系统动态连接共享库的。</p>
+<p>/mnt 挂载点目录，通常挂载其他文件系统,这个目录一般是用于存放挂载储存设备的挂载目录的，</p>
+<div class="code-wrapper"><pre><code class="hljs">    比如有cdrom等目录。可以参看/etc/fstab的定义
+    什么是挂载点？光盘放进光驱后，必须要将设备关联到当前文件系统树上的某个节点上，
+    才能进行访问，把某个设备和当前文件系统上某个目录进行关联的这个过程，叫做挂载。
+</code></pre></div>
+<p>/root root用户的家目录，在生产环境中不允许用root用户登录</p>
+<p>/run 进程相关的数据</p>
+<p>/sbin 管理员命令</p>
+<p>/srv 系统服务相关数据 系统启动服务时候可以访问的数据库目录</p>
+<p>/tmp temp,临时文件目录</p>
+<p>/usr 系统核心所在目录 、系统资源所在</p>
+<p>/var 可以理解为vary的缩写，/var下有/var/log 这是用来存放系统日志的目录。</p>
+<h1 id="六、总结文件管理、用户管理、组用户、权限管理相关命令"><a href="#六、总结文件管理、用户管理、组用户、权限管理相关命令" class="headerlink" title="六、总结文件管理、用户管理、组用户、权限管理相关命令"></a>六、总结文件管理、用户管理、组用户、权限管理相关命令</h1><h2 id="1、文件管理相关命令"><a href="#1、文件管理相关命令" class="headerlink" title="1、文件管理相关命令"></a>1、文件管理相关命令</h2><p>cd:切换目录   ls：查看当前目录的内容    touch：创建文件夹     cp：复制文件     mv：移动文件   rm：删除文件    mkdir：创建目录   </p>
+<h2 id="2、用户管理命令"><a href="#2、用户管理命令" class="headerlink" title="2、用户管理命令"></a>2、用户管理命令</h2><p>useradd：创建新用户       usermod：修改用户属性              userdel：删除用户     passwd：修改用户密码    su：切换用户   id：查看用户的UID、GID信息</p>
+<h2 id="3、组用户命令"><a href="#3、组用户命令" class="headerlink" title="3、组用户命令"></a>3、组用户命令</h2><p>groupadd：创建组      groupmod:  修改组属性        groupdel:删除组用户</p>
+<h2 id="4、文件权限管理命令"><a href="#4、文件权限管理命令" class="headerlink" title="4、文件权限管理命令"></a>4、文件权限管理命令</h2><p>chown：修改文件属性，修改文件组属性       chgrp：只修改文件的属组    chmod：修改文件权限</p>
+<p>owner   属主，u                group   属组，g                       other    其他，o</p>
+<span id="more"></span>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E4%BD%9C%E4%B8%9A/">作业</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/linux/">linux</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/08/15/%E7%AC%AC%E4%B8%89%E5%91%A8%E4%BD%9C%E4%B8%9A/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">第三周作业</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/07/01/%E7%AC%AC%E4%BA%8C%E5%91%A8%E4%BD%9C%E4%B8%9A/">
+                        <span class="hidden-mobile">第二周作业</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

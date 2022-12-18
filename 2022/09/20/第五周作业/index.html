@@ -1,0 +1,555 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="[TOC] 一、SUDO,PAM配置规范说明解析： 1、sudo配置规范说明 ①sudo能够授权指定用户在指定主机上运行某些命令 ②root用户授权给一些普通用户特殊权限，需要在&#x2F;etc&#x2F;sudoers文件中按照规则进行授权，如果面对多种权限多用户情况下需要具体分类，可以在&#x2F;etc&#x2F;sudoers.d&#x2F;文件夹下单独按照规则编写多个文件 ③&#x2F;etc&#x2F;sudoers的权限为440 ④进入&#x2F;etc&#x2F;su">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第五周作业">
+<meta property="og:url" content="http://example.com/2022/09/20/%E7%AC%AC%E4%BA%94%E5%91%A8%E4%BD%9C%E4%B8%9A/index.html">
+<meta property="og:site_name" content="5-12 23:30">
+<meta property="og:description" content="[TOC] 一、SUDO,PAM配置规范说明解析： 1、sudo配置规范说明 ①sudo能够授权指定用户在指定主机上运行某些命令 ②root用户授权给一些普通用户特殊权限，需要在&#x2F;etc&#x2F;sudoers文件中按照规则进行授权，如果面对多种权限多用户情况下需要具体分类，可以在&#x2F;etc&#x2F;sudoers.d&#x2F;文件夹下单独按照规则编写多个文件 ③&#x2F;etc&#x2F;sudoers的权限为440 ④进入&#x2F;etc&#x2F;su">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/09/20/%E7%AC%AC%E4%BA%94%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220922103828108.png">
+<meta property="og:image" content="http://example.com/2022/09/20/%E7%AC%AC%E4%BA%94%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220922112259513.png">
+<meta property="og:image" content="http://example.com/2022/09/20/%E7%AC%AC%E4%BA%94%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220922154020965.png">
+<meta property="article:published_time" content="2022-09-20T17:09:47.000Z">
+<meta property="article:modified_time" content="2022-12-18T04:04:09.343Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/09/20/%E7%AC%AC%E4%BA%94%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220922103828108.png">
+  
+  
+  <title>第五周作业 - 5-12 23:30</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="第五周作业">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-09-20 17:09" pubdate>
+        September 20, 2022 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      9.6k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      81 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">第五周作业</h1>
+            
+            <div class="markdown-body">
+              <p>[TOC]</p>
+<h3 id="一、SUDO-PAM配置规范说明"><a href="#一、SUDO-PAM配置规范说明" class="headerlink" title="一、SUDO,PAM配置规范说明"></a>一、SUDO,PAM配置规范说明</h3><p>解析：</p>
+<p><strong>1、sudo配置规范说明</strong></p>
+<p>①sudo能够授权指定用户在指定主机上运行某些命令</p>
+<p>②root用户授权给一些普通用户特殊权限，需要在/etc/sudoers文件中按照规则进行授权，如果面对多种权限多用户情况下需要具体分类，可以在/etc/sudoers.d/文件夹下单独按照规则编写多个文件</p>
+<p>③/etc/sudoers的权限为440</p>
+<p>④进入/etc/sudoers进行编辑</p>
+<p>​    sudo授权规则格式：   </p>
+<figure class="highlight awk"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></div></td><td class="code"><pre><code class="hljs awk">        用户    登陆主机=(代表用户)   命令<br>        user     host =(runas)    command    <span class="hljs-comment">#runas如果不指定，默认为root；可以有多个主机和命令，主机和命令以,隔开；command的路径可以由which command查找</span><br>范例：   root      ALL =(ALL)      ALL        <span class="hljs-comment">#root用户可以在任何主机上代表所有用户执行所有命令</span><br>        zhang <span class="hljs-number">10.0</span>.<span class="hljs-number">0.128</span>,<span class="hljs-number">10.0</span>.<span class="hljs-number">0.129</span>=   <span class="hljs-regexp">/usr/</span>bin<span class="hljs-regexp">/ls,/</span>sbin/ifconfig  <span class="hljs-comment">#zhang用户可以在10.0.0.128,10.0.0.129这两个主机上代表root用户执行ls命令和ifconfig命令</span><br></code></pre></td></tr></table></figure>
+
+<p>  sudoers的别名</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli">User和runas: <br>      username<br>      <span class="hljs-comment">#uid</span><br>      %group_name<br>      %<span class="hljs-comment">#gid</span><br>      user_<span class="hljs-keyword">alias</span>|runas_<span class="hljs-keyword">alias</span><br>host:<br>      ip或hostname<br>      network<span class="hljs-params">(/netmask)</span><br>      host_<span class="hljs-keyword">alias</span><br><span class="hljs-keyword">command</span>:<br>      <span class="hljs-keyword">command</span> name<br>      directory<br>      sudoedit<br>      Cmnd_Alias<br></code></pre></td></tr></table></figure>
+
+<p>别名格式：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-attr">[A-Z]</span>(<span class="hljs-selector-attr">[A-Z]</span><span class="hljs-selector-attr">[0-9]</span>_)*              #由字母、数字、下划线组成<br></code></pre></td></tr></table></figure>
+
+<p><strong>2、PAM配置规范说明</strong></p>
+<p>①PAM：Pluggable Authentication Modules，插件式的验证模块，Sun公司于1995 年开发的一种与认证相关的通用框架机制。PAM 只关注如何为服务验证用户的 API，通过提供一些动态链接库和一套统一的API，将系统提供的服务和该服务的认证方式分开，使得系统管理员可以灵活地根据需要给不同的服务配置不同的认证方式而无需更改服务程序一种认证框架，自身不做认证</p>
+<p>②PAM工作原理：</p>
+<p>   PAM认证一般遵循这样的顺序：Service(服务)→PAM(配置文件)→pam_*.so</p>
+<p>   PAM认证首先要确定那一项服务，然后加载相应的PAM的配置文件(位于/etc/pam.d下)，最后调用认证文件(位于/lib64/security下)进行安全认证</p>
+<p>③PAM模块的配置文件存放在/etc/security/中；PAM 模块文件存放在/lib/security或者 /lib64/security/ 中；各个软件的 PAM 配置文件存放在 /etc/pam.d/ 中</p>
+<p>④PAM配置文件格式：工作类别   控制模式   模块路径  模块参数</p>
+<h3 id="二、chrony搭建私有ntp服务"><a href="#二、chrony搭建私有ntp服务" class="headerlink" title="二、chrony搭建私有ntp服务"></a>二、chrony搭建私有ntp服务</h3><p>解析：</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs autoit">[root<span class="hljs-symbol">@Rocky8</span> ~]<span class="hljs-meta">#yum -y install chrony           #安装chrony</span><br>[root<span class="hljs-symbol">@Rocky8</span> ~]<span class="hljs-meta">#vim  /etc/chrony.conf</span><br><span class="hljs-meta">#pool 2.rhel.pool.ntp.org iburst                #加#注释此行，它是一个国外提供校时的虚拟集群，反应误差比国内的大，最好更换为国内NTP服务器网址</span><br>server ntp.aliyun.com           iburst          <span class="hljs-meta">#添加阿里云ntp网址</span><br>server time1.cloud.tencent.com  iburst          <span class="hljs-meta">#添加腾讯ntp网址</span><br>：wq                                            <span class="hljs-meta">#保存退出</span><br>[root<span class="hljs-symbol">@Rocky8</span> ~]<span class="hljs-meta">#systemctl restart chronyd       #启动服务</span><br>[root<span class="hljs-symbol">@Rocky8</span> ~]<span class="hljs-meta">#ss -ntlu                        #323端口已启动（127.0.0.1表示只有本机时间同步）</span><br>Netid  State   Recv-Q  <span class="hljs-built_in">Send</span>-Q   <span class="hljs-keyword">Local</span> Address:Port   Peer Address:Port    Process  udp    UNCONN    <span class="hljs-number">0</span>       <span class="hljs-number">0</span>         <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">323</span>        <span class="hljs-number">0.0</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span>:*                 <br>[root<span class="hljs-symbol">@Rocky8</span> ~]<span class="hljs-meta">#chronyc sources -v              #查看是否已同步</span><br><span class="hljs-meta">#此时本机已经可以和设置的网址网络时间同步了</span><br><br><br><span class="hljs-meta">#下一步将此机设置为局域网内的服务器，将局域网内的其他机器时间向此机器同步</span><br>[root<span class="hljs-symbol">@Rocky8</span> ~]<span class="hljs-meta">#vim  /etc/chrony.conf</span><br><span class="hljs-meta"># Allow NTP client access from local network.</span><br><span class="hljs-meta">#allow 192.168.0.0/16</span><br>allow <span class="hljs-number">0.0</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span>/<span class="hljs-number">0</span>                          <span class="hljs-meta">#在上面两条的下方添加此网段，表示此网段的所有机器都可以和我同步时间（0.0.0.0/0表示所有网段）</span><br>：wq                                            <span class="hljs-meta">#保存退出</span><br>[root<span class="hljs-symbol">@Rocky8</span> ~]<span class="hljs-meta">#systemctl restart chronyd       #启动服务</span><br>[root<span class="hljs-symbol">@Rocky8</span> ~]<span class="hljs-meta">#ss -ntlu                        #123端口已启动（123是ntp协议同步的标准端口号，0.0.0.0表示所有网段都可以和我同步）</span><br>Netid  State   Recv-Q  <span class="hljs-built_in">Send</span>-Q   <span class="hljs-keyword">Local</span> Address:Port   Peer Address:Port    Process  udp    UNCONN    <span class="hljs-number">0</span>       <span class="hljs-number">0</span>         <span class="hljs-number">0.0</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span>:<span class="hljs-number">123</span>        <span class="hljs-number">0.0</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span>:*   <br>[root<span class="hljs-symbol">@Centos7</span> ~]<span class="hljs-meta">#ntpdate 10.0.0.128              #使用另一台主机同步时间，显示成功</span><br><span class="hljs-number">23</span> Sep <span class="hljs-number">16</span>:<span class="hljs-number">04</span>:<span class="hljs-number">02</span> ntpdate[<span class="hljs-number">2291</span>]: adjust time server <span class="hljs-number">10.0</span><span class="hljs-number">.0</span><span class="hljs-number">.128</span> offset <span class="hljs-number">0.027979</span> sec<br><br><span class="hljs-meta">#下一步设置客户端配置（局域网内其他机器），以确保永久同步</span><br>[root<span class="hljs-symbol">@Centos7</span> ~]<span class="hljs-meta">#yum -y install chrony         #安装chrony</span><br>[root<span class="hljs-symbol">@Centos7</span> ~]<span class="hljs-meta">#vim /etc/chrony.conf</span><br>server <span class="hljs-number">10.0</span><span class="hljs-number">.0</span><span class="hljs-number">.128</span>    iburst                    <span class="hljs-meta">#添加自己设置的ntp服务器</span><br><span class="hljs-meta">#server 0.centos.pool.ntp.org iburst</span><br><span class="hljs-meta">#server 1.centos.pool.ntp.org iburst</span><br><span class="hljs-meta">#server 2.centos.pool.ntp.org iburst</span><br><span class="hljs-meta">#server 3.centos.pool.ntp.org iburst           #将配置文件中的原4条设置注释掉</span><br>：wq                                           <span class="hljs-meta">#保存退出</span><br>[root<span class="hljs-symbol">@Centos7</span> ~]<span class="hljs-meta">#systemctl restart chronyd     #重启服务</span><br>[root<span class="hljs-symbol">@Centos7</span> ~]<span class="hljs-meta">#chronyc sources -v            #确认是否同步，已同步</span><br>^* <span class="hljs-number">10.0</span><span class="hljs-number">.0</span><span class="hljs-number">.128</span>        <span class="hljs-number">3</span>   <span class="hljs-number">6</span>    <span class="hljs-number">37</span>    <span class="hljs-number">13</span>    +<span class="hljs-number">19</span>ns[  +<span class="hljs-number">85</span>us] +/-   <span class="hljs-number">18</span>ms<br><br><span class="hljs-meta">#当设置的服务器与网络断开时，仍为局域网内的其他客户端提供服务，需进行如下设置</span><br>[root<span class="hljs-symbol">@Rocky8</span> ~]<span class="hljs-meta">#vim /etc/chrony.conf</span><br><span class="hljs-keyword">local</span> stratum <span class="hljs-number">10</span>                               <span class="hljs-meta">#将#删除</span><br>：wq                                           <span class="hljs-meta">#保存退出</span><br>[root<span class="hljs-symbol">@Rocky8</span> ~]<span class="hljs-meta">#systemctl restart chronyd     #重启服务</span><br><br><span class="hljs-meta">#设置开机启动</span><br>[root<span class="hljs-symbol">@Rocky8</span> ~]<span class="hljs-meta">#systemctl enable --now chronyd</span><br>[root<span class="hljs-symbol">@Centos7</span> ~]<span class="hljs-meta">#systemctl enable --now chronyd</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="三、说明CDN原理"><a href="#三、说明CDN原理" class="headerlink" title="三、说明CDN原理"></a>三、说明CDN原理</h3><p>解析：</p>
+<p>①用户向浏览器输入<a target="_blank" rel="noopener" href="http://www.a.com这个域名,浏览器第一次发现本地没有dns缓存,则向网站的dns服/">www.a.com这个域名，浏览器第一次发现本地没有dns缓存，则向网站的DNS服</a></p>
+<p>务器请求</p>
+<p>②网站的DNS域名解析器设置了CNAME，指向了<a target="_blank" rel="noopener" href="http://www.a.tbcdn.com,请求指向了cdn网络中的智能/">www.a.tbcdn.com,请求指向了CDN网络中的智能</a></p>
+<p>DNS负载均衡系统</p>
+<p>③智能DNS负载均衡系统解析域名，把对用户响应速度最快的IP节点返回给用户；</p>
+<p>④用户向该IP节点（CDN服务器）发出请求</p>
+<p>⑤由于是第一次访问，CDN服务器会通过Cache内部专用DNS解析得到此域名的原web站点IP，向原</p>
+<p>站点服务器发起请求，并在CDN服务器上缓存内容</p>
+<p>⑥请求结果发给用户</p>
+<h3 id="四、搭建智能DNS，实现不同地域客户端解析到不同主机"><a href="#四、搭建智能DNS，实现不同地域客户端解析到不同主机" class="headerlink" title="四、搭建智能DNS，实现不同地域客户端解析到不同主机"></a>四、搭建智能DNS，实现不同地域客户端解析到不同主机</h3><p>解析：</p>
+<p><strong>1、安装软件</strong></p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">yum -y <span class="hljs-keyword">install </span><span class="hljs-keyword">bind </span> <span class="hljs-keyword">bind-utils </span>         <span class="hljs-comment">#安装bind工具</span><br>systemctl enable --now named             <span class="hljs-comment">#设置DNS为开机启动</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>2、配置两台主机</strong></p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs dns">实现区域就近原则访问<br>网址：www.magedu.org    IP地址：<span class="hljs-number">2.2.2.2</span>/<span class="hljs-number">24</span>（北京）  <span class="hljs-number">3.3.3.3</span>/<span class="hljs-number">24</span>（上海）<br>其中一台主机设置为服务器，一台设置为客户端<br>服务器设置：<br><br>当网段为<span class="hljs-number">10.0.0.0</span>/<span class="hljs-number">24</span>访问时地址为<span class="hljs-number">2.2.2.2</span>/<span class="hljs-number">24</span>；当网段为<span class="hljs-number">192.168.10.0</span>/<span class="hljs-number">24</span>访问网址时为<span class="hljs-number">3.3.3.3</span>/<span class="hljs-number">24</span><br>客户端设置：<br>北京：<span class="hljs-number">10.0.0.216</span><br>上海：<span class="hljs-number">192.168.10.216</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>3、 创建区域数据库文件</strong></p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">[root@Rocky8 named]<span class="hljs-comment">#vim /var/named/magedu.org.zone.shanghai</span><br>$TTL <span class="hljs-number">1</span>D<br>@   <span class="hljs-keyword">IN</span> SOA <span class="hljs-keyword">master</span> <span class="hljs-title">admin</span>.magedu.org. (<br>                    <span class="hljs-number">2019042214</span> ; serial<br>                   <span class="hljs-number">1</span>D ; refresh<br>                   <span class="hljs-number">1H</span> ; retry<br>                   <span class="hljs-number">1</span>W ; expire<br>                   <span class="hljs-number">3H</span> )   ; minimum<br>           NS   <span class="hljs-keyword">master</span><br><span class="hljs-title">master</span>     A    <span class="hljs-number">10.0</span>.<span class="hljs-number">0.8</span><br>www        A    <span class="hljs-number">3.3</span>.<span class="hljs-number">3.3</span><br>：wq                                                   <span class="hljs-comment">#保存退出</span><br>[root@Rocky8 named]<span class="hljs-comment">#vim magedu.org.zone.beijing</span><br>$TTL <span class="hljs-number">1</span>D<br>@   <span class="hljs-keyword">IN</span> SOA <span class="hljs-keyword">master</span> <span class="hljs-title">admin</span>.magedu.org. (<br>                    <span class="hljs-number">2019042214</span> ; serial<br>                   <span class="hljs-number">1</span>D ; refresh<br>                   <span class="hljs-number">1H</span> ; retry<br>                   <span class="hljs-number">1</span>W ; expire<br>                   <span class="hljs-number">3H</span> )   ; minimum<br>           NS   <span class="hljs-keyword">master</span><br><span class="hljs-title">master</span>     A    <span class="hljs-number">10.0</span>.<span class="hljs-number">0.8</span><br>www        A    <span class="hljs-number">2.2</span>.<span class="hljs-number">2.2</span><br>:wq                                                   <span class="hljs-comment">#保存退出</span><br><br>[root@Rocky8 named]<span class="hljs-comment">#chgrp named /var/named/magedu.org.zone.shanghai   #更改所属组</span><br>[root@Rocky8 named]<span class="hljs-comment">#chgrp named /var/named/magedu.org.zone.beijing    #更改所属组</span><br>[root@Rocky8 named]<span class="hljs-comment">#chmod 640 /var/named/magedu.org.zone.shanghai     #更改权限</span><br>[root@Rocky8 named]<span class="hljs-comment">#chmod 640 /var/named/magedu.org.zone.beijing      #更改权限</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>4、实现区域配置文件</strong></p>
+<figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs coffeescript">[root@Rocky8 etc]<span class="hljs-comment">#vim named.rfc1912.zones.shanghai</span><br>zone <span class="hljs-string">&quot;.&quot;</span> IN &#123;<br>   type hint;<br>   file <span class="hljs-string">&quot;named.ca&quot;</span>;<br>&#125;;                                                 <span class="hljs-comment">#从/etc/named.conf文件里移动至此</span><br>zone <span class="hljs-string">&quot;magedu.org&quot;</span> &#123;<br>   type master;<br>   file <span class="hljs-string">&quot;magedu.org.zone.shanghai&quot;</span>;<br>&#125;;<br>：wq                                                    <span class="hljs-comment">#保存</span><br>[root@Rocky8 etc]<span class="hljs-comment">#vim named.rfc1912.zones.beijing</span><br>zone <span class="hljs-string">&quot;.&quot;</span> IN &#123;<br>   type hint;<br>   file <span class="hljs-string">&quot;named.ca&quot;</span>;<br>&#125;;                                                <span class="hljs-comment">#从/etc/named.conf文件里移动至此</span><br>zone <span class="hljs-string">&quot;magedu.org&quot;</span> &#123;<br>   type master;<br>   file <span class="hljs-string">&quot;magedu.org.zone.beijing&quot;</span>;<br>&#125;;<br>：wq                                                    <span class="hljs-comment">#保存</span><br>[root@Rocky8 etc]<span class="hljs-comment">#chgrp named /etc/named.rfc1912.zones.shanghai  #更改所属组</span><br>[root@Rocky8 etc]<span class="hljs-comment">#chgrp named /etc/named.rfc1912.zones.beijing   #更改所属组</span><br>[root@Rocky8 etc]<span class="hljs-comment">#chmod 640 /etc/named.rfc1912.zones.shanghai    #更改权限</span><br>[root@Rocky8 etc]<span class="hljs-comment">#chmod 640 /etc/named.rfc1912.zones.beijing     #更改权限</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>5、服务端配置文件实现 view</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs php">[root@Rocky8 etc]<span class="hljs-comment">#vim /etc/named.conf</span><br>acl beijingnet &#123;<br>    <span class="hljs-number">10.0</span>.<span class="hljs-number">0.0</span>/<span class="hljs-number">24</span>;<br>&#125;;                                          <span class="hljs-comment">#添加此命令</span><br>acl shanghainet &#123;<br>    <span class="hljs-number">192.168</span>.<span class="hljs-number">10.0</span>/<span class="hljs-number">24</span>;<br>&#125;;                                          <span class="hljs-comment">#添加此命令</span><br><span class="hljs-comment">#注释掉下面两行</span><br><span class="hljs-comment">// listen-on port 53 &#123; 127.0.0.1; &#125;;</span><br><span class="hljs-comment">// allow-query     &#123; localhost; &#125;;</span><br><br><span class="hljs-comment">#添加view</span><br>view beijingview &#123;<br>   <span class="hljs-keyword">match</span>-clients &#123; beijingnet;&#125;;<br>   <span class="hljs-keyword">include</span> <span class="hljs-string">&quot;/etc/named.rfc1912.zones.beijing&quot;</span>;                                                                                              <br>&#125;;<br>view shanghaiview &#123;<br>   <span class="hljs-keyword">match</span>-clients &#123; shanghainet;&#125;;<br>   <span class="hljs-keyword">include</span> <span class="hljs-string">&quot;/etc/named.rfc1912.zones.shanghai&quot;</span>;<br>&#125;;<br><br><span class="hljs-comment">#删除下面这条命令</span><br><span class="hljs-keyword">include</span> <span class="hljs-string">&quot;/etc/named.rfc1912.zones&quot;</span>;   <br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="五、解释DNS解析流程"><a href="#五、解释DNS解析流程" class="headerlink" title="五、解释DNS解析流程"></a>五、解释DNS解析流程</h3><p>解析：</p>
+<p><strong>1、工作原理流程图</strong></p>
+<p><a href=""><img src="image-20220922103828108.png" srcset="/img/loading.gif" lazyload alt="image-20220922103828108"></a></p>
+<p><strong>2、查询请求的经过流程</strong></p>
+<p>Client –&gt;hosts文件 –&gt; Client DNS Service Local Cache –&gt; DNS Server (recursion递 </p>
+<p>归) –&gt; DNS Server Cache –&gt;DNS iteration(迭代) –&gt; 根–&gt; 顶级域名DNS–&gt;二级域名DNS… </p>
+<p><strong>3、解析流程</strong></p>
+<p>①客户端在浏览器中输入网址<a target="_blank" rel="noopener" href="http://www.magedu.com查找时,首先会在客户端主机里面查找本地缓存及hosts文件是否有此网址对应ip,如果有即可正常登录(首次查询时没有相关记录)/">www.magedu.com查找时，首先会在客户端主机里面查找本地缓存及hosts文件是否有此网址对应IP，如果有即可正常登录（首次查询时没有相关记录）</a></p>
+<p>②当本地缓存与hosts文件没有对应的IP地址时，客户端会向客户端所在地址的DNS服务器（即Local DNS）发出请求，如果Local DNS的本地缓存有对应的IP地址，就会将IP地址回复至客户端，如果没有对应缓存会向其他服务器发起请求</p>
+<p>③首先向.根服务器发起请求，根服务器没有对应的IP地址，但缓存中有.com的地址，将.com的地址反馈给Local DNS，让它去咨询.com域名服务器</p>
+<p>④收到.com的地址后，向.com域名服务器发起请求，.com域名服务器没有对应的IP地址，但缓存中有magedu.com的地址，将magedu.com的地址反馈给Local DNS，让它去咨询magedu.com域名服务器</p>
+<p>⑤收到magedu.com的地址后，向magedu.com域名服务器发起请求，magedu.com域名服务器缓存中有<a target="_blank" rel="noopener" href="http://www.magedu.com的ip地址,并将地址反馈给local/">www.magedu.com的IP地址，并将地址反馈给Local</a> DNS</p>
+<p>⑥Local DNS收到对应IP地址后，将IP地址反馈给客户端，并将此地址放到本地缓存里，以便下次使用</p>
+<p><strong>4、DNS查询类型</strong></p>
+<p>①递归查询：是指DNS服务器在收到用户发起的请求时，必须向用户返回一个准确的查询结果。如果DNS服务器本地没有存储与之对应的信息，则该服务器需要询问其他服务器，并将返回的查询结构提交给用户。</p>
+<p>一般客户机和本地DNS服务器之间属于递归查询，即当客户机向DNS服务器发出请求后,若DNS服务器本身不能解析，则会向另外的DNS服务器发出查询请求，得到最终的肯定或否定的结果后转交给客户机。此查询的源和目标保持不变,为了查询结果只需要发起一次查询</p>
+<p>递归算法:客户端向LocalDNS发起域名查询–&gt;localDNS不知道域名对应的IP–&gt;但它知道谁知道-&gt;他</p>
+<p>代为帮客户端去查找–&gt;最后再返回最终结果</p>
+<p>②迭代查询：是指DNS服务器在收到用户发起的请求时，并不直接回复查询结果，而是告诉另一台DNS服务器的地址，用户再向这台DNS服务器提交请求，这样依次反复，直到返回查询结果。</p>
+<p>一般情况下(有例外)本地的DNS服务器向其它DNS服务器的查询属于迭代查询,如：若对方不能返回权威的结果，则它会向下一个DNS服务器(参考前一个DNS服务器返回的结果)再次发起进行查询，直到返回查询的结果为止。此查询的源不变,但查询的目标不断变化,为查询结果一般需要发起多次查询</p>
+<p>迭代算法︰客户端向LocalDNS发起域名查询–&gt;localDNS不知道域名对应的IP–&gt;但它知道谁知道并</p>
+<p>推荐客户端应该找谁–&gt;客户端自己去找它</p>
+<p>③DNS缓存：是将解析数据存储在靠近发起请求的客户端的位置，也可以说DNS数据是可以缓存在任意</p>
+<p>位置，最终目的是以此减少递归查询过程，可以更快的让用户获得请求结果。</p>
+<h3 id="六、iptables-5表5链解释"><a href="#六、iptables-5表5链解释" class="headerlink" title="六、iptables 5表5链解释"></a>六、iptables 5表5链解释</h3><p>解析：</p>
+<p><strong>1、iptables由五个表table和五个链chain以及一些规则组成</strong></p>
+<p><a href=""><img src="image-20220922112259513.png" srcset="/img/loading.gif" lazyload alt="image-20220922112259513"></a></p>
+<p><strong>2、5个链chain</strong></p>
+<p>组成：INPUT        OUTPUT       FORWARD         PREROUTING       POSTROUTING</p>
+<p><a href=""><img src="image-20220922154020965.png" srcset="/img/loading.gif" lazyload alt="image-20220922154020965"></a></p>
+<p><strong>3、5个表table</strong></p>
+<p>①组成：<strong>filter</strong>：过滤规则表，根据预定义的规则过滤符合条件的数据包,默认表</p>
+<p>​               <strong>nat</strong>：network address translation 地址转换规则表</p>
+<p>​               <strong>mangle</strong>：修改数据标记位规则表</p>
+<p>​               <strong>raw</strong>：关闭启用的连接跟踪机制，加快封包穿越防火墙速度</p>
+<p>​              <strong>security</strong>：用于强制访问控制（MAC）网络规则，由Linux安全模块（如SELinux）实现</p>
+<p>②优先级：security –&gt;raw–&gt;mangle–&gt;nat–&gt;filter</p>
+<h3 id="七、iptables-firewalld-nftable-实现主机防火墙。5000-6000端口仅192-168-0-0-24网段内的主机访问"><a href="#七、iptables-firewalld-nftable-实现主机防火墙。5000-6000端口仅192-168-0-0-24网段内的主机访问" class="headerlink" title="七、iptables/firewalld/nftable 实现主机防火墙。5000-6000端口仅192.168.0.0/24网段内的主机访问"></a>七、iptables/firewalld/nftable 实现主机防火墙。5000-6000端口仅192.168.0.0/24网段内的主机访问</h3><p>解析：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-attr">[root@Rocky ~]</span><span class="hljs-selector-id">#systemctl</span> disable <span class="hljs-attr">--now</span> firewalld<span class="hljs-selector-class">.service</span>  #启用iptables需要关闭firewalld<br><span class="hljs-selector-attr">[root@Rocky ~]</span><span class="hljs-selector-id">#iptables</span> -t <span class="hljs-attribute">filter</span> -<span class="hljs-selector-tag">A</span> <span class="hljs-selector-tag">INPUT</span> -<span class="hljs-selector-tag">p</span> tcp ! -s <span class="hljs-number">192.168</span>.<span class="hljs-number">0.0</span>/<span class="hljs-number">24</span> <span class="hljs-attr">--dport</span> <span class="hljs-number">5000</span>:<span class="hljs-number">6000</span> -j DROP<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs dsconfig">[<span class="hljs-string">root</span>@<span class="hljs-string">Rocky</span> ~]<span class="hljs-comment">#systemctl start firewalld.service  #需要开启firewalld</span><br><span class="hljs-string">firewall-cmd</span> <span class="hljs-built_in">--permanent</span> <span class="hljs-built_in">--zone=vnc</span> <span class="hljs-built_in">--add-rich-rule=&#x27;rule</span> <span class="hljs-string">family</span>=<span class="hljs-string">ipv4</span> <span class="hljs-string">source</span> <br><span class="hljs-string">address</span>=<span class="hljs-string">192</span>.<span class="hljs-string">168</span>.<span class="hljs-string">0</span>.<span class="hljs-string">0</span>/<span class="hljs-string">24</span> <span class="hljs-string">port</span> <span class="hljs-string">port</span>=<span class="hljs-string">5000-6000</span> <span class="hljs-string">protocol</span>=<span class="hljs-string">tcp</span> <span class="hljs-string">accept</span><span class="hljs-string">&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">[root@Rocky ~]#systemctl <span class="hljs-keyword">disable</span> <span class="hljs-comment">--now firewalld.service  #启用nft需要关闭firewalld</span><br>[root@Rocky ~]#nft <span class="hljs-keyword">add</span> <span class="hljs-keyword">table</span> <span class="hljs-type">inet</span> test_table     #添加使用簇为<span class="hljs-type">inet</span>的test_table表<br>[root@Rocky ~]#nft <span class="hljs-keyword">add</span> chain <span class="hljs-type">inet</span> test_table test_filter_input_chain &#123; <span class="hljs-keyword">type</span> <span class="hljs-keyword">filter</span> hook <span class="hljs-keyword">input</span> priority <span class="hljs-number">0</span> \; &#125;                #在test_table表里添加test_filter_input_chain链，此链类型设置等同于<span class="hljs-keyword">filter</span>表里的<span class="hljs-keyword">input</span>链<br>[root@Rocky ~]#nft <span class="hljs-keyword">insert</span> <span class="hljs-keyword">rule</span> <span class="hljs-type">inet</span> test_table test_filter_input_chain <span class="hljs-keyword">index</span> <span class="hljs-number">0</span> ip saddr <span class="hljs-number">192.168</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span>/<span class="hljs-number">24</span> tcp dport <span class="hljs-number">5000</span>:<span class="hljs-number">6000</span> accept<br>[root@Rocky ~]#nft <span class="hljs-keyword">add</span> <span class="hljs-keyword">rule</span> <span class="hljs-type">inet</span> test_table test_filter_input_chain tcp dport <span class="hljs-number">5000</span>:<span class="hljs-number">6000</span> reject<br></code></pre></td></tr></table></figure>
+
+<h3 id="八、mysql的各发行版有哪些"><a href="#八、mysql的各发行版有哪些" class="headerlink" title="八、mysql的各发行版有哪些"></a>八、mysql的各发行版有哪些</h3><p>解析：</p>
+<p><strong>MySQL</strong>：5.1 –&gt; 5.5 –&gt; 5.6 –&gt; 5.7 –&gt;8.0</p>
+<p><strong>MariaDB</strong>：5.1 –&gt;5.5 –&gt;10.0–&gt; 10.1 –&gt; 10.2 –&gt; 10.3 –&gt; 10.4 –&gt; 10.5</p>
+<h3 id="九、mysql索引的作用"><a href="#九、mysql索引的作用" class="headerlink" title="九、mysql索引的作用"></a>九、mysql索引的作用</h3><p>解析：</p>
+<p><strong>索引的作用</strong>：是排序的快速查找的特殊数据结构，定义作为查找条件的字段上，又称为键key，索引通过存储引擎实现</p>
+<p><strong>优点：</strong></p>
+<p>索引可以降低服务需要扫描的数据量，减少了IO次数</p>
+<p>索引可以帮助服务器避免排序和使用临时表</p>
+<p>索引可以帮助将随机I/O转为顺序 I/O</p>
+<p><strong>缺点：</strong></p>
+<p>占用额外空间，影响插入速度</p>
+<h3 id="十、mysql-btree索引的原理"><a href="#十、mysql-btree索引的原理" class="headerlink" title="十、mysql btree索引的原理"></a>十、mysql btree索引的原理</h3><p>解析：</p>
+<p>1、由于存储介质的特性，磁盘本身存取比主存慢很多，再加上磁盘I/O存在机械运动耗费，因此磁盘I/O的时间消耗是巨大的. 为了提高磁盘与主存的交互效率, 首要的手段就是减少磁盘 I/O 次数. 为了达到这个目的，磁盘往往不是严格按需读取，而是每次都会预读，即使只需要一个字节，磁盘也会从这个位置开始，顺序向后读取一定长度的数据放入内存. 这样做的理论依据是局部性原理：当一个数据被用到时，其附近的数据通常也会马上被使用</p>
+<p>2、索引一般以文件形式存储在磁盘上, 为了提高性能, 每次又要把部分数据读入内存来处理,这就意味着索引检索需要磁盘I/O操作</p>
+<p>3、其中btree索引结构更加合适</p>
+<p>①所有叶节点保存了所有父节点关键字记录的指针,所有数据地址都必须到叶节点才能获取,故每次查询数据I/O次数相同(因为都需要到叶节点,而叶节点都在同一层),查询效率稳定<br>②B+ 树所有叶节点通过指针连接到一起, 范围查询效率更高<br>③B+ 树内节点不存储 data, 则同一个页的空间可以容纳更多的关键字, 一次性读入内存可供检索的关键字也更多. 这样在数据量足够大的情况下, B+ 树拥有比 B 树更小的树高,也就可以减少 I/O 次数,提高性能</p>
+<h3 id="十一、mysql安全加固"><a href="#十一、mysql安全加固" class="headerlink" title="十一、mysql安全加固"></a>十一、mysql安全加固</h3><p>解析：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs bash">1、设置root账号的密码（系统自带的root账号密码是空的）<br>2、删除不带用户名的空账号（否则任何人都可以登录数据库，新版本里没有空账号了）<br>3、禁止root远程登录（新版本里没有root远程登录了）<br>4、删除<span class="hljs-built_in">test</span>数据库（老版本里有，<span class="hljs-built_in">test</span>数据库任何人都可以访问）<br>直接执行系统自带的脚本加固<br>[root@centos ~]<span class="hljs-comment">#mysql_secure_installation           #将上面3个问题解决了</span><br>Set root password? [Y/n] Y                          <span class="hljs-comment">#Y同意增加密码</span><br>New password:                                       <span class="hljs-comment">#添加root密码               Remove anonymous users? [Y/n] Y                     #是否删除空账号，Y删除</span><br> ... Success!<br>Disallow root login remotely? [Y/n] y               <span class="hljs-comment">#是否禁止root远程登录，Y禁止</span><br> ... Success!                      <br>Remove <span class="hljs-built_in">test</span> database and access to it? [Y/n] y      <span class="hljs-comment">#是否删除test数据库，y删除</span><br> - Dropping <span class="hljs-built_in">test</span> database...<br> ... Success!<br> - Removing privileges on <span class="hljs-built_in">test</span> database...<br> ... Success!<br><br></code></pre></td></tr></table></figure>
+
+
+
+<span id="more"></span>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/09/27/%E7%BB%83%E4%B9%A0/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">练习</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/08/28/%E7%AC%AC%E5%9B%9B%E5%91%A8%E4%BD%9C%E4%B8%9A/">
+                        <span class="hidden-mobile">第四周作业</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

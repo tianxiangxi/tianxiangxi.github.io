@@ -1,0 +1,591 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="[TOC] 一、JDK的安装JDK是 Java 语言的软件开发工具包,JDK协议基于 JRL(JavaResearch License)协议 java程序的源码是.java，需要使用JDK里面的javac将.java转换为字节码（.class），在通过虚拟机将字节码转换为Linux和Windows里的机器码 JDK分为免费版（openjdk：测试环境使用）和收费版（oraclejdk 8版本以后收">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tomcat练习">
+<meta property="og:url" content="http://example.com/2022/12/02/tomcat%E7%BB%83%E4%B9%A0/index.html">
+<meta property="og:site_name" content="5-12 23:30">
+<meta property="og:description" content="[TOC] 一、JDK的安装JDK是 Java 语言的软件开发工具包,JDK协议基于 JRL(JavaResearch License)协议 java程序的源码是.java，需要使用JDK里面的javac将.java转换为字节码（.class），在通过虚拟机将字节码转换为Linux和Windows里的机器码 JDK分为免费版（openjdk：测试环境使用）和收费版（oraclejdk 8版本以后收">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/12/02/tomcat%E7%BB%83%E4%B9%A0/image-20221202110441970.png">
+<meta property="og:image" content="http://example.com/2022/12/02/tomcat%E7%BB%83%E4%B9%A0/image-20221202112918035.png">
+<meta property="og:image" content="http://example.com/2022/12/02/tomcat%E7%BB%83%E4%B9%A0/image-20221202151148398.png">
+<meta property="og:image" content="http://example.com/2022/12/02/tomcat%E7%BB%83%E4%B9%A0/image-20221202154610064.png">
+<meta property="og:image" content="http://example.com/2022/12/02/tomcat%E7%BB%83%E4%B9%A0/image-20221202154807444.png">
+<meta property="og:image" content="http://example.com/2022/12/02/tomcat%E7%BB%83%E4%B9%A0/image-20221202163609685.png">
+<meta property="og:image" content="http://example.com/2022/12/02/tomcat%E7%BB%83%E4%B9%A0/image-20221202173530849.png">
+<meta property="og:image" content="http://example.com/2022/12/02/tomcat%E7%BB%83%E4%B9%A0/image-20221202185420285.png">
+<meta property="og:image" content="http://example.com/2022/12/02/tomcat%E7%BB%83%E4%B9%A0/image-20221202185443412.png">
+<meta property="og:image" content="http://example.com/2022/12/02/tomcat%E7%BB%83%E4%B9%A0/image-20221203090558919.png">
+<meta property="og:image" content="http://example.com/2022/12/02/tomcat%E7%BB%83%E4%B9%A0/image-20221203102125576.png">
+<meta property="og:image" content="http://example.com/2022/12/02/tomcat%E7%BB%83%E4%B9%A0/image-20221203102452083.png">
+<meta property="og:image" content="http://example.com/2022/12/02/tomcat%E7%BB%83%E4%B9%A0/image-20221203104449102.png">
+<meta property="og:image" content="http://example.com/2022/12/02/tomcat%E7%BB%83%E4%B9%A0/image-20221203111204065.png">
+<meta property="og:image" content="http://example.com/2022/12/02/tomcat%E7%BB%83%E4%B9%A0/image-20221203111234234.png">
+<meta property="article:published_time" content="2022-12-02T10:04:59.000Z">
+<meta property="article:modified_time" content="2022-12-18T04:04:09.198Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/12/02/tomcat%E7%BB%83%E4%B9%A0/image-20221202110441970.png">
+  
+  
+  <title>tomcat练习 - 5-12 23:30</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="tomcat练习">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-12-02 10:04" pubdate>
+        December 2, 2022 am
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      21k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      174 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">tomcat练习</h1>
+            
+            <div class="markdown-body">
+              <p>[TOC]</p>
+<h3 id="一、JDK的安装"><a href="#一、JDK的安装" class="headerlink" title="一、JDK的安装"></a>一、JDK的安装</h3><p>JDK是 Java 语言的软件开发工具包,JDK协议基于 JRL(JavaResearch License)协议</p>
+<p><strong>java程序的源码是.java，需要使用JDK里面的javac将.java转换为字节码（.class），在通过虚拟机将字节码转换为Linux和Windows里的机器码</strong></p>
+<p>JDK分为免费版（openjdk：测试环境使用）和收费版（oraclejdk 8版本以后收费：生产环境使用）</p>
+<p>openjdk的安装，只需要yum或者apt即可安装</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></div></td><td class="code"><pre><code class="hljs sh">[root@Rocky ~]<span class="hljs-comment">#yum -y install java-1.8.0-openjdk-devel</span><br><br>[root@ubuntu2204 ~]<span class="hljs-comment">#apt -y install openjdk-11-jdk</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="1-1、安装oracle官方JDK"><a href="#1-1、安装oracle官方JDK" class="headerlink" title="1.1、安装oracle官方JDK"></a>1.1、安装oracle官方JDK</h4><p>官方下载链接: </p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs http">#注意需要注册登录后,才能下载JDK https://www.oracle.com/java/technologies/downloads/#java8 https://www.oracle.com/java/technologies/downloads/#java11 https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@Rocky ~]<span class="hljs-comment">#ls</span><br>anaconda-ks.cfg  jdk-8u321-linux-x64.tar.gz<br>[root@Rocky ~]<span class="hljs-comment">#tar xf jdk-8u321-linux-x64.tar.gz -C /usr/local</span><br>[root@Rocky ~]<span class="hljs-comment">#cd /usr/local</span><br>[root@Rocky <span class="hljs-built_in">local</span>]<span class="hljs-comment">#ls</span><br>bin  etc  games  include  jdk1.8.0_321  lib  lib64  libexec  sbin  share  src<br>[root@Rocky <span class="hljs-built_in">local</span>]<span class="hljs-comment">#ln -s jdk1.8.0_321/ jdk        #设置软连接</span><br>[root@Rocky <span class="hljs-built_in">local</span>]<span class="hljs-comment">#ls</span><br>bin  etc  games  include  jdk  jdk1.8.0_321  lib  lib64  libexec  sbin  share  src<br><br><span class="hljs-comment">#初始化环境变量</span><br>[root@Rocky ~]<span class="hljs-comment">#vim /etc/profile.d/jdk.sh</span><br><span class="hljs-built_in">export</span> JAVA_HOME=/usr/local/jdk <span class="hljs-built_in">export</span><br>PATH=<span class="hljs-variable">$PATH</span>:<span class="hljs-variable">$JAVA_HOME</span>/bin<br><span class="hljs-comment">#以下两项非必须项</span><br><span class="hljs-built_in">export</span> JRE_HOME=<span class="hljs-variable">$JAVA_HOME</span>/jre<br><span class="hljs-built_in">export</span> CLASSPATH=.:<span class="hljs-variable">$JAVA_HOME</span>/lib/:<span class="hljs-variable">$JRE_HOME</span>/lib/<br>:wq<br>[root@Rocky ~]<span class="hljs-comment">#. /etc/profile.d/jdk.sh</span><br><br><span class="hljs-comment">#注意:JAVA_HOME变量必须设置,否则tomcat启动时会出下面错误</span><br>[root@Rocky ~]<span class="hljs-comment">#catalina.sh                   #安装Tomcat才有这个脚本</span><br>Neither the JAVA_HOME nor the JRE_HOME environment variable is defined At least one of these environment variable is needed to run this program [root@centos8 ~]<span class="hljs-comment">#startup.sh Neither the JAVA_HOME nor the JRE_HOME environment variable is defined At least one of these environment variable is needed to run this program</span><br><br><span class="hljs-comment">#验证安装</span><br>[root@Rocky ~]<span class="hljs-comment">#java -version</span><br>java version <span class="hljs-string">&quot;1.8.0_321&quot;</span><br>Java(TM) SE Runtime Environment (build 1.8.0_321-b07)<br>Java HotSpot(TM) 64-Bit Server VM (build 25.321-b07, mixed mode)<br>[root@Rocky ~]<span class="hljs-comment">#which java</span><br>/usr/local/jdk/bin/java<br></code></pre></td></tr></table></figure>
+
+<h3 id="二、Tomcat的二进制安装"><a href="#二、Tomcat的二进制安装" class="headerlink" title="二、Tomcat的二进制安装"></a>二、Tomcat的二进制安装</h3><p><strong>注意:安装tomcat前必须先部署JDK</strong></p>
+<p>官方和镜像站点下载: </p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs http">https://tomcat.apache.org<br>https://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/<br></code></pre></td></tr></table></figure>
+
+<p><a href=""><img src="image-20221202110441970.png" srcset="/img/loading.gif" lazyload alt="image-20221202110441970"></a></p>
+<h4 id="2-1、Tomcat的安装"><a href="#2-1、Tomcat的安装" class="headerlink" title="2.1、Tomcat的安装"></a>2.1、Tomcat的安装</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@Rocky ~]<span class="hljs-comment">#wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.59/bin/apache-tomcat-9.0.59.tar.gz</span><br>[root@Rocky ~]<span class="hljs-comment">#ls</span><br>anaconda-ks.cfg  apache-tomcat-9.0.59.tar.gz  jdk-8u321-linux-x64.tar.gz<br>[root@Rocky ~]<span class="hljs-comment">#tar xf apache-tomcat-9.0.59.tar.gz  -C /usr/local</span><br>[root@Rocky ~]<span class="hljs-comment">#cd /usr/local</span><br>[root@Rocky <span class="hljs-built_in">local</span>]<span class="hljs-comment">#ls</span><br>apache-tomcat-9.0.59  bin  etc  games  include  jdk  jdk1.8.0_321  lib  lib64  libexec  sbin  share  src<br>[root@Rocky <span class="hljs-built_in">local</span>]<span class="hljs-comment">#ln -s apache-tomcat-9.0.59/ tomcat</span><br><br><span class="hljs-comment">#设置环境变量</span><br>[root@Rocky <span class="hljs-built_in">local</span>]<span class="hljs-comment">#echo &#x27;PATH=/usr/local/tomcat/bin:$PATH&#x27; &gt; /etc/profile.d/tomcat.sh</span><br>[root@Rocky <span class="hljs-built_in">local</span>]<span class="hljs-comment">#. /etc/profile.d/tomcat.sh</span><br>[root@Rocky <span class="hljs-built_in">local</span>]<span class="hljs-comment">#echo $PATH</span><br>/usr/local/tomcat/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/local/jdk/bin<br><br><span class="hljs-comment">#查看当前变量设置和命令用法</span><br>[root@Rocky <span class="hljs-built_in">local</span>]<span class="hljs-comment">#catalina.sh</span><br>Using CATALINA_BASE:   /usr/local/tomcat<br>Using CATALINA_HOME:   /usr/local/tomcat<br>Using CATALINA_TMPDIR: /usr/local/tomcat/temp<br>Using JRE_HOME:        /usr/local/jdk/jre<br>Using CLASSPATH:       /usr/local/tomcat/bin/bootstrap.jar:/usr/local/tomcat/bin/tomcat-juli.jar<br>Using CATALINA_OPTS:   <br>Usage: catalina.sh ( commands ... )<br>commands:<br>  debug             Start Catalina <span class="hljs-keyword">in</span> a debugger<br>  debug -security   Debug Catalina with a security manager<br>  jpda start        Start Catalina under JPDA debugger<br>  run               Start Catalina <span class="hljs-keyword">in</span> the current window<br>  run -security     Start <span class="hljs-keyword">in</span> the current window with security manager<br>  start             Start Catalina <span class="hljs-keyword">in</span> a separate window<br>  start -security   Start <span class="hljs-keyword">in</span> a separate window with security manager<br>  stop              Stop Catalina, waiting up to 5 seconds <span class="hljs-keyword">for</span> the process to end<br>  stop n            Stop Catalina, waiting up to n seconds <span class="hljs-keyword">for</span> the process to end<br>  stop -force       Stop Catalina, <span class="hljs-built_in">wait</span> up to 5 seconds and <span class="hljs-keyword">then</span> use <span class="hljs-built_in">kill</span> -KILL <span class="hljs-keyword">if</span> still running<br>  stop n -force     Stop Catalina, <span class="hljs-built_in">wait</span> up to n seconds and <span class="hljs-keyword">then</span> use <span class="hljs-built_in">kill</span> -KILL <span class="hljs-keyword">if</span> still running<br>  configtest        Run a basic syntax check on server.xml - check <span class="hljs-built_in">exit</span> code <span class="hljs-keyword">for</span> result<br>  version           What version of tomcat are you running?<br>Note: Waiting <span class="hljs-keyword">for</span> the process to end and use of the -force option require that <span class="hljs-variable">$CATALINA_PID</span> is defined<br><br><span class="hljs-comment">#启动tomcat</span><br>[root@Rocky <span class="hljs-built_in">local</span>]<span class="hljs-comment">#startup.sh           #此脚本等同于catalina.sh + start</span><br>Using CATALINA_BASE:   /usr/local/tomcat<br>Using CATALINA_HOME:   /usr/local/tomcat<br>Using CATALINA_TMPDIR: /usr/local/tomcat/temp<br>Using JRE_HOME:        /usr/local/jdk/jre<br>Using CLASSPATH:       /usr/local/tomcat/bin/bootstrap.jar:/usr/local/tomcat/bin/tomcat-juli.jar<br>Using CATALINA_OPTS:   <br>Tomcat started.<br>[root@Rocky <span class="hljs-built_in">local</span>]<span class="hljs-comment">#ss -ntl     #查看Tomcat的8080端口已开启</span><br>State   Recv-Q    Send-Q      Local Address:Port     Peer Address:Port     Process   <br>LISTEN  0         128         0.0.0.0:22               0.0.0.0:*                    <br>LISTEN  0         1         [::ffff:127.0.0.1]:8005    *:*                    <br>LISTEN  0         100        *:8080                    *:*                    <br>LISTEN  0         128         *:80                     *:*                    <br>LISTEN  0         128         [::]:22                  [::]:* <br><br><span class="hljs-comment">#关闭tomcat</span><br>[root@Rocky <span class="hljs-built_in">local</span>]<span class="hljs-comment">#shutdown.sh          #此脚本等同于catalina.sh + stop</span><br>Using CATALINA_BASE:   /usr/local/tomcat<br>Using CATALINA_HOME:   /usr/local/tomcat<br>Using CATALINA_TMPDIR: /usr/local/tomcat/temp<br>Using JRE_HOME:        /usr/local/jdk/jre<br>Using CLASSPATH:       /usr/local/tomcat/bin/bootstrap.jar:/usr/local/tomcat/bin/tomcat-juli.jar<br>Using CATALINA_OPTS:<br><span class="hljs-comment">#或者以下也可以,指定10s后停止,默认5s </span><br>[root@centos8 ~]<span class="hljs-comment">#catalina.sh stop 10</span><br><br><span class="hljs-comment">#再次用不同方式启动tomcat</span><br>[root@Rocky <span class="hljs-built_in">local</span>]<span class="hljs-comment">#catalina.sh start</span><br>Using CATALINA_BASE:   /usr/local/tomcat<br>Using CATALINA_HOME:   /usr/local/tomcat<br>Using CATALINA_TMPDIR: /usr/local/tomcat/temp<br>Using JRE_HOME:        /usr/local/jdk/jre<br>Using CLASSPATH:       /usr/local/tomcat/bin/bootstrap.jar:/usr/local/tomcat/bin/tomcat-juli.jar<br>Using CATALINA_OPTS:   <br>Tomcat started.<br><span class="hljs-comment">#再次用不同方式关闭tomcat</span><br>[root@Rocky <span class="hljs-built_in">local</span>]<span class="hljs-comment">#catalina.sh stop</span><br>Using CATALINA_BASE:   /usr/local/tomcat<br>Using CATALINA_HOME:   /usr/local/tomcat<br>Using CATALINA_TMPDIR: /usr/local/tomcat/temp<br>Using JRE_HOME:        /usr/local/jdk/jre<br>Using CLASSPATH:       /usr/local/tomcat/bin/bootstrap.jar:/usr/local/tomcat/bin/tomcat-juli.jar<br>Using CATALINA_OPTS: <br></code></pre></td></tr></table></figure>
+
+<p><a href=""><img src="image-20221202112918035.png" srcset="/img/loading.gif" lazyload alt="image-20221202112918035"></a></p>
+<p>注意：为了后期更方便管理，需添加service文件</p>
+<h4 id="2-2、配置tomcat自启动的service文件"><a href="#2-2、配置tomcat自启动的service文件" class="headerlink" title="2.2、配置tomcat自启动的service文件"></a>2.2、配置tomcat自启动的service文件</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#创建tomcat专用帐户</span><br>[root@Rocky ~]<span class="hljs-comment">#useradd -r -s /sbin/nologin tomcat</span><br><br><span class="hljs-comment">#准备service文件中相关环境文件</span><br>[root@Rocky ~]<span class="hljs-comment">#vim /usr/local/tomcat/conf/tomcat.conf</span><br><span class="hljs-comment">#如果不指定上面变量,/var/log/messages文件中会出现下面无法启动错误提示 Mar 15 14:30:09 centos8 startup.sh[1530]: Neither the JAVA_HOME nor the JRE_HOME environment variable is defined Mar 15 14:30:09 centos8 startup.sh[1530]: At least one of these environment variable is needed to run this program</span><br><br>[root@Rocky ~]<span class="hljs-comment">#chown -R tomcat. /usr/local/tomcat/</span><br><br><span class="hljs-comment">#创建tomcat.service文件</span><br>[root@Rocky ~]<span class="hljs-comment">#vim /lib/systemd/system/tomcat.service</span><br>[Unit]<br>Description=Tomcat<br><span class="hljs-comment">#After=syslog.target network.target remote-fs.target nss-lookup.target</span><br>After=syslog.target network.target<br><br>[Service]<br>Type=forking<br>EnvironmentFile=/usr/local/tomcat/conf/tomcat.conf<br>ExecStart=/usr/local/tomcat/bin/startup.sh<br>ExecStop=/usr/local/tomcat/bin/shutdown.sh<br>PrivateTmp=<span class="hljs-literal">true</span><br>User=tomcat<br>Group=tomcat<br><br>[Install]<br>WantedBy=multi-user.target<br>:wq<br>[root@Rocky ~]<span class="hljs-comment">#systemctl daemon-reload      #重新加载</span><br>[root@Rocky ~]<span class="hljs-comment">#systemctl enable --now tomcat</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="三、tomcat的文件结构和组成"><a href="#三、tomcat的文件结构和组成" class="headerlink" title="三、tomcat的文件结构和组成"></a>三、tomcat的文件结构和组成</h3><table>
+<thead>
+<tr>
+<th><strong>目录</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>bin</td>
+<td>服务启动、停止等相关程序和文件</td>
+</tr>
+<tr>
+<td><strong>conf</strong></td>
+<td>配置文件</td>
+</tr>
+<tr>
+<td>lib</td>
+<td>库目录</td>
+</tr>
+<tr>
+<td>logs</td>
+<td>日志目录</td>
+</tr>
+<tr>
+<td><strong>webapps</strong></td>
+<td>应用程序，应用部署目录</td>
+</tr>
+<tr>
+<td>work</td>
+<td>jsp编译后的结果文件，建议提前预热访问，升级应用后，删除此目录数据才能更新</td>
+</tr>
+</tbody></table>
+<p>注意：当java程序更新时，需要将work目录数据删除（rm -rf   /usr/local/tomcat/work/*)</p>
+<h4 id="3-1、JSP-WebApp目录结构"><a href="#3-1、JSP-WebApp目录结构" class="headerlink" title="3.1、JSP WebApp目录结构"></a>3.1、JSP WebApp目录结构</h4><p><strong>$CATALINA_BASE/webapps</strong>下面的每个目录对应的WebApp,可能有以下子目录,但下面子目录是非必须的</p>
+<p>①主页配置：默认按以下顺序查找主页文件 index.html，index.htm、index.jsp</p>
+<p>②WEB-INF/：当前目录WebApp的私有资源路径，通常存储当前应用使用的web.xml和context.xml配置文件</p>
+<p>③META-INF/：类似于WEB-INF，也是私有资源的配置信息，和WEB-INF/目录一样浏览器无法访问</p>
+<p>④classes/：类文件，当前webapp需要的类</p>
+<p>⑤lib/：当前应用依赖的jar包</p>
+<h4 id="3-2、主页设置"><a href="#3-2、主页设置" class="headerlink" title="3.2、主页设置"></a>3.2、主页设置</h4><h5 id="3-2-1、全局配置实现修改默认主页文件"><a href="#3-2-1、全局配置实现修改默认主页文件" class="headerlink" title="3.2.1、全局配置实现修改默认主页文件"></a>3.2.1、全局配置实现修改默认主页文件</h5><p>默认情况下 tomcat 会在**$CATALINA_BASE**/webapps/ROOT/目录下按以下次序查找文件,找到第一个则进行显示</p>
+<p>​       ——index.html</p>
+<p>​       ——index.htm</p>
+<p>​       ——index.jsp</p>
+<p>可以通过修改 <strong>$CATALINA_BASE</strong>/conf/web.xml 中的下面 <welcome-file-list>标签 内容修改默认页文件</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#此是修改所有网站的优先级</span><br>[root@Rocky ~]<span class="hljs-comment">#vim /usr/local/tomcat/conf/web.xml</span><br>    &lt;welcome-file-list&gt;<br>        &lt;welcome-file&gt;index.html&lt;/welcome-file&gt;   <span class="hljs-comment">#调整此三行的前后顺序，即可解决其优先级</span><br>        &lt;welcome-file&gt;index.htm&lt;/welcome-file&gt;<br>        &lt;welcome-file&gt;index.jsp&lt;/welcome-file&gt;<br>    &lt;/welcome-file-list&gt;<br><br>&lt;/web-app&gt;<br>[root@Rocky ~]<span class="hljs-comment">#systemctl restart tomcat</span><br><br><span class="hljs-comment">#单独修改其中一个网站的优先级（比如修改ROOT）</span><br>[root@Rocky ~]<span class="hljs-comment">#vim /usr/local/tomcat/webapps/ROOT/WEB-INF/web.xml</span><br> &lt;display-name&gt;Welcome to Tomcat&lt;/display-name&gt;<br>  &lt;description&gt;<br>     Welcome to Tomcat<br>  &lt;/description&gt;<br>    &lt;welcome-file-list&gt;                           <span class="hljs-comment">#添此5行到此位置</span><br>        &lt;welcome-file&gt;index.html&lt;/welcome-file&gt;   <span class="hljs-comment">#调整此三行的前后顺序，即可解决其优先级</span><br>        &lt;welcome-file&gt;index.htm&lt;/welcome-file&gt;<br>        &lt;welcome-file&gt;index.jsp&lt;/welcome-file&gt;<br>    &lt;/welcome-file-list&gt;<br>&lt;/web-app&gt;<br>:wq<br><br><br><span class="hljs-comment">#如果是针对特定APP目录设置专用配置文件</span><br>[root@Rocky tomcat]<span class="hljs-comment">#cp -rp webapps/ROOT/WEB-INF/ webapps/magedu/</span><br><br>[root@Rocky tomcat]<span class="hljs-comment">#chown -R tomcat.tomcat webapps/magedu/</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="四、部署基于JAR包的博客系统Halo"><a href="#四、部署基于JAR包的博客系统Halo" class="headerlink" title="四、部署基于JAR包的博客系统Halo"></a>四、部署基于JAR包的博客系统Halo</h3><p>Halo 是一款现代化的基于JAVA实现的博客/CMS系统</p>
+<p>Halo 官网: <a target="_blank" rel="noopener" href="https://halo.run/">https://halo.run/</a></p>
+<p>Halo 部署: <a target="_blank" rel="noopener" href="https://docs.halo.run/install/linux">https://docs.halo.run/install/linux</a></p>
+<p>docker 部署: <a target="_blank" rel="noopener" href="https://docs.halo.run/install/docker">https://docs.halo.run/install/docker</a></p>
+<p><strong>jar包不依赖于Tomcat</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#注意:运行当前版本Halo的最低依赖要求为 JRE 11，目前介绍两种 Linux 发行版的安装方式，均为 OpenJRE，不推荐 Oracle 版本。</span><br>[root@Rocky opt]<span class="hljs-comment">#ls                       #下载jar包，可以直接执行程序</span><br>halo-1.4.17.jar<br>[root@Rocky opt]<span class="hljs-comment">#java -jar halo-1.4.17.jar</span><br></code></pre></td></tr></table></figure>
+
+<p><a href=""><img src="image-20221202151148398.png" srcset="/img/loading.gif" lazyload alt="image-20221202151148398"></a></p>
+<h3 id="五、自动的应用部署war包"><a href="#五、自动的应用部署war包" class="headerlink" title="五、自动的应用部署war包"></a>五、自动的应用部署war包</h3><h4 id="5-1、将jsp文件制作成war包"><a href="#5-1、将jsp文件制作成war包" class="headerlink" title="5.1、将jsp文件制作成war包"></a>5.1、将jsp文件制作成war包</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@centos8 ~]<span class="hljs-comment">#ls /data/app2/</span><br>test.jsp<br>[root@centos8 ~]<span class="hljs-comment">#cd /data/app2/</span><br><span class="hljs-comment">#生成war包文件app2.war,此文件的名称决定了tomcat子目录的名称</span><br>[root@centos8 app2]<span class="hljs-comment">#jar cvf /data/app2.war *</span><br>added manifest adding: test.html(<span class="hljs-keyword">in</span> = 28) (out= 27)(deflated 3%)<br>adding: test.jsp(<span class="hljs-keyword">in</span> = 329) (out= 275)(deflated 16%)<br>[root@centos8 app2]<span class="hljs-comment">#cd /data/</span><br>[root@centos8 data]<span class="hljs-comment">#ls app2</span><br>app2.war<br>[root@centos8 data]<span class="hljs-comment">#chown tomcat.tomcat /data/app2.war</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="5-2、自动应用部署上面的war包"><a href="#5-2、自动应用部署上面的war包" class="headerlink" title="5.2、自动应用部署上面的war包"></a>5.2、自动应用部署上面的war包</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@centos8 data]<span class="hljs-comment">#cd /usr/local/tomcat</span><br>[root@centos8 tomcat]<span class="hljs-comment">#cp -p /data/app2.war webapps/</span><br><br><span class="hljs-comment">#再次查看，tomcat将app2.war自动解压缩</span><br>[root@centos8 tomcat]<span class="hljs-comment">#ll webapps/</span><br>total 8<br>drwxr-x--- 15 tomcat tomcat 4096 Feb 9 11:02 docs<br>drwxr-x--- 6 tomcat tomcat 83 Feb 9 11:02 examples<br>drwxr-x--- 5 tomcat tomcat 87 Feb 9 11:02 host-manager<br>drwxr-x--- 5 tomcat tomcat 103 Feb 9 11:02 manager<br>drwxr-x--- 3 tomcat tomcat 300 Feb 9 19:59 ROOT<br>drwxr-x--- 3 tomcat tomcat 55 Feb 9 20:14 app2<br>-rw-r--r-- 1 tomcat tomcat 862 Feb 9 20:05 app2.war<br>[root@centos8 tomcat]<span class="hljs-comment">#ll webapps/app2</span><br>total 8<br>drwxr-x--- 2 tomcat tomcat 44 Feb 9 20:14 META-INF<br>-rw-r----- 1 tomcat tomcat 329 Aug 30 02:30 test.jsp<br></code></pre></td></tr></table></figure>
+
+<h3 id="六、基于WEB的管理Server-status和Manager-APP实现应用部署"><a href="#六、基于WEB的管理Server-status和Manager-APP实现应用部署" class="headerlink" title="六、基于WEB的管理Server status和Manager APP实现应用部署"></a>六、基于WEB的管理Server status和Manager APP实现应用部署</h3><p>tomcat 提供了基于WEB的管理页面,默认由 tomcat-admin-webapps.noarch包提供相关文件</p>
+<p>打开浏览器可以访问tomcat管理的默认管理页面，点击下图两个按钮都会出现下面提示403的错误提示</p>
+<p><a href=""><img src="image-20221202154610064.png" srcset="/img/loading.gif" lazyload alt="image-20221202154610064"></a></p>
+<p><a href=""><img src="image-20221202154807444.png" srcset="/img/loading.gif" lazyload alt="image-20221202154807444"></a></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#修改conf/tomcat-users.xml，我们需要一个角色manager-gui。</span><br>[root@centos8 tomcat]<span class="hljs-comment">#vim conf/tomcat-users.xml</span><br>&lt;tomcat-users xmlns=<span class="hljs-string">&quot;http://tomcat.apache.org/xml&quot;</span><br>              xmlns:xsi=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span><br>              xsi:schemaLocation=<span class="hljs-string">&quot;http://tomcat.apache.org/xml tomcat-users.xsd&quot;</span><br>              version=<span class="hljs-string">&quot;1.0&quot;</span>&gt;<br><span class="hljs-comment">#加下面两行，指定用户和密码</span><br>  &lt;role rolename=<span class="hljs-string">&quot;manager-gui&quot;</span>/&gt;<br>  &lt;user username=<span class="hljs-string">&quot;admin&quot;</span> password=<span class="hljs-string">&quot;123456&quot;</span> roles=<span class="hljs-string">&quot;manager-gui&quot;</span>/&gt;<br>&lt;/tomcat-users&gt;<br>:wq<br><span class="hljs-comment">#修改全局配置文件需要重启服务生效</span><br>[root@centos8 tomcat]<span class="hljs-comment">#systemctl restart tomcat</span><br><br><span class="hljs-comment">#注意此时只能本地访问，不能远程，所以需修改webapps/manager/META-INF/context.xml</span><br>[root@centos8 tomcat]<span class="hljs-comment">#vim webapps/manager/META-INF/context.xml</span><br>&lt;Context antiResourceLocking=<span class="hljs-string">&quot;false&quot;</span> privileged=<span class="hljs-string">&quot;true&quot;</span> &gt;<br>  &lt;Valve className=<span class="hljs-string">&quot;org.apache.catalina.valves.RemoteAddrValve&quot;</span><br>         allow=<span class="hljs-string">&quot;127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1|10\.0\.0\.\d+&quot;</span> /&gt;   <span class="hljs-comment">#添加|10\.0\.0\.\d+其中d表示一个数字+表示多个数字</span><br>  &lt;Manager sessionAttributeValueClassNameFilter=<span class="hljs-string">&quot;java\.lang\.</span><br><span class="hljs-string">:wq  </span><br><span class="hljs-string">#修改WebApp的配置无需重启服务即可生效</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="七、tomcat实现多虚拟主机"><a href="#七、tomcat实现多虚拟主机" class="headerlink" title="七、tomcat实现多虚拟主机"></a>七、tomcat实现多虚拟主机</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@Rocky ~]<span class="hljs-comment">#cd /usr/local/tomcat</span><br>[root@Rocky tomcat]<span class="hljs-comment">#vim conf/server.xml</span><br>      &lt;Host name=<span class="hljs-string">&quot;localhost&quot;</span>  appBase=<span class="hljs-string">&quot;webapps&quot;</span><br>            unpackWARs=<span class="hljs-string">&quot;true&quot;</span> autoDeploy=<span class="hljs-string">&quot;true&quot;</span>&gt;<br><br>        &lt;!-- SingleSignOn valve, share authentication between web applications<br>             Documentation at: /docs/config/valve.html --&gt;<br>        &lt;!--<br>        &lt;Valve className=<span class="hljs-string">&quot;org.apache.catalina.authenticator.SingleSignOn&quot;</span> /&gt;<br>        --&gt;<br><br>        &lt;!-- Access <span class="hljs-built_in">log</span> processes all example.<br>             Documentation at: /docs/config/valve.html<br>             Note: The pattern used is equivalent to using pattern=<span class="hljs-string">&quot;common&quot;</span> --&gt;<br>        &lt;Valve className=<span class="hljs-string">&quot;org.apache.catalina.valves.AccessLogValve&quot;</span> directory=<span class="hljs-string">&quot;logs&quot;</span><br>               prefix=<span class="hljs-string">&quot;localhost_access_log&quot;</span> suffix=<span class="hljs-string">&quot;.txt&quot;</span><br>               pattern=<span class="hljs-string">&quot;%h %l %u %t &amp;quot;%r&amp;quot; %s %b&quot;</span> /&gt;<br><br>      &lt;/Host&gt;<br><span class="hljs-comment">#添加下面内容即可增加另一台虚拟主机</span><br>      &lt;Host name=<span class="hljs-string">&quot;n68.magedu.org&quot;</span>  appBase=<span class="hljs-string">&quot;/data/tomcat/n68&quot;</span>      <span class="hljs-comment">#n68.magedu.org必须是网站名,/data/tomcat/n68是文件存放路径</span><br>            unpackWARs=<span class="hljs-string">&quot;true&quot;</span> autoDeploy=<span class="hljs-string">&quot;true&quot;</span>&gt;<br>        &lt;Valve className=<span class="hljs-string">&quot;org.apache.catalina.valves.AccessLogValve&quot;</span> directory=<span class="hljs-string">&quot;logs&quot;</span><br>               prefix=<span class="hljs-string">&quot;n68_access_log&quot;</span> suffix=<span class="hljs-string">&quot;.txt&quot;</span>      <span class="hljs-comment">#日志的名称</span><br>               pattern=<span class="hljs-string">&quot;%h %l %u %t &amp;quot;%r&amp;quot; %s %b&quot;</span> /&gt;<br><br>      &lt;/Host&gt;<br>:wq<br><br><span class="hljs-comment">#对每个虚拟主机，准备数据</span><br>[root@Rocky tomcat]<span class="hljs-comment">#mkdir -p /data/tomcat/n68/ROOT</span><br>[root@Rocky tomcat]<span class="hljs-comment">#cd /data/tomcat/n68/ROOT</span><br>[root@Rocky ROOT]<span class="hljs-comment">#vim index.html</span><br>&lt;h1&gt; 10.0.0.186 &lt;/h1&gt;<br>:wq<br><br><span class="hljs-comment">#设置权限</span><br>[root@Rocky ROOT]<span class="hljs-comment">#chown -R tomcat. /data/tomcat/n68/</span><br><br><br><span class="hljs-comment">#此外还需要DNS进行解析</span><br>[root@DNS ~]<span class="hljs-comment">#vim /var/named/magedu.org.zone </span><br><span class="hljs-variable">$TTL</span> 1D<br>@         IN    SOA   master  admin.magedu.org ( 6  1D  10M  1D  6H  )<br>                NS    master<br>                NS    slave1<br>master          A     10.0.0.128<br>slave1          A     10.0.0.184<br>n68             A     10.0.0.186 <br>:wq<br>[root@DNS ~]<span class="hljs-comment">#rndc reload</span><br><br>[root@Rocky tomcat]<span class="hljs-comment">#systemctl restart tomcat</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="image-20221202163609685.png" srcset="/img/loading.gif" lazyload alt="image-20221202163609685"></p>
+<h3 id="八、tomcat的负载均衡"><a href="#八、tomcat的负载均衡" class="headerlink" title="八、tomcat的负载均衡"></a>八、tomcat的负载均衡</h3><p><a href=""><img src="image-20221202173530849.png" srcset="/img/loading.gif" lazyload alt="image-20221202173530849"></a></p>
+<h4 id="8-1、Tomcat配置"><a href="#8-1、Tomcat配置" class="headerlink" title="8.1、Tomcat配置"></a>8.1、Tomcat配置</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@tomcat1 ~]<span class="hljs-comment">#cd /usr/local/tomcat</span><br>[root@tomcat1 tomcat]<span class="hljs-comment">#vim conf/server.xml</span><br>&lt;Host name=<span class="hljs-string">&quot;www.magedu.org&quot;</span>  appBase=<span class="hljs-string">&quot;/data/tomcat/node1/&quot;</span><br>            unpackWARs=<span class="hljs-string">&quot;true&quot;</span> autoDeploy=<span class="hljs-string">&quot;true&quot;</span>&gt;<br>        &lt;Valve className=<span class="hljs-string">&quot;org.apache.catalina.valves.AccessLogValve&quot;</span> directory=<span class="hljs-string">&quot;logs&quot;</span><br>               prefix=<span class="hljs-string">&quot;node1_access_log&quot;</span> suffix=<span class="hljs-string">&quot;.txt&quot;</span><br>               pattern=<span class="hljs-string">&quot;%h %l %u %t &amp;quot;%r&amp;quot; %s %b&quot;</span> /&gt;<br>      &lt;/Host&gt;<br>:wq<br>[root@tomcat1 ~]<span class="hljs-comment">#mkdir -p /data/tomcat/node1/ROOT</span><br>[root@tomcat1 ~]<span class="hljs-comment">#cd /data/tomcat/node1/ROOT</span><br>[root@tomcat1 ROOT]<span class="hljs-comment">#vim index.jsp</span><br>[root@tomcat1 ROOT]<span class="hljs-comment">#cat index.jsp </span><br>&lt;%@ page import=<span class="hljs-string">&quot;java.util.*&quot;</span> %&gt;<br>&lt;!DOCTYPE html&gt;<br>&lt;html lang=<span class="hljs-string">&quot;en&quot;</span>&gt;<br>&lt;<span class="hljs-built_in">head</span>&gt;<br>    &lt;meta charset=<span class="hljs-string">&quot;UTF-8&quot;</span>&gt;<br>    &lt;title&gt;tomcat <span class="hljs-built_in">test</span>&lt;/title&gt;<br>&lt;/head&gt;<br>&lt;body&gt;<br>&lt;h1&gt; Tomcat Website node1 &lt;/h1&gt;<br>&lt;div&gt;On  &lt;%=request.getServerName() %&gt;&lt;/div&gt;<br>&lt;div&gt;&lt;%=request.getLocalAddr() + <span class="hljs-string">&quot;:&quot;</span> + request.getLocalPort() %&gt;&lt;/div&gt;<br>&lt;div&gt;SessionID = &lt;span style=<span class="hljs-string">&quot;color:blue&quot;</span>&gt;&lt;%=session.getId() %&gt;&lt;/span&gt;&lt;/div&gt;<br>&lt;%=new Date()%&gt;<br>&lt;/body&gt;<br>&lt;/html&gt;<br>[root@tomcat1 ~]<span class="hljs-comment">#chown -R tomcat. /data/tomcat/node1/</span><br>[root@tomcat1 ROOT]<span class="hljs-comment">#systemctl restart tomcat</span><br>-----------------------------------------------------------------------------------<br>[root@tomcat2 ~]<span class="hljs-comment">#cd /usr/local/tomcat</span><br>[root@tomcat2 tomcat]<span class="hljs-comment">#vim conf/server.xml</span><br>&lt;Host name=<span class="hljs-string">&quot;www.magedu.org&quot;</span>  appBase=<span class="hljs-string">&quot;/data/tomcat/node2/&quot;</span><br>            unpackWARs=<span class="hljs-string">&quot;true&quot;</span> autoDeploy=<span class="hljs-string">&quot;true&quot;</span>&gt;<br>        &lt;Valve className=<span class="hljs-string">&quot;org.apache.catalina.valves.AccessLogValve&quot;</span> directory=<span class="hljs-string">&quot;logs&quot;</span><br>               prefix=<span class="hljs-string">&quot;node2_access_log&quot;</span> suffix=<span class="hljs-string">&quot;.txt&quot;</span><br>               pattern=<span class="hljs-string">&quot;%h %l %u %t &amp;quot;%r&amp;quot; %s %b&quot;</span> /&gt;<br>      &lt;/Host&gt;<br>:wq<br>[root@tomcat2 ~]<span class="hljs-comment">#mkdir -p /data/tomcat/node2/ROOT</span><br>[root@tomcat2 ~]<span class="hljs-comment">#cd /data/tomcat/node2/ROOT</span><br>[root@tomcat2 ROOT]<span class="hljs-comment">#vim index.jsp</span><br>[root@tomcat2 ROOT]<span class="hljs-comment">#cat index.jsp </span><br>&lt;%@ page import=<span class="hljs-string">&quot;java.util.*&quot;</span> %&gt;<br>&lt;!DOCTYPE html&gt;<br>&lt;html lang=<span class="hljs-string">&quot;en&quot;</span>&gt;<br>&lt;<span class="hljs-built_in">head</span>&gt;<br>    &lt;meta charset=<span class="hljs-string">&quot;UTF-8&quot;</span>&gt;<br>    &lt;title&gt;tomcat <span class="hljs-built_in">test</span>&lt;/title&gt;<br>&lt;/head&gt;<br>&lt;body&gt;<br>&lt;h1&gt; Tomcat Website node2 &lt;/h1&gt;<br>&lt;div&gt;On  &lt;%=request.getServerName() %&gt;&lt;/div&gt;<br>&lt;div&gt;&lt;%=request.getLocalAddr() + <span class="hljs-string">&quot;:&quot;</span> + request.getLocalPort() %&gt;&lt;/div&gt;<br>&lt;div&gt;SessionID = &lt;span style=<span class="hljs-string">&quot;color:blue&quot;</span>&gt;&lt;%=session.getId() %&gt;&lt;/span&gt;&lt;/div&gt;<br>&lt;%=new Date()%&gt;<br>&lt;/body&gt;<br>&lt;/html&gt;<br>[root@tomcat2 ~]<span class="hljs-comment">#chown -R tomcat. /data/tomcat/node2/</span><br>[root@tomcat2 ROOT]<span class="hljs-comment">#systemctl restart tomcat</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="8-2、DNS解析"><a href="#8-2、DNS解析" class="headerlink" title="8.2、DNS解析"></a>8.2、DNS解析</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@DNS ~]<span class="hljs-comment">#vim /var/named/magedu.org.zone </span><br><span class="hljs-variable">$TTL</span> 1D<br>@         IN    SOA   master  admin.magedu.org ( 6  1D  10M  1D  6H  )<br>                NS    master<br>                NS    slave1<br>master          A     10.0.0.128<br>slave1          A     10.0.0.184<br>node1           A     10.0.0.216<br>node2           A     10.0.0.217 <br>:wq<br>[root@DNS ~]<span class="hljs-comment">#rndc reload</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="8-3、nginx的配置（反向代理与负载均衡）"><a href="#8-3、nginx的配置（反向代理与负载均衡）" class="headerlink" title="8.3、nginx的配置（反向代理与负载均衡）"></a>8.3、nginx的配置（反向代理与负载均衡）</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@nginx ~]<span class="hljs-comment">#vim /apps/nginx/conf/nginx.conf</span><br>http &#123;<br>    upstream tomcat &#123;                    <span class="hljs-comment">#添加此模块</span><br>        server 10.0.0.216:8080;<br>        server 10.0.0.217:8080;<br>    &#125;<br><br>    server &#123;<br>        listen       80;<br>        server_name  localhost;<br>        location / &#123;<br>            root   html;<br>            index  index.html index.htm;<br>            proxy_pass http://tomcat;      <span class="hljs-comment">#添加以下两行</span><br>            proxy_set_header Host <span class="hljs-variable">$http_host</span>;<br>        &#125;<br>    &#125;<br>&#125;<br>:wq<br>[root@nginx ~]<span class="hljs-comment">#systemctl restart nginx</span><br><span class="hljs-comment">#此时访问方式是轮询，但session一直发生变化</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="8-3-1、保持session不发生变化"><a href="#8-3-1、保持session不发生变化" class="headerlink" title="8.3.1、保持session不发生变化"></a>8.3.1、保持session不发生变化</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@nginx ~]<span class="hljs-comment">#vim /apps/nginx/conf/nginx.conf</span><br>    upstream tomcat &#123;<br>        <span class="hljs-built_in">hash</span> <span class="hljs-variable">$cookie_JSESSIONID</span>;       <span class="hljs-comment">#添加此行，当jsession相同时，就往同一台机器上调度</span><br>        server 10.0.0.216:8080;<br>        server 10.0.0.217:8080;<br>    &#125;<br>:wq<br>[root@nginx ~]<span class="hljs-comment">#systemctl restart nginx</span><br><br></code></pre></td></tr></table></figure>
+
+<p><a href=""><img src="image-20221202185420285.png" srcset="/img/loading.gif" lazyload alt="image-20221202185420285"></a></p>
+<p><a href=""><img src="image-20221202185443412.png" srcset="/img/loading.gif" lazyload alt="image-20221202185443412"></a></p>
+<h3 id="九、tomcat和memcached集成在一台主机，实现session共享"><a href="#九、tomcat和memcached集成在一台主机，实现session共享" class="headerlink" title="九、tomcat和memcached集成在一台主机，实现session共享"></a>九、tomcat和memcached集成在一台主机，实现session共享</h3><p>msm（memcached session manager）提供将Tomcat的session保持到memcached或redis的程序，可以实现高可用。</p>
+<p><strong>注意：msm不支持Tomcat10版本</strong></p>
+<p>项目早期托管在google code,目前在Github</p>
+<p>github网站链接: </p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs http">https://github.com/magro/memcached-session-manager<br></code></pre></td></tr></table></figure>
+
+<p>安装参考链接: </p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs http">https://github.com/magro/memcached-session-manager/wiki/SetupAndConfiguration<br></code></pre></td></tr></table></figure>
+
+<p>将spymemcached.jar、memcached-session-manage、kyro相关的jar文件都放到Tomcat的lib目录中</p>
+<p>去，这个目录是 $CATALINA_HOME/lib/ ，对应本次安装就是/usr/local/tomcat/lib。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs ABAP">memcached-session-manager-2.3.2.jar<br>memcached-session-manager-tc9-2.3.2.jar      #如果是Tomcat8，需要安装tc8<br>spymemcached-2.12.3.jar<br><br>msm-kryo-serializer-2.3.2.jar<br>kryo-serializers-0.45.jar<br>kryo-3.0.3.jar<br>minlog-1.3.1.jar<br>reflectasm-1.11.9.jar<br>asm-5.2.jar<br>objenesis-2.6.jar<br></code></pre></td></tr></table></figure>
+
+
+
+<p><a href=""><img src="image-20221203090558919.png" srcset="/img/loading.gif" lazyload alt="image-20221203090558919"></a></p>
+<h4 id="9-1、Tomcat配置"><a href="#9-1、Tomcat配置" class="headerlink" title="9.1、Tomcat配置"></a>9.1、Tomcat配置</h4><p>和上面8.1、Tomcat配置相同</p>
+<h4 id="9-2、DNS解析"><a href="#9-2、DNS解析" class="headerlink" title="9.2、DNS解析"></a>9.2、DNS解析</h4><p>和上面8.2、DNS解析相同</p>
+<h4 id="9-3、nginx的配置（反向代理与负载均衡）"><a href="#9-3、nginx的配置（反向代理与负载均衡）" class="headerlink" title="9.3、nginx的配置（反向代理与负载均衡）"></a>9.3、nginx的配置（反向代理与负载均衡）</h4><p>和上面8.3、nginx的配置（反向代理与负载均衡）相同</p>
+<h4 id="9-4、memcached的配置"><a href="#9-4、memcached的配置" class="headerlink" title="9.4、memcached的配置"></a>9.4、memcached的配置</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@tomcat1 ~]<span class="hljs-comment">#yum -y install memcached</span><br>[root@tomcat1 ~]<span class="hljs-comment">#vim /etc/sysconfig/memcached</span><br>PORT=<span class="hljs-string">&quot;11211&quot;</span><br>USER=<span class="hljs-string">&quot;memcached&quot;</span><br>MAXCONN=<span class="hljs-string">&quot;1024&quot;</span>                  <span class="hljs-comment">#最大连接数</span><br>CACHESIZE=<span class="hljs-string">&quot;64&quot;</span>                  <span class="hljs-comment">#最大使用内存，正常生产中此处应该设置为内存的一半大小</span><br>OPTIONS=<span class="hljs-string">&quot;&quot;</span>                      <span class="hljs-comment">#注意有的版本此处写的127.0.0.1，则需要注释掉此行</span><br>:wq<br>[root@tomcat1 ~]<span class="hljs-comment">#systemctl enable --now memcached.service</span><br>[root@tomcat1 ~]<span class="hljs-comment">#ss -ntl</span><br>State       Recv-Q Send-Q    Local Address:Port                   Peer Address:Port <br>LISTEN      0      128                   *:11211                             *:*  <br>------------------------------------------------------------------------------------<br>[root@tomcat2 ~]<span class="hljs-comment">#yum -y install memcached</span><br>[root@tomcat2 ~]<span class="hljs-comment">#systemctl enable --now memcached.service</span><br>[root@tomcat2 ~]<span class="hljs-comment">#ss -ntl</span><br>State       Recv-Q Send-Q    Local Address:Port                   Peer Address:Port <br>LISTEN      0      128                   *:11211                             *:*  <br></code></pre></td></tr></table></figure>
+
+<h4 id="9-5、Tomcat和memcached的关联设置"><a href="#9-5、Tomcat和memcached的关联设置" class="headerlink" title="9.5、Tomcat和memcached的关联设置"></a>9.5、Tomcat和memcached的关联设置</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@tomcat1 tomcat]<span class="hljs-comment">#vim conf/context.xml</span><br>    --&gt;<br><span class="hljs-comment">#添加以下内容</span><br>&lt;Manager className=<span class="hljs-string">&quot;de.javakaffee.web.msm.MemcachedBackupSessionManager&quot;</span><br>    memcachedNodes=<span class="hljs-string">&quot;n1:10.0.0.216:11211,n2:10.0.0.217:11211&quot;</span><br>    failoverNodes=<span class="hljs-string">&quot;n1&quot;</span><br>    requestUriIgnorePattern=<span class="hljs-string">&quot;.*\.(ico|png|gif|jpg|css|js)$&quot;</span><br>    transcoderFactoryClass=<span class="hljs-string">&quot;de.javakaffee.web.msm.serializer.kryo.KryoTranscoderFactory&quot;</span><br>    /&gt;<br><span class="hljs-comment">#添加以上内容</span><br>&lt;/Context&gt;<br>:wq<br>[root@tomcat1 tomcat]<span class="hljs-comment">#cd lib</span><br>[root@tomcat1 lib]<span class="hljs-comment">#rz -E    #将前面所说的jar文件导入这个目录下</span><br>rz waiting to receive.<br>[root@tomcat1 lib]<span class="hljs-comment">#ls |wc -l</span><br>43<br>[root@tomcat1 lib]<span class="hljs-comment">#systemctl restart tomcat</span><br>------------------------------------------------------------------------------------<br>[root@tomcat2 tomcat]<span class="hljs-comment">#vim conf/context.xml</span><br>    --&gt;<br><span class="hljs-comment">#添加以下内容</span><br>&lt;Manager className=<span class="hljs-string">&quot;de.javakaffee.web.msm.MemcachedBackupSessionManager&quot;</span><br>    memcachedNodes=<span class="hljs-string">&quot;n1:10.0.0.216:11211,n2:10.0.0.217:11211&quot;</span><br>    failoverNodes=<span class="hljs-string">&quot;n2&quot;</span><br>    requestUriIgnorePattern=<span class="hljs-string">&quot;.*\.(ico|png|gif|jpg|css|js)$&quot;</span><br>    transcoderFactoryClass=<span class="hljs-string">&quot;de.javakaffee.web.msm.serializer.kryo.KryoTranscoderFactory&quot;</span><br>    /&gt;<br><span class="hljs-comment">#添加以上内容</span><br>&lt;/Context&gt;<br>:wq<br>[root@tomcat2 tomcat]<span class="hljs-comment">#cd lib</span><br><span class="hljs-comment">#将前面所说的jar文件导入这个目录下</span><br>[root@tomcat2 lib]<span class="hljs-comment">#ls |wc -l      #查看现在有多少文件</span><br>43<br>[root@tomcat2 lib]<span class="hljs-comment">#systemctl restart tomcat</span><br></code></pre></td></tr></table></figure>
+
+<p><a href=""><img src="image-20221203102125576.png" srcset="/img/loading.gif" lazyload alt="image-20221203102125576"></a></p>
+<p><a href=""><img src="image-20221203102452083.png" srcset="/img/loading.gif" lazyload alt="image-20221203102452083"></a></p>
+<h3 id="十、redis实现non-sticky模式的msm，实现session共享"><a href="#十、redis实现non-sticky模式的msm，实现session共享" class="headerlink" title="十、redis实现non-sticky模式的msm，实现session共享"></a>十、redis实现non-sticky模式的msm，实现session共享</h3><p>将spymemcached.jar、memcached-session-manage、kyro相关的jar文件都放到Tomcat的lib目录中</p>
+<p>去，这个目录是 $CATALINA_HOME/lib/ ，对应本次安装就是/usr/local/tomcat/lib。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs ABAP">memcached-session-manager-2.3.2.jar<br>memcached-session-manager-tc9-2.3.2.jar      #如果是Tomcat8，需要安装tc8<br>spymemcached-2.12.3.jar<br><br>jedis-3.0.0.jar<br><br>msm-kryo-serializer-2.3.2.jar<br>kryo-serializers-0.45.jar<br>kryo-3.0.3.jar<br>minlog-1.3.1.jar<br>reflectasm-1.11.9.jar<br>asm-5.2.jar<br>objenesis-2.6.jar<br></code></pre></td></tr></table></figure>
+
+<p><a href=""><img src="image-20221203104449102.png" srcset="/img/loading.gif" lazyload alt="image-20221203104449102"></a></p>
+<h4 id="10-1、Tomcat配置"><a href="#10-1、Tomcat配置" class="headerlink" title="10.1、Tomcat配置"></a>10.1、Tomcat配置</h4><p>和上面8.1、Tomcat配置相同</p>
+<h4 id="10-2、DNS解析"><a href="#10-2、DNS解析" class="headerlink" title="10.2、DNS解析"></a>10.2、DNS解析</h4><p>和上面8.2、DNS解析相同</p>
+<h4 id="10-3、nginx的配置（反向代理与负载均衡）"><a href="#10-3、nginx的配置（反向代理与负载均衡）" class="headerlink" title="10.3、nginx的配置（反向代理与负载均衡）"></a>10.3、nginx的配置（反向代理与负载均衡）</h4><p>和上面8.3、nginx的配置（反向代理与负载均衡）相同</p>
+<h4 id="10-4、redis配置"><a href="#10-4、redis配置" class="headerlink" title="10.4、redis配置"></a>10.4、redis配置</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@redis ~]<span class="hljs-comment">#yum -y install redis</span><br>[root@redis ~]<span class="hljs-comment">#vim /etc/redis.conf</span><br><span class="hljs-built_in">bind</span> 0.0.0.0         <span class="hljs-comment">#将127.0.0.1改为0.0.0.0</span><br>:wq<br>[root@redis ~]<span class="hljs-comment">#systemctl enable --now redis</span><br><br></code></pre></td></tr></table></figure>
+
+<h4 id="10-5、Tomcat和redis的关联设置"><a href="#10-5、Tomcat和redis的关联设置" class="headerlink" title="10.5、Tomcat和redis的关联设置"></a>10.5、Tomcat和redis的关联设置</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@tomcat1 tomcat]<span class="hljs-comment">#vim conf/context.xml</span><br>    --&gt;<br><span class="hljs-comment">#添加以下内容</span><br>&lt;Manager className=<span class="hljs-string">&quot;de.javakaffee.web.msm.MemcachedBackupSessionManager&quot;</span><br>    memcachedNodes=<span class="hljs-string">&quot;redis://10.0.0.218&quot;</span>            <span class="hljs-comment">#安装redis的ip</span><br>    sticky=<span class="hljs-string">&quot;false&quot;</span><br>    sessionBackupAsync=<span class="hljs-string">&quot;false&quot;</span><br>    lockingMode=<span class="hljs-string">&quot;uriPattern:/path1|/path2&quot;</span><br>    requestUriIgnorePattern=<span class="hljs-string">&quot;.*\.(ico|png|gif|jpg|css|js)$&quot;</span><br>    transcoderFactoryClass=<span class="hljs-string">&quot;de.javakaffee.web.msm.serializer.kryo.KryoTranscoderFactory&quot;</span><br>    /&gt;<br><span class="hljs-comment">#添加以上内容</span><br>&lt;/Context&gt;<br>:wq<br>[root@tomcat1 tomcat]<span class="hljs-comment">#systemctl restart tomcat</span><br><br>--------------------------------------------------------------------------<br>[root@tomcat2 tomcat]<span class="hljs-comment">#vim conf/context.xml</span><br>    --&gt;<br><span class="hljs-comment">#添加以下内容</span><br>&lt;Manager className=<span class="hljs-string">&quot;de.javakaffee.web.msm.MemcachedBackupSessionManager&quot;</span><br>    memcachedNodes=<span class="hljs-string">&quot;redis://10.0.0.218&quot;</span><br>    sticky=<span class="hljs-string">&quot;false&quot;</span><br>    sessionBackupAsync=<span class="hljs-string">&quot;false&quot;</span><br>    lockingMode=<span class="hljs-string">&quot;uriPattern:/path1|/path2&quot;</span><br>    requestUriIgnorePattern=<span class="hljs-string">&quot;.*\.(ico|png|gif|jpg|css|js)$&quot;</span><br>    transcoderFactoryClass=<span class="hljs-string">&quot;de.javakaffee.web.msm.serializer.kryo.KryoTranscoderFactory&quot;</span><br>    /&gt;<br><span class="hljs-comment">#添加以上内容</span><br>&lt;/Context&gt;<br>:wq<br>[root@tomcat2 tomcat]<span class="hljs-comment">#systemctl restart tomcat</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="10-6、检测redis是否有session数据"><a href="#10-6、检测redis是否有session数据" class="headerlink" title="10.6、检测redis是否有session数据"></a>10.6、检测redis是否有session数据</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#未有客户访问前</span><br>[root@redis ~]<span class="hljs-comment">#redis-cli</span><br>127.0.0.1:6379&gt; keys *<br>(empty list or <span class="hljs-built_in">set</span>)<br>127.0.0.1:6379&gt;<br><span class="hljs-comment">#有客户访问后</span><br>127.0.0.1:6379&gt; keys *<br>1) <span class="hljs-string">&quot;validity:EB2796C9FF36561966BC7CFA3BBBA079&quot;</span><br>2) <span class="hljs-string">&quot;EB2796C9FF36561966BC7CFA3BBBA079&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p><a href=""><img src="image-20221203111204065.png" srcset="/img/loading.gif" lazyload alt="image-20221203111204065"></a></p>
+<p><a href=""><img src="image-20221203111234234.png" srcset="/img/loading.gif" lazyload alt="image-20221203111234234"></a></p>
+<p>十一、</p>
+<span id="more"></span>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">第十周作业</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/11/27/Nginx%E7%BB%83%E4%B9%A0/">
+                        <span class="hidden-mobile">Nginx练习</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

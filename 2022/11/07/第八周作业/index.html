@@ -1,0 +1,623 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="[TOC] 一、redis搭建哨兵原理和集群实现1.1、搭建哨兵的原理①专门的Sentinel 服务进程是用于监控redis集群中Master工作的状态，当Master主服务器发生故障的时候，可以实现Master和Slave的角色的自动切换，从而实现系统的高可用性 ②Sentinel是一个分布式系统,即需要在多个节点上各自同时运行一个sentinel进程，Sentienl 进程通过流言协议(gos">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第八周作业">
+<meta property="og:url" content="http://example.com/2022/11/07/%E7%AC%AC%E5%85%AB%E5%91%A8%E4%BD%9C%E4%B8%9A/index.html">
+<meta property="og:site_name" content="5-12 23:30">
+<meta property="og:description" content="[TOC] 一、redis搭建哨兵原理和集群实现1.1、搭建哨兵的原理①专门的Sentinel 服务进程是用于监控redis集群中Master工作的状态，当Master主服务器发生故障的时候，可以实现Master和Slave的角色的自动切换，从而实现系统的高可用性 ②Sentinel是一个分布式系统,即需要在多个节点上各自同时运行一个sentinel进程，Sentienl 进程通过流言协议(gos">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/11/07/%E7%AC%AC%E5%85%AB%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221110160626143.png">
+<meta property="og:image" content="http://example.com/2022/11/07/%E7%AC%AC%E5%85%AB%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221111082931387.png">
+<meta property="og:image" content="http://example.com/2022/11/07/%E7%AC%AC%E5%85%AB%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221112162015705.png">
+<meta property="og:image" content="http://example.com/2022/11/07/%E7%AC%AC%E5%85%AB%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221112161725974.png">
+<meta property="og:image" content="http://example.com/2022/11/07/%E7%AC%AC%E5%85%AB%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221112170014075.png">
+<meta property="og:image" content="http://example.com/2022/11/07/%E7%AC%AC%E5%85%AB%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221113094804559.png">
+<meta property="og:image" content="http://example.com/2022/11/07/%E7%AC%AC%E5%85%AB%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221113182755150.png">
+<meta property="og:image" content="http://example.com/2022/11/07/%E7%AC%AC%E5%85%AB%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221113183313090.png">
+<meta property="og:image" content="http://example.com/2022/11/07/%E7%AC%AC%E5%85%AB%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221113183553729.png">
+<meta property="og:image" content="http://example.com/2022/11/07/%E7%AC%AC%E5%85%AB%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221113183810139.png">
+<meta property="og:image" content="http://example.com/2022/11/07/%E7%AC%AC%E5%85%AB%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221113184103536.png">
+<meta property="og:image" content="http://example.com/2022/11/07/%E7%AC%AC%E5%85%AB%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221113184355631.png">
+<meta property="og:image" content="http://example.com/2022/11/07/%E7%AC%AC%E5%85%AB%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221118084915567.png">
+<meta property="og:image" content="http://example.com/2022/11/07/%E7%AC%AC%E5%85%AB%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221127183749418.png">
+<meta property="og:image" content="http://example.com/2022/11/07/%E7%AC%AC%E5%85%AB%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221127192944905.png">
+<meta property="og:image" content="http://example.com/2022/11/07/%E7%AC%AC%E5%85%AB%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221127192850248.png">
+<meta property="article:published_time" content="2022-11-07T13:08:44.000Z">
+<meta property="article:modified_time" content="2022-12-18T04:04:09.350Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/11/07/%E7%AC%AC%E5%85%AB%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221110160626143.png">
+  
+  
+  <title>第八周作业 - 5-12 23:30</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="第八周作业">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-11-07 13:08" pubdate>
+        November 7, 2022 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      31k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      256 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">第八周作业</h1>
+            
+            <div class="markdown-body">
+              <p>[TOC]</p>
+<h3 id="一、redis搭建哨兵原理和集群实现"><a href="#一、redis搭建哨兵原理和集群实现" class="headerlink" title="一、redis搭建哨兵原理和集群实现"></a>一、redis搭建哨兵原理和集群实现</h3><h4 id="1-1、搭建哨兵的原理"><a href="#1-1、搭建哨兵的原理" class="headerlink" title="1.1、搭建哨兵的原理"></a>1.1、搭建哨兵的原理</h4><p>①专门的Sentinel 服务进程是用于监控redis集群中Master工作的状态，当Master主服务器发生故障的时候，可以实现Master和Slave的角色的自动切换，从而实现系统的高可用性</p>
+<p>②Sentinel是一个分布式系统,即需要在多个节点上各自同时运行一个sentinel进程，Sentienl 进程通过流言协议(gossip protocols)来接收关于Master是否下线状态，并使用投票协议(Agreement Protocols)来决定是否执行自动故障转移,并选择合适的Slave作为新的Master</p>
+<p>③每个Sentinel进程会向其它Sentinel、Master、Slave定时发送消息，来确认对方是否存活，如果发现某个节点在指定配置时间内未得到响应，则会认为此节点已离线，即为主观宕机Subjective Down，简称为 SDOWN</p>
+<p>④如果哨兵集群中的多数Sentinel进程认为Master存在SDOWN，共同利用 is-master-down-by-addr 命令</p>
+<p>互相通知后，则认为客观宕机Objectively Down， 简称 ODOWN</p>
+<p>⑤接下来利用投票算法，从所有slave节点中，选一台合适的slave将之提升为新Master节点，然后自动修改其它slave相关配置，指向新的master节点,最终实现故障转移failover</p>
+<p>注意：<strong>Redis Sentinel中的Sentinel节点个数应该为大于等于3且最好为奇数</strong></p>
+<p><a href=""><img src="image-20221110160626143.png" srcset="/img/loading.gif" lazyload alt="image-20221110160626143"></a></p>
+<h4 id="1-2、搭建集群"><a href="#1-2、搭建集群" class="headerlink" title="1.2、搭建集群"></a>1.2、搭建集群</h4><h5 id="1-2-1、集群架构"><a href="#1-2-1、集群架构" class="headerlink" title="1.2.1、集群架构"></a>1.2.1、集群架构</h5><p><img src="image-20221111082931387.png" srcset="/img/loading.gif" lazyload alt="image-20221111082931387"></p>
+<p>注意：①每个Redis 节点采用相同的相同的Redis版本、相同的密码、硬件配置</p>
+<p>②所有Redis服务器必须没有任何数据</p>
+<p>准备六台主机，地址如下：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></div></td><td class="code"><pre><code class="hljs sh">10.0.0.184<br>10.0.0.185<br>10.0.0.186<br>10.0.0.187<br>10.0.0.188<br>10.0.0.216<br><span class="hljs-comment">#6台主机都已编译安装完成</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="1-2-2、启用redis-cluster配置"><a href="#1-2-2、启用redis-cluster配置" class="headerlink" title="1.2.2、启用redis cluster配置"></a>1.2.2、启用redis cluster配置</h5><p><strong>①每个节点修改redis配置，必须开启cluster功能的参数</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@Rocky ~]<span class="hljs-comment">#sed -i.bak -e &#x27;/masterauth/a masterauth 123456&#x27; -e &#x27;/# cluster-enabled yes/a cluster-enabled yes&#x27; -e &#x27;/# cluster-config-file nodes-6379.conf/a cluster-config-file nodes-6379.conf&#x27; -e &#x27;/cluster-require-full-coverage yes/c cluster-require-full-coverage no&#x27; /apps/redis/etc/redis.conf</span><br>[root@Rocky ~]<span class="hljs-comment">#systemctl restart redis</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>②验证当前Redis服务状态：</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#开启了16379的cluster的端口,实际的端口=redis port + 10000</span><br>[root@Rocky ~]<span class="hljs-comment">#ss -ntl</span><br>State    Recv-Q   Send-Q     Local Address:Port     Peer Address:Port    Process     <br>LISTEN    0        128         0.0.0.0:22            0.0.0.0:*                       <br>LISTEN    0        511         0.0.0.0:16379         0.0.0.0:*                       <br>LISTEN    0        511         0.0.0.0:6379          0.0.0.0:*                       <br>LISTEN    0        128         [::]:22               [::]:*                         <br>LISTEN    0        511         [::1]:16379           [::]:*                         <br>LISTEN    0        511         [::1]:6379            [::]:*                         <br>LISTEN    0        128         *:80                  *:*  <br><span class="hljs-comment">#注意进程有[cluster]状态</span><br>[root@Rocky ~]<span class="hljs-comment">#ps -ef|grep redis</span><br>redis  33345  1  0 09:16 ?       00:00:00 /apps/redis/bin/redis-server 0.0.0.0:6379 [cluster]<br></code></pre></td></tr></table></figure>
+
+<h5 id="1-2-3、创建集群"><a href="#1-2-3、创建集群" class="headerlink" title="1.2.3、创建集群"></a>1.2.3、创建集群</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#命令redis-cli的选项 --cluster-replicas 1 表示每个master对应一个slave节点</span><br>[root@Rocky ~]<span class="hljs-comment">#redis-cli -a 123456 --cluster create 10.0.0.184:6379 10.0.0.185:6379 10.0.0.186:6379 10.0.0.187:6379 10.0.0.188:6379 10.0.0.216:6379 --cluster-replicas 1</span><br>&gt;&gt;&gt; Performing <span class="hljs-built_in">hash</span> slots allocation on 6 nodes...<br>Master[0] -&gt; Slots 0 - 5460<br>Master[1] -&gt; Slots 5461 - 10922<br>Master[2] -&gt; Slots 10923 - 16383<br>Adding replica 10.0.0.188:6379 to 10.0.0.184:6379<br>Adding replica 10.0.0.216:6379 to 10.0.0.185:6379<br>Adding replica 10.0.0.187:6379 to 10.0.0.186:6379<br>M: cdf92d28ccbf42767778bf65cacb6eda1c406257 10.0.0.184:6379   <span class="hljs-comment"># ：后面的是ID号</span><br>   slots:[0-5460] (5461 slots) master               <span class="hljs-comment">#[]里面的数字是槽位的起始和结束位</span><br>M: 2ca4e638bd3fa22ad94cc238907faf6b613d0b88 10.0.0.185:6379<br>   slots:[5461-10922] (5462 slots) master<br>M: 56efb05a636f587fd11775f702a427291d4c1cb6 10.0.0.186:6379<br>   slots:[10923-16383] (5461 slots) master<br>S: 40bbd63934b4201e370de7424b1a8317715c8207 10.0.0.187:6379  <span class="hljs-comment">#S是从节点slave</span><br>   replicates 56efb05a636f587fd11775f702a427291d4c1cb6<br>S: c6ef7581a4752b8e786a4585778427502defd6d5 10.0.0.188:6379<br>   replicates cdf92d28ccbf42767778bf65cacb6eda1c406257<br>S: 3c15e99e9430bde6184a65554127cd0669b41b05 10.0.0.216:6379<br>   replicates 2ca4e638bd3fa22ad94cc238907faf6b613d0b88<br>Can I <span class="hljs-built_in">set</span> the above configuration? (<span class="hljs-built_in">type</span> <span class="hljs-string">&#x27;yes&#x27;</span> to accept): <span class="hljs-built_in">yes</span>  <span class="hljs-comment">#yes自动创建集群</span><br>&gt;&gt;&gt; Nodes configuration updated<br>&gt;&gt;&gt; Assign a different config epoch to each node<br>&gt;&gt;&gt; Sending CLUSTER MEET messages to <span class="hljs-built_in">join</span> the cluster<br>Waiting <span class="hljs-keyword">for</span> the cluster to <span class="hljs-built_in">join</span><br>.<br>&gt;&gt;&gt; Performing Cluster Check (using node 10.0.0.184:6379)<br>M: cdf92d28ccbf42767778bf65cacb6eda1c406257 10.0.0.184:6379<br>   slots:[0-5460] (5461 slots) master<br>   1 additional replica(s)<br>M: 56efb05a636f587fd11775f702a427291d4c1cb6 10.0.0.186:6379<br>   slots:[10923-16383] (5461 slots) master<br>   1 additional replica(s)              <span class="hljs-comment">#表示分配了一个从节点</span><br>S: 40bbd63934b4201e370de7424b1a8317715c8207 10.0.0.187:6379<br>   slots: (0 slots) slave               <span class="hljs-comment">#从节点没有槽位</span><br>   replicates 56efb05a636f587fd11775f702a427291d4c1cb6<br>S: 3c15e99e9430bde6184a65554127cd0669b41b05 10.0.0.216:6379<br>   slots: (0 slots) slave<br>   replicates 2ca4e638bd3fa22ad94cc238907faf6b613d0b88  <span class="hljs-comment">#此从节点对应的主节点的ID</span><br>M: 2ca4e638bd3fa22ad94cc238907faf6b613d0b88 10.0.0.185:6379<br>   slots:[5461-10922] (5462 slots) master<br>   1 additional replica(s)<br>S: c6ef7581a4752b8e786a4585778427502defd6d5 10.0.0.188:6379<br>   slots: (0 slots) slave<br>   replicates cdf92d28ccbf42767778bf65cacb6eda1c406257<br>[OK] All nodes agree about slots configuration.<br>&gt;&gt;&gt; Check <span class="hljs-keyword">for</span> open slots...<br>&gt;&gt;&gt; Check slots coverage...<br>[OK] All 16384 slots covered.<br><br><span class="hljs-comment">#此时可以看出对应关系</span><br>master：10.0.0.184    slave：10.0.0.188<br>master：10.0.0.185    slave：10.0.0.216<br>master：10.0.0.186    slave：10.0.0.187<br><span class="hljs-comment">#为了方便，将对应的主机名称更改</span><br>master1：10.0.0.184    slave1：10.0.0.188<br>master2：10.0.0.185    slave2：10.0.0.216<br>master3：10.0.0.186    slave3：10.0.0.187<br></code></pre></td></tr></table></figure>
+
+<h5 id="1-2-4、验证集群"><a href="#1-2-4、验证集群" class="headerlink" title="1.2.4、验证集群"></a>1.2.4、验证集群</h5><h6 id="1-2-4-1、查看主从状态"><a href="#1-2-4-1、查看主从状态" class="headerlink" title="1.2.4.1、查看主从状态"></a>1.2.4.1、查看主从状态</h6><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@slave3 ~]<span class="hljs-comment">#redis-cli -a 123456 cluster nodes</span><br><br>40bbd63934b4201e370de7424b1a8317715c8207 10.0.0.187:6379@16379 myself,slave 56efb05a636f587fd11775f702a427291d4c1cb6 0 1668131120000 3 connected<br><br>c6ef7581a4752b8e786a4585778427502defd6d5 10.0.0.188:6379@16379 slave cdf92d28ccbf42767778bf65cacb6eda1c406257 0 1668131122687 1 connected<br><br>56efb05a636f587fd11775f702a427291d4c1cb6 10.0.0.186:6379@16379 master - 0 1668131121648 3 connected 10923-16383<br><br>2ca4e638bd3fa22ad94cc238907faf6b613d0b88 10.0.0.185:6379@16379 master - 0 1668131122000 2 connected 5461-10922<br><br>cdf92d28ccbf42767778bf65cacb6eda1c406257 10.0.0.184:6379@16379 master - 0 1668131122000 1 connected 0-5460<br><br>3c15e99e9430bde6184a65554127cd0669b41b05 10.0.0.216:6379@16379 slave 2ca4e638bd3fa22ad94cc238907faf6b613d0b88 0 1668131120000 2 connected<br></code></pre></td></tr></table></figure>
+
+<h6 id="1-2-4-2、验证集群状态"><a href="#1-2-4-2、验证集群状态" class="headerlink" title="1.2.4.2、验证集群状态"></a>1.2.4.2、验证集群状态</h6><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@master1 ~]<span class="hljs-comment">#redis-cli -a 123456 CLUSTER INFO</span><br>Warning: Using a password with <span class="hljs-string">&#x27;-a&#x27;</span> or <span class="hljs-string">&#x27;-u&#x27;</span> option on the <span class="hljs-built_in">command</span> line interface may not be safe.<br>cluster_state:ok<br>cluster_slots_assigned:16384<br>cluster_slots_ok:16384<br>cluster_slots_pfail:0<br>cluster_slots_fail:0<br>cluster_known_nodes:6            <span class="hljs-comment">#节点数</span><br>cluster_size:3                   <span class="hljs-comment">#3个集群</span><br><br><span class="hljs-comment">#查看任意节点的集群状态</span><br>[root@master1 ~]<span class="hljs-comment">#redis-cli -a 123456 --cluster info 10.0.0.187:6379</span><br>10.0.0.186:6379 (56efb05a...) -&gt; 0 keys | 5461 slots | 1 slaves.<br>10.0.0.185:6379 (2ca4e638...) -&gt; 0 keys | 5462 slots | 1 slaves.<br>10.0.0.184:6379 (cdf92d28...) -&gt; 0 keys | 5461 slots | 1 slaves.<br>[OK] 0 keys <span class="hljs-keyword">in</span> 3 masters.<br>0.00 keys per slot on average.<br></code></pre></td></tr></table></figure>
+
+<h6 id="1-2-4-3、查看对应关系"><a href="#1-2-4-3、查看对应关系" class="headerlink" title="1.2.4.3、查看对应关系"></a>1.2.4.3、查看对应关系</h6><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@master1 ~]<span class="hljs-comment">#redis-cli -a 123456 --cluster check 10.0.0.216:6379</span><br>Warning: Using a password with <span class="hljs-string">&#x27;-a&#x27;</span> or <span class="hljs-string">&#x27;-u&#x27;</span> option on the <span class="hljs-built_in">command</span> line interface may not be safe.<br>10.0.0.184:6379 (cdf92d28...) -&gt; 0 keys | 5461 slots | 1 slaves.<br>10.0.0.185:6379 (2ca4e638...) -&gt; 0 keys | 5462 slots | 1 slaves.<br>10.0.0.186:6379 (56efb05a...) -&gt; 0 keys | 5461 slots | 1 slaves.<br>[OK] 0 keys <span class="hljs-keyword">in</span> 3 masters.<br>0.00 keys per slot on average.<br>&gt;&gt;&gt; Performing Cluster Check (using node 10.0.0.216:6379)<br>S: 3c15e99e9430bde6184a65554127cd0669b41b05 10.0.0.216:6379<br>   slots: (0 slots) slave<br>   replicates 2ca4e638bd3fa22ad94cc238907faf6b613d0b88<br>M: cdf92d28ccbf42767778bf65cacb6eda1c406257 10.0.0.184:6379<br>   slots:[0-5460] (5461 slots) master<br>   1 additional replica(s)<br>M: 2ca4e638bd3fa22ad94cc238907faf6b613d0b88 10.0.0.185:6379<br>   slots:[5461-10922] (5462 slots) master<br>   1 additional replica(s)<br>S: c6ef7581a4752b8e786a4585778427502defd6d5 10.0.0.188:6379<br>   slots: (0 slots) slave<br>   replicates cdf92d28ccbf42767778bf65cacb6eda1c406257<br>M: 56efb05a636f587fd11775f702a427291d4c1cb6 10.0.0.186:6379<br>   slots:[10923-16383] (5461 slots) master<br>   1 additional replica(s)<br>S: 40bbd63934b4201e370de7424b1a8317715c8207 10.0.0.187:6379<br>   slots: (0 slots) slave<br>   replicates 56efb05a636f587fd11775f702a427291d4c1cb6<br></code></pre></td></tr></table></figure>
+
+<h5 id="1-2-5测试集群写入数据"><a href="#1-2-5测试集群写入数据" class="headerlink" title="1.2.5测试集群写入数据"></a>1.2.5测试集群写入数据</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@master1 ~]<span class="hljs-comment">#redis-cli -a 123456</span><br>127.0.0.1:6379&gt; dbsize                       <span class="hljs-comment">#查看此节点数据，数据为0</span><br>(<span class="hljs-built_in">integer</span>) 0<br>127.0.0.1:6379&gt; <span class="hljs-built_in">set</span> a b                      <span class="hljs-comment">#写入数据</span><br>(error) MOVED 15495 10.0.0.186:6379          <span class="hljs-comment">#提示此数据写入到10.0.0.186这个节点</span><br><span class="hljs-comment">#此时需要到10.0.0.186这台主机去写入</span><br>[root@master3 ~]<span class="hljs-comment">#redis-cli -a 123456</span><br>127.0.0.1:6379&gt; dbsize<br>(<span class="hljs-built_in">integer</span>) 0<br>127.0.0.1:6379&gt; <span class="hljs-built_in">set</span> a b<br>OK                                          <span class="hljs-comment">#写入成功</span><br><br><span class="hljs-comment">#造成此现象的是因为通过算法计算，当前key的槽位需要写入指定的node</span><br><span class="hljs-comment">#为了不需要输入2次，可以加-c（表示集群模式）</span><br>[root@master1 ~]<span class="hljs-comment">#redis-cli -a 123456 -c</span><br>127.0.0.1:6379&gt; <span class="hljs-built_in">set</span> a w               <span class="hljs-comment">#此时再输入数据，自动转换到10.0.0.186节点，写入数据</span><br>-&gt; Redirected to slot [15495] located at 10.0.0.186:6379<br>OK<br>10.0.0.186:6379&gt; <br></code></pre></td></tr></table></figure>
+
+<h5 id="1-2-6、模拟故障实现故障转移"><a href="#1-2-6、模拟故障实现故障转移" class="headerlink" title="1.2.6、模拟故障实现故障转移"></a>1.2.6、模拟故障实现故障转移</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#将10.0.0.185停止服务</span><br>[root@master2 ~]<span class="hljs-comment">#systemctl stop redis</span><br><span class="hljs-comment">#此时查看10.0.0.185的记录已发生变化</span><br>[root@slave1 ~]<span class="hljs-comment">#cat /apps/redis/data/nodes-6379.conf</span><br>2ca4e638bd3fa22ad94cc238907faf6b613d0b88 10.0.0.185:6379@16379 master,fail - 1668132519648 1668132516486 2 disconnected      <span class="hljs-comment">#master,fail失败的主节点</span><br><br>cdf92d28ccbf42767778bf65cacb6eda1c406257 10.0.0.184:6379@16379 master - 0 1668132534993 1 connected 0-5460<br><br>3c15e99e9430bde6184a65554127cd0669b41b05 10.0.0.216:6379@16379 master - 0 1668132536008 7 connected 5461-10922       <span class="hljs-comment">#10.0.0.216变成主节点了</span><br><br>40bbd63934b4201e370de7424b1a8317715c8207 10.0.0.187:6379@16379 slave 56efb05a636f587fd11775f702a427291d4c1cb6 0 1668132535000 3 connected<br><br>c6ef7581a4752b8e786a4585778427502defd6d5 10.0.0.188:6379@16379 myself,slave cdf92d28ccbf42767778bf65cacb6eda1c406257 0 1668132534000 1 connected<br><br>56efb05a636f587fd11775f702a427291d4c1cb6 10.0.0.186:6379@16379 master - 0 1668132534000 3 connected 10923-16383<br><br>[root@master2 ~]<span class="hljs-comment">#systemctl start redis</span><br>[root@slave3 ~]<span class="hljs-comment">#redis-cli -a 123456 cluster nodes</span><br>40bbd63934b4201e370de7424b1a8317715c8207 10.0.0.187:6379@16379 myself,slave 56efb05a636f587fd11775f702a427291d4c1cb6 0 1668132977000 3 connected<br><br>c6ef7581a4752b8e786a4585778427502defd6d5 10.0.0.188:6379@16379 slave cdf92d28ccbf42767778bf65cacb6eda1c406257 0 1668132979881 1 connected<br><br>56efb05a636f587fd11775f702a427291d4c1cb6 10.0.0.186:6379@16379 master - 0 1668132978841 3 connected 10923-16383<br><br>2ca4e638bd3fa22ad94cc238907faf6b613d0b88 10.0.0.185:6379@16379 slave 3c15e99e9430bde6184a65554127cd0669b41b05 0 1668132977798 7 connected<br><span class="hljs-comment">#10.0.0.185恢复后自动变成10.0.0.216的从节点了</span><br>cdf92d28ccbf42767778bf65cacb6eda1c406257 10.0.0.184:6379@16379 master - 0 1668132978000 1 connected 0-5460<br><br>3c15e99e9430bde6184a65554127cd0669b41b05 10.0.0.216:6379@16379 master - 0 1668132979000 7 connected 5461-10922<br><br></code></pre></td></tr></table></figure>
+
+<h5 id="1-2-7、验证数据是否同步"><a href="#1-2-7、验证数据是否同步" class="headerlink" title="1.2.7、验证数据是否同步"></a>1.2.7、验证数据是否同步</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@master1 ~]<span class="hljs-comment">#redis-cli -a 123456 -c</span><br>Warning: Using a password with <span class="hljs-string">&#x27;-a&#x27;</span> or <span class="hljs-string">&#x27;-u&#x27;</span> option on the <span class="hljs-built_in">command</span> line interface may not be safe.<br>127.0.0.1:6379&gt; dbsize<br>(<span class="hljs-built_in">integer</span>) 0<br>127.0.0.1:6379&gt; <span class="hljs-built_in">set</span> a w<br>-&gt; Redirected to slot [15495] located at 10.0.0.186:6379<br>OK<br>10.0.0.186:6379&gt; <br><br><span class="hljs-comment">#然后看看186的从节点187是否有此数据</span><br>[root@slave3 ~]<span class="hljs-comment">#redis-cli -a 123456</span><br>127.0.0.1:6379&gt; get a                        <span class="hljs-comment">#查看不了具体数据</span><br>(error) MOVED 15495 10.0.0.186:6379          <br>127.0.0.1:6379&gt; dbsize                       <span class="hljs-comment">#只能看见有1个数据</span><br>(<span class="hljs-built_in">integer</span>) 1<br><span class="hljs-comment">#说明集群里的从节点既不能写也不能读</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="二、LVS常用模型工作原理，及实现"><a href="#二、LVS常用模型工作原理，及实现" class="headerlink" title="二、LVS常用模型工作原理，及实现"></a>二、LVS常用模型工作原理，及实现</h3><h4 id="2-1、LVS的工作原理"><a href="#2-1、LVS的工作原理" class="headerlink" title="2.1、LVS的工作原理"></a>2.1、LVS的工作原理</h4><p>VS根据请求报文的目标IP和目标协议及端口将其调度转发至某RS，根据调度算法来挑选RS。LVS是内核级功能，工作在INPUT链的位置，将发往INPUT的流量进行“处理”</p>
+<p>2.2、DR模型实现过程</p>
+<p>LVS-DR：Direct Routing，直接路由，LVS默认模式,应用最广泛,通过为请求报文重新封装一个MAC首部进行转发，源MAC是DIP所在的接口的MAC，目标MAC是某挑选出的RS的RIP所在接口的MAC地址；源IP/PORT，以及目标IP/PORT均保持不变</p>
+<p><a href=""><img src="image-20221112162015705.png" srcset="/img/loading.gif" lazyload alt="image-20221112162015705"></a></p>
+<p><a href=""><img src="image-20221112161725974.png" srcset="/img/loading.gif" lazyload alt="image-20221112161725974"></a></p>
+<p>①Director和各RS都配置有VIP</p>
+<p>②确保前端路由器将目标IP为VIP的请求报文发往Director</p>
+<p>​    ——在前端网关做静态绑定VIP和Director的MAC地址</p>
+<p>​    ——在RS上使用arptables工具</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">arptables -A IN -d <span class="hljs-variable">$VIP</span> -j DROP<br>arptables -A OUT -s <span class="hljs-variable">$VIP</span> -j mangle --mangle-ip-s <span class="hljs-variable">$RIP</span><br></code></pre></td></tr></table></figure>
+
+<p>​    ——在RS上修改内核参数以限制arp通告及应答级别</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">/proc/sys/net/ipv4/conf/all/arp_ignore<br>/proc/sys/net/ipv4/conf/all/arp_announce<br></code></pre></td></tr></table></figure>
+
+<p>③ RS的RIP可以使用私网地址，也可以是公网地址；RIP与DIP在同一IP网络；RIP的网关不能指向DIP，以确保响应报文不会经由Director</p>
+<p>④ RS和Director要在同一个物理网络</p>
+<p>⑤请求报文要经由Director，但响应报文不经由Director，而由RS直接发往Client</p>
+<p>⑥不支持端口映射（端口不能修改）</p>
+<p>⑦无需开启 ip_forward</p>
+<h3 id="三、LVS的负载策略有哪些，各应用在什么场景，通过LVS-DR任意实现1-2种场景"><a href="#三、LVS的负载策略有哪些，各应用在什么场景，通过LVS-DR任意实现1-2种场景" class="headerlink" title="三、LVS的负载策略有哪些，各应用在什么场景，通过LVS DR任意实现1-2种场景"></a>三、LVS的负载策略有哪些，各应用在什么场景，通过LVS DR任意实现1-2种场景</h3><h4 id="3-1、负载策略及应用场景"><a href="#3-1、负载策略及应用场景" class="headerlink" title="3.1、负载策略及应用场景"></a>3.1、负载策略及应用场景</h4><p>①NAT模型：由于配置简单，请求和回应都涉及LVS服务器（LVS服务器压力大），所以应用于并发量不大的中小企业。Real server服务器数量控制在10-20</p>
+<p>②DR模型：并发量非常大的企业（DR模型的并发处理量能达到硬件级别的能力）。Real server服务器数量可以达到100</p>
+<p>③TUN模型：TUN模式常会用来负载调度缓存服务器组，这些缓存服务器一般放置在不同的网络环境，可以就近折返给客户端。在请求对象不在Cache服务器本地命中的情况下，Cache服务器要向源服务器发送请求，将结果取回，最后将结果返回给用户。Real server服务器数量可以达到100</p>
+<p>④FULLNAT模型：此模型主要是阿里云的二次开发使用。</p>
+<h4 id="3-2、LVS-DR模式单网段案例"><a href="#3-2、LVS-DR模式单网段案例" class="headerlink" title="3.2、LVS-DR模式单网段案例"></a>3.2、LVS-DR模式单网段案例</h4><h5 id="3-2-1、环境"><a href="#3-2-1、环境" class="headerlink" title="3.2.1、环境"></a>3.2.1、环境</h5><p><a href=""><img src="image-20221112170014075.png" srcset="/img/loading.gif" lazyload alt="image-20221112170014075"></a></p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs dns">环境：<span class="hljs-number">5</span>台主机<br>一台：客户端 （主机名：Internet）<br>eth0:仅主机模式 <span class="hljs-number">192.168.10.184</span>/<span class="hljs-number">24</span>  GW:<span class="hljs-number">192.168.10.185</span><br><br>一台：路由器（主机名：ROUTER）<br>eth0:NAT <span class="hljs-number">10.0.0.185</span>/<span class="hljs-number">24</span><br>eth1:仅主机模式 <span class="hljs-number">192.168.10.185</span>/<span class="hljs-number">24</span><br><br>一台：LVS（主机名LVS）<br>eth0:NAT DIP:<span class="hljs-number">10.0.0.186</span>/<span class="hljs-number">24</span>   GW:<span class="hljs-number">10.0.0.185</span><br>lo VIP:<span class="hljs-number">10.0.0.100</span>/<span class="hljs-number">32</span><br><br>两台：RS（主机名web1、web2）<br>RS1： eth0:NAT RIP:<span class="hljs-number">10.0.0.187</span>/<span class="hljs-number">24</span>   GW:<span class="hljs-number">10.0.0.185</span><br>      lo VIP:<span class="hljs-number">10.0.0.100</span>/<span class="hljs-number">32</span><br>RS2:  eth0:NAT RIP:<span class="hljs-number">10.0.0.188</span>/<span class="hljs-number">24</span>   GW:<span class="hljs-number">10.0.0.185</span><br>      lo VIP:<span class="hljs-number">10.0.0.100</span>/<span class="hljs-number">32</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="3-2-2、LVS的网络配置"><a href="#3-2-2、LVS的网络配置" class="headerlink" title="3.2.2、LVS的网络配置"></a>3.2.2、LVS的网络配置</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#所有主机禁用iptables和SELinux</span><br><br><span class="hljs-comment">#internet主机环境</span><br>[root@Rocky ~]<span class="hljs-comment">#vim /etc/sysconfig/network-scripts/ifcfg-eth0</span><br>IPADDR=192.168.10.184<br>NETMASK=255.255.255.0<br>GATEWAY=192.168.10.185<br>:wq<br>[root@Rocky ~]<span class="hljs-comment">#nmcli connection reload</span><br>[root@Rocky ~]<span class="hljs-comment">#nmcli connection up eth0</span><br><span class="hljs-comment">#然后从本地将网卡有NAT模式改为仅主机模式</span><br>[root@Rocky ~]<span class="hljs-comment">#hostnamectl set-hostname internet</span><br>[root@internet ~]<span class="hljs-comment">#hostname -I</span><br>192.168.10.184 <br><br><span class="hljs-comment">###########################################################################</span><br><span class="hljs-comment">#路由器的网络配置</span><br>[root@Rocky ~]<span class="hljs-comment">#hostnamectl set-hostname ROUTER     #更改主机名</span><br>[root@ROUTER ~]<span class="hljs-comment">#echo &#x27;net.ipv4.ip_forward=1&#x27; &gt;&gt; /etc/sysctl.conf</span><br>[root@ROUTER ~]<span class="hljs-comment">#sysctl -p                         #重新加载</span><br>[root@ROUTER ~]<span class="hljs-comment">#cd /etc/sysconfig/network-scripts/</span><br>[root@ROUTER network-scripts]<span class="hljs-comment">#ls</span><br>backup  ifcfg-eth0<br>[root@ROUTER network-scripts]<span class="hljs-comment">#cp ifcfg-eth0 ifcfg-eth1   #创建eth1网卡配置文件</span><br>[root@ROUTER network-scripts]<span class="hljs-comment">#ls</span><br>backup  ifcfg-eth0  ifcfg-eth1<br>[root@ROUTER network-scripts]<span class="hljs-comment">#vim ifcfg-eth1            #编辑eth1网卡配置文件</span><br>PROXY_METHOD=none<br>BOOTPROTO=none<br>NAME=eth1<br>DEVICE=eth1<br>IPADDR=192.168.10.185<br>NETMASK=255.255.255.0<br>:wq<br>[root@ROUTER network-scripts]<span class="hljs-comment">#nmcli connection        #查看现在的网卡</span><br>NAME                UUID                                  TYPE      DEVICE <br>eth0                9aee0c40-97c5-361f-a1e6-9c0b37325423  ethernet  eth0   <br>Wired connection 1  32b154a4-7f4d-32f0-aa39-a0cc460bd562  ethernet  eth1   <br>eth1                9c92fad9-6ecb-3e6c-eb4d-8a47c6f50c04  ethernet  --     <br>[root@ROUTER network-scripts]<span class="hljs-comment">#nmcli connection delete Wired\ connection\ 1 </span><br>Connection <span class="hljs-string">&#x27;Wired connection 1&#x27;</span> (32b154a4-7f4d-32f0-aa39-a0cc460bd562) successfully deleted.<br>[root@ROUTER network-scripts]<span class="hljs-comment">#nmcli connection</span><br>NAME  UUID                                  TYPE      DEVICE <br>eth0  9aee0c40-97c5-361f-a1e6-9c0b37325423  ethernet  eth0   <br>eth1  9c92fad9-6ecb-3e6c-eb4d-8a47c6f50c04  ethernet  eth1 <br>[root@ROUTER network-scripts]<span class="hljs-comment">#nmcli connection reload         #重新加载</span><br>[root@ROUTER network-scripts]<span class="hljs-comment">#nmcli connection up eth1        #重新挂载eth1生效</span><br>Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/4)<br>[root@ROUTER network-scripts]<span class="hljs-comment">#hostname -I</span><br>10.0.0.185 192.168.10.185 <br><br><span class="hljs-comment">###########################################################################</span><br><span class="hljs-comment">#RS1的网络配置</span><br>[root@Rocky ~]<span class="hljs-comment">#hostnamectl set-hostname web1          #修改主机名</span><br>[root@web1 ~]<span class="hljs-comment">#yum -y install httpd</span><br>[root@web1 ~]<span class="hljs-comment">#systemctl enable --now httpd</span><br>[root@web1 ~]<span class="hljs-comment">#hostname &gt; /var/www/html/index.html    #将主机名写入网页内</span><br>[root@web1 ~]<span class="hljs-comment">#cat /var/www/html/index.html</span><br>web1<br>[root@web1 ~]<span class="hljs-comment">#vim /etc/sysconfig/network-scripts/ifcfg-eth0</span><br>GATEWAY=10.0.0.185<br>:wq<br>[root@web1 ~]<span class="hljs-comment">#nmcli connection reload</span><br>[root@web1 ~]<span class="hljs-comment">#nmcli connection up eth0</span><br><br><span class="hljs-comment">#RS2 的网络配置</span><br>[root@Rocky ~]<span class="hljs-comment">#hostnamectl set-hostname web2</span><br>[root@web2 ~]<span class="hljs-comment">#yum -y install httpd</span><br>[root@web2 ~]<span class="hljs-comment">#systemctl enable --now httpd</span><br>[root@web2 ~]<span class="hljs-comment">#hostname &gt; /var/www/html/index.html</span><br>[root@web2 ~]<span class="hljs-comment">#cat /var/www/html/index.html</span><br>web2<br>[root@web2 ~]<span class="hljs-comment">#vim /etc/sysconfig/network-scripts/ifcfg-eth0</span><br>GATEWAY=10.0.0.185<br>:wq<br>[root@web2 ~]<span class="hljs-comment">#nmcli connection reload</span><br>[root@web2 ~]<span class="hljs-comment">#nmcli connection up eth0</span><br><br><span class="hljs-comment">###########################################################################</span><br><span class="hljs-comment">#LVS的网络配置</span><br>[root@Rocky ~]<span class="hljs-comment">#hostnamectl set-hostname LVS</span><br>[root@LVS ~]<span class="hljs-comment">#vim /etc/sysconfig/network-scripts/ifcfg-eth0</span><br>GATEWAY=10.0.0.185<br>:wq<br>[root@LVS ~]<span class="hljs-comment">#nmcli connection reload</span><br>[root@LVS ~]<span class="hljs-comment">#nmcli connection up eth0</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="3-2-3、后端RS的IPVS配置"><a href="#3-2-3、后端RS的IPVS配置" class="headerlink" title="3.2.3、后端RS的IPVS配置"></a>3.2.3、后端RS的IPVS配置</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#RS1的IPVS配置</span><br>[root@web1 ~]<span class="hljs-comment">#echo 1 &gt;   /proc/sys/net/ipv4/conf/all/arp_ignore</span><br>[root@web1 ~]<span class="hljs-comment">#echo 2 &gt;   /proc/sys/net/ipv4/conf/all/arp_announce</span><br>[root@web1 ~]<span class="hljs-comment">#echo 1 &gt;   /proc/sys/net/ipv4/conf/lo/arp_ignore</span><br>[root@web1 ~]<span class="hljs-comment">#echo 2 &gt;   /proc/sys/net/ipv4/conf/lo/arp_announce</span><br><span class="hljs-comment">#此为临时生效，想永久生效可将其写入/etc/sysctl.conf文件里</span><br>net.ipv4.conf.all.arp_ignore=1<br>net.ipv4.conf.all.arp_announce=2<br>net.ipv4.conf.lo.arp_ignore=1<br>net.ipv4.conf.lo.arp_announce=2<br><span class="hljs-comment">#注意：必须先设置，然后才能添加VIP</span><br><br><span class="hljs-comment">#限制响应级别：arp_ignore</span><br>0：默认值，表示可使用本地任意接口上配置的任意地址进行响应<br>1：仅在请求的目标IP配置在本地主机的接收到请求报文的接口上时，才给予响应<br><span class="hljs-comment">#限制通告级别：arp_announce</span><br>0：默认值，把本机所有接口的所有信息向每个接口的网络进行通告<br>1：尽量避免将接口信息向非直接连接网络进行通告<br>2：必须避免将接口信息向非本网络进行通告<br><br>[root@web1 ~]<span class="hljs-comment">#ifconfig lo:1 10.0.0.100/32      #添加回环ip</span><br>[root@web1 ~]<span class="hljs-comment">#ip a</span><br>1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000<br>    <span class="hljs-built_in">link</span>/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00<br>    inet 127.0.0.1/8 scope host lo<br>       valid_lft forever preferred_lft forever<br>    inet 10.0.0.100/0 scope global lo:1<br>       valid_lft forever preferred_lft forever<br>    inet6 ::1/128 scope host <br>       valid_lft forever preferred_lft forever<br>2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq state UP group default qlen 1000<br>    <span class="hljs-built_in">link</span>/ether 00:50:56:2c:b4:3c brd ff:ff:ff:ff:ff:ff<br>    inet 10.0.0.187/24 brd 10.0.0.255 scope global noprefixroute eth0<br>       valid_lft forever preferred_lft forever<br>    inet6 fe80::250:56ff:fe2c:b43c/64 scope <span class="hljs-built_in">link</span> <br>       valid_lft forever preferred_lft forever<br><br><span class="hljs-comment">#RS2的IPVS配置</span><br>[root@web2 ~]<span class="hljs-comment">#echo 1 &gt;   /proc/sys/net/ipv4/conf/all/arp_ignore</span><br>[root@web2 ~]<span class="hljs-comment">#echo 2 &gt;   /proc/sys/net/ipv4/conf/all/arp_announce</span><br>[root@web2 ~]<span class="hljs-comment">#echo 1 &gt;   /proc/sys/net/ipv4/conf/lo/arp_ignore</span><br>[root@web2 ~]<span class="hljs-comment">#echo 2 &gt;   /proc/sys/net/ipv4/conf/lo/arp_announce</span><br>[root@web2 ~]<span class="hljs-comment">#ip a a 10.0.0.100/32 dev lo:1   #此命令也可添加ip</span><br>[root@web2 ~]<span class="hljs-comment">#ip a</span><br>1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000<br>    <span class="hljs-built_in">link</span>/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00<br>    inet 127.0.0.1/8 scope host lo<br>       valid_lft forever preferred_lft forever<br>    inet 10.0.0.100/32 scope global lo<br>       valid_lft forever preferred_lft forever<br>    inet6 ::1/128 scope host <br>       valid_lft forever preferred_lft forever<br>2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq state UP group default qlen 1000<br>    <span class="hljs-built_in">link</span>/ether 00:50:56:3c:10:b0 brd ff:ff:ff:ff:ff:ff<br>    inet 10.0.0.188/24 brd 10.0.0.255 scope global noprefixroute eth0<br>       valid_lft forever preferred_lft forever<br>    inet6 fe80::250:56ff:fe3c:10b0/64 scope <span class="hljs-built_in">link</span> <br>       valid_lft forever preferred_lft forever<br></code></pre></td></tr></table></figure>
+
+<h5 id="3-2-4、LVS主机的配置"><a href="#3-2-4、LVS主机的配置" class="headerlink" title="3.2.4、LVS主机的配置"></a>3.2.4、LVS主机的配置</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#在LVS上添加VIP</span><br>[root@LVS ~]<span class="hljs-comment">#ip a a 10.0.0.100/32 dev lo label lo:1</span><br>[root@LVS ~]<span class="hljs-comment">#ip a</span><br>1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000<br>    <span class="hljs-built_in">link</span>/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00<br>    inet 127.0.0.1/8 scope host lo<br>       valid_lft forever preferred_lft forever<br>    inet 10.0.0.100/32 scope global lo<br>       valid_lft forever preferred_lft forever<br>    inet6 ::1/128 scope host <br>       valid_lft forever preferred_lft forever<br>2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq state UP group default qlen 1000<br>    <span class="hljs-built_in">link</span>/ether 00:50:56:3d:ba:4d brd ff:ff:ff:ff:ff:ff<br>    inet 10.0.0.186/24 brd 10.0.0.255 scope global noprefixroute eth0<br>       valid_lft forever preferred_lft forever<br><br><span class="hljs-comment">#实现LVS 规则</span><br>[root@LVS ~]<span class="hljs-comment">#yum -y install ipvsadm</span><br>[root@LVS ~]<span class="hljs-comment">#ipvsadm -A -t 10.0.0.100:80 -s rr</span><br>[root@LVS ~]<span class="hljs-comment">#ipvsadm -a -t 10.0.0.100:80 -r 10.0.0.187:80 -g</span><br>[root@LVS ~]<span class="hljs-comment">#ipvsadm -a -t 10.0.0.100:80 -r 10.0.0.188:80 -g</span><br>[root@LVS ~]<span class="hljs-comment">#ipvsadm -Ln</span><br>IP Virtual Server version 1.2.1 (size=4096)<br>Prot LocalAddress:Port Scheduler Flags<br>  -&gt; RemoteAddress:Port           Forward Weight ActiveConn InActConn<br>TCP  10.0.0.100:80 rr<br>  -&gt; 10.0.0.187:80                Route   1      0          0         <br>  -&gt; 10.0.0.188:80                Route   1      0          0 <br></code></pre></td></tr></table></figure>
+
+<h5 id="3-2-5、测试访问"><a href="#3-2-5、测试访问" class="headerlink" title="3.2.5、测试访问"></a>3.2.5、测试访问</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@internet ~]<span class="hljs-comment">#curl 10.0.0.100</span><br>web1<br>[root@internet ~]<span class="hljs-comment">#curl 10.0.0.100</span><br>web2<br></code></pre></td></tr></table></figure>
+
+<h3 id="四、web-http协议通信过程，相关技术术语总结"><a href="#四、web-http协议通信过程，相关技术术语总结" class="headerlink" title="四、web http协议通信过程，相关技术术语总结"></a>四、web http协议通信过程，相关技术术语总结</h3><h4 id="4-1、http协议通信过程"><a href="#4-1、http协议通信过程" class="headerlink" title="4.1、http协议通信过程"></a>4.1、http协议通信过程</h4><p><a href=""><img src="image-20221113094804559.png" srcset="/img/loading.gif" lazyload alt="image-20221113094804559"></a></p>
+<h4 id="4-2、相关技术术语总结"><a href="#4-2、相关技术术语总结" class="headerlink" title="4.2、相关技术术语总结"></a>4.2、相关技术术语总结</h4><h5 id="4-2-1、WEB开发语言"><a href="#4-2-1、WEB开发语言" class="headerlink" title="4.2.1、WEB开发语言"></a>4.2.1、WEB开发语言</h5><p>http：Hyper Text Transfer Protocol 应用层协议，默认端口： 80/tcp</p>
+<p>①<strong>html</strong>：Hyper Text Markup Language 超文本标记语言，编程语言，主要负责实现页面的结构</p>
+<p>②<strong>CSS</strong>：Cascading Style Sheet 层叠样式表， 定义了如何显示（装扮） HTML 元素，比如：字体大小和颜色属性等。样式通常保存在外部的 .css 文件中,用于存放一些HTML文件的公共属性,从而通过仅编辑一个简单的 CSS 文档，可以同时改变站点中所有页面的布局和外观。</p>
+<p>③<strong>Js</strong>：javascript，实现网页的动画效果，但实属于静态资源</p>
+<h5 id="4-2-2、MIME"><a href="#4-2-2、MIME" class="headerlink" title="4.2.2、MIME"></a>4.2.2、MIME</h5><p><strong>MIME</strong> : Multipurpose Internet Mail Extensions 多用途互联网邮件扩展</p>
+<p>文件 /etc/mime.types ,来自于mailcap包</p>
+<p>MIME格式：type/subtype txt html jpg bmp </p>
+<h5 id="4-2-3、URI和URL"><a href="#4-2-3、URI和URL" class="headerlink" title="4.2.3、URI和URL"></a>4.2.3、URI和URL</h5><p><strong>URI</strong>： Uniform Resource Identifier 统一资源标识，分为URL 和 URN</p>
+<p><strong>URN</strong>：Uniform Resource Naming，统一资源命名</p>
+<p>示例： P2P下载使用的磁力链接是URN的一种实现 magnet:?xt=urn:btih:660557A6890EF888666</p>
+<p><strong>URL</strong>：Uniform Resorce Locator，统一资源定位符，用于描述某服务器某特定资源位置</p>
+<p><strong>两者区别</strong>：URN如同一个人的名称，而URL代表一个人的住址。换言之，URN定义某事物的身份，而</p>
+<p>URL提供查找该事物的方法。URN仅用于命名，而不指定地址。</p>
+<p>URL组成</p>
+<p><a href=""><img src="image-20221113182755150.png" srcset="/img/loading.gif" lazyload alt="image-20221113182755150"></a></p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs avrasm"><span class="hljs-symbol">scheme:</span>方案，访问服务器以获取资源时要使用哪种协议<br><span class="hljs-symbol">user:</span>用户，某些方案访问资源时需要的用户名<br><span class="hljs-symbol">password:</span>密码，用户对应的密码，中间用：分隔<br><span class="hljs-symbol">Host:</span>主机，资源宿主服务器的主机名或IP地址<br><span class="hljs-symbol">port:</span>端口,资源宿主服务器正在监听的端口号，很多方案有默认端口号<br><span class="hljs-symbol">path:</span>路径,服务器资源的本地名，由一个/将其与前面的URL组件分隔<br><span class="hljs-symbol">params:</span>参数，指定输入的参数，参数为名/值对，多个参数，用<span class="hljs-comment">;分隔</span><br><span class="hljs-symbol">query:</span>查询，传递参数给程序，如数据库，用？分隔,多个查询用&amp;分隔<br><span class="hljs-symbol">frag:</span>片段,一小片或一部分资源的名字，此组件在客户端使用，用<span class="hljs-meta">#分隔</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="五、总结网络IO模型和nginx架构"><a href="#五、总结网络IO模型和nginx架构" class="headerlink" title="五、总结网络IO模型和nginx架构"></a>五、总结网络IO模型和nginx架构</h3><h4 id="5-1、网络IO模型"><a href="#5-1、网络IO模型" class="headerlink" title="5.1、网络IO模型"></a>5.1、网络IO模型</h4><p>阻塞型、非阻塞型、复用型、信号驱动型、异步</p>
+<h5 id="5-1-1、阻塞型I-O模型（blocking-IO）"><a href="#5-1-1、阻塞型I-O模型（blocking-IO）" class="headerlink" title="5.1.1、阻塞型I/O模型（blocking IO）"></a>5.1.1、阻塞型I/O模型（blocking IO）</h5><p><a href=""><img src="image-20221113183313090.png" srcset="/img/loading.gif" lazyload alt="image-20221113183313090"></a></p>
+<p>①阻塞IO模型是最简单的I/O模型，用户线程在内核进行IO操作时被阻塞</p>
+<p>②用户线程通过系统调用read发起I/O读操作，由用户空间转到内核空间。内核等到数据包到达后，然后将</p>
+<p>接收的数据拷贝到用户空间，完成read操作</p>
+<p>③用户需要等待read将数据读取到buffer后，才继续处理接收的数据。整个I/O请求的过程中，用户线程是</p>
+<p>被阻塞的，这导致用户在发起IO请求时，不能做任何事情，对CPU的资源利用率不够</p>
+<p><strong>优点</strong>：程序简单，在阻塞等待数据期间进程/线程挂起，基本不会占用 CPU 资源</p>
+<p><strong>缺点</strong>：每个连接需要独立的进程/线程单独处理，当并发请求量大时为了维护程序，内存、线程切换开销</p>
+<p>较大，apache 的prefork使用的是这种模式。</p>
+<h5 id="5-1-2、非阻塞型I-O模型-nonblocking-IO"><a href="#5-1-2、非阻塞型I-O模型-nonblocking-IO" class="headerlink" title="5.1.2、非阻塞型I/O模型(nonblocking IO)"></a>5.1.2、非阻塞型I/O模型(nonblocking IO)</h5><p><a href=""><img src="image-20221113183553729.png" srcset="/img/loading.gif" lazyload alt="image-20221113183553729"></a></p>
+<p>用户线程发起IO请求时立即返回。但并未读取到任何数据，用户线程需要不断地发起IO请求，直到数据</p>
+<p>到达后，才真正读取到数据，继续执行。即 “轮询”机制存在两个问题：如果有大量文件描述符都要等，</p>
+<p>那么就得一个一个的read。这会带来大量的Context Switch（read是系统调用，每调用一次就得在用户</p>
+<p>态和核心态切换一次）。轮询的时间不好把握。这里是要猜多久之后数据才能到。等待时间设的太长，</p>
+<p>程序响应延迟就过大;设的太短，就会造成过于频繁的重试，干耗CPU而已，是比较浪费CPU的方式，一</p>
+<p>般很少直接使用这种模型，而是在其他IO模型中使用非阻塞IO这一特性。</p>
+<h5 id="5-1-3、I-O多路复用型-I-O-multiplexing"><a href="#5-1-3、I-O多路复用型-I-O-multiplexing" class="headerlink" title="5.1.3、I/O多路复用型(I/O multiplexing)"></a>5.1.3、I/O多路复用型(I/O multiplexing)</h5><p>①多路复用IO指一个线程可以同时（实际是交替实现，即并发完成）监控和处理多个文件描述符对应各自</p>
+<p>的IO，即复用同一个线程</p>
+<p>②一个线程之所以能实现同时处理多个IO,是因为这个线程调用了内核中的SELECT,POLL或EPOLL等系统调</p>
+<p>用，从而实现多路复用IO</p>
+<p><a href=""><img src="image-20221113183810139.png" srcset="/img/loading.gif" lazyload alt="image-20221113183810139"></a></p>
+<p>③它的基本原理就是select/poll/epoll这个function会不断的轮询所负责的所有socket，当某个socket有数</p>
+<p>据到达了，就通知用户进程。</p>
+<p>④当用户进程调用了select，那么整个进程会被block，而同时，kernel会“监视”所有select负责的socket，</p>
+<p>当任何一个socket中的数据准备好了，select就会返回。这个时候用户进程再调用read操作，将数据从</p>
+<p>kernel拷贝到用户进程。</p>
+<p><strong>优点</strong>：可以基于一个阻塞对象，同时在多个描述符上等待就绪，而不是使用多个线程(每个文件描述</p>
+<p>符一个线程)，这样可以大大节省系统资源</p>
+<p><strong>缺点</strong>：当连接数较少时效率相比多线程+阻塞 I/O 模型效率较低，可能延迟更大，因为单个连接处</p>
+<p>理需要 2 次系统调用，占用时间会有增加</p>
+<p><strong>IO多路复用适用如下场合</strong>：</p>
+<p>当客户端处理多个描述符时（一般是交互式输入和网络套接口），必须使用I/O复用</p>
+<p>当一个客户端同时处理多个套接字时，此情况可能的但很少出现</p>
+<p>当一个服务器既要处理监听套接字，又要处理已连接套接字，一般也要用到I/O复用</p>
+<p>当一个服务器即要处理TCP，又要处理UDP，一般要使用I/O复用</p>
+<p>当一个服务器要处理多个服务或多个协议，一般要使用I/O复用</p>
+<h5 id="5-1-4、信号驱动式I-O模型-signal-driven-IO"><a href="#5-1-4、信号驱动式I-O模型-signal-driven-IO" class="headerlink" title="5.1.4、信号驱动式I/O模型(signal-driven IO)"></a>5.1.4、信号驱动式I/O模型(signal-driven IO)</h5><p><a href=""><img src="image-20221113184103536.png" srcset="/img/loading.gif" lazyload alt="image-20221113184103536"></a></p>
+<p>信号驱动I/O的意思就是进程现在不用傻等着，也不用去轮询。而是让内核在数据就绪时，发送信号通知</p>
+<p>进程。</p>
+<p><strong>调用的步骤</strong>：通过系统调用 sigaction ，并注册一个信号处理的回调函数，该调用会立即返回，然后</p>
+<p>主程序可以继续向下执行，当有I/O操作准备就绪,即内核数据就绪时，内核会为该进程产生一个 SIGIO</p>
+<p>信号，并回调注册的信号回调函数，这样就可以在信号回调函数中系统调用 recvfrom 获取数据,将用户</p>
+<p>进程所需要的数据从内核空间拷贝到用户空间</p>
+<p>此模型的优势在于等待数据报到达期间进程不被阻塞。用户主程序可以继续执行，只要等待来自信号处</p>
+<p>理函数的通知。</p>
+<p>在信号驱动式 I/O 模型中，应用程序使用套接口进行信号驱动 I/O，并安装一个信号处理函数，进程继</p>
+<p>续运行并不阻塞</p>
+<p>当数据准备好时，进程会收到一个 SIGIO 信号，可以在信号处理函数中调用 I/O 操作函数处理数据。</p>
+<p><strong>优点</strong>：线程并没有在等待数据时被阻塞，内核直接返回调用接收信号，不影响进程继续处理其他请求因此</p>
+<p>可以提高资源的利用率</p>
+<p><strong>缺点</strong>：信号 I/O 在大量 IO 操作时可能会因为信号队列溢出导致没法通知</p>
+<h5 id="5-1-5、异步I-O模型-asynchronous-IO"><a href="#5-1-5、异步I-O模型-asynchronous-IO" class="headerlink" title="5.1.5、异步I/O模型(asynchronous IO)"></a>5.1.5、异步I/O模型(asynchronous IO)</h5><p><a href=""><img src="image-20221113184355631.png" srcset="/img/loading.gif" lazyload alt="image-20221113184355631"></a></p>
+<p><strong>执行过程</strong>：用户进程进行aio_read系统调用之后，无论内核数据是否准备好，都会直接返回给用户进程，然后用户态进程可以去做别的事情。等到socket数据准备好了，内核直接复制数据给进程，然后从内核向进程发送通知。IO两个阶段，进程都是非阻塞的。</p>
+<p>信号驱动IO当内核通知触发信号处理程序时，信号处理程序还需要阻塞在从内核空间缓冲区拷贝数据到</p>
+<p>用户空间缓冲区这个阶段，而异步IO直接是在第二个阶段完成后，内核直接通知用户线程可以进行后续</p>
+<p>操作了</p>
+<p><strong>优点</strong>：异步 I/O 能够充分利用 DMA 特性，让 I/O 操作与计算重叠</p>
+<p><strong>缺点</strong>：要实现真正的异步 I/O，操作系统需要做大量的工作。目前 Windows 下通过 IOCP 实现了真正的</p>
+<p>异步 I/O，在 Linux 系统下，Linux 2.6才引入，目前 AIO 并不完善，因此在 Linux 下实现高并发网络编</p>
+<p>程时以 IO 复用模型模式+多线程任务的架构基本可以满足需求</p>
+<h4 id="5-2、Nginx架构"><a href="#5-2、Nginx架构" class="headerlink" title="5.2、Nginx架构"></a>5.2、Nginx架构</h4><p><a href=""><img src="image-20221118084915567.png" srcset="/img/loading.gif" lazyload alt="image-20221118084915567"></a></p>
+<h3 id="六、nginx总结核心配置和优化"><a href="#六、nginx总结核心配置和优化" class="headerlink" title="六、nginx总结核心配置和优化"></a>六、nginx总结核心配置和优化</h3><h4 id="6-1、Nginx的配置文件的组成部分"><a href="#6-1、Nginx的配置文件的组成部分" class="headerlink" title="6.1、Nginx的配置文件的组成部分"></a>6.1、Nginx的配置文件的组成部分</h4><p>①主配置文件：nginx.conf</p>
+<p>②子配置文件: include conf.d/*.conf</p>
+<p>③fastcgi， uwsgi，scgi 等协议相关的配置文件</p>
+<p>④mime.types：支持的mime类型，MIME(Multipurpose Internet Mail Extensions)多用途互联网邮件扩展类型，MIME消息能包含文本、图像、音频、视频以及其他应用程序专用的数据，是设定某种扩展名的文件用一种应用程序来打开的方式类型，当该扩展名文件被访问的时候，浏览器会自动使用指定应用程序来打开。多用于指定一些客户端自定义的文件名，以及一些媒体文件打开方式。</p>
+<p>MIME参考文档：<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Basics_of_HTTP/MIME_Types">https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Basics_of_HTTP/MIME_Types</a></p>
+<h4 id="6-2、nginx-配置文件格式说明"><a href="#6-2、nginx-配置文件格式说明" class="headerlink" title="6.2、nginx 配置文件格式说明"></a>6.2、nginx 配置文件格式说明</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs ABAP">配置文件由指令与指令块构成<br>每条指令以;分号结尾，指令与值之间以空格符号分隔<br>可以将多条指令放在同一行,用分号分隔即可,但可读性差,不推荐<br>指令块以&#123; &#125;大括号将多条指令组织在一起,且可以嵌套指令块<br>include语句允许组合多个配置文件以提升可维护性<br>使用#符号添加注释，提高可读性<br>使用$符号使用变量<br>部分指令的参数支持正则表达式<br></code></pre></td></tr></table></figure>
+
+<h4 id="6-3、主配置文件结构：四部分"><a href="#6-3、主配置文件结构：四部分" class="headerlink" title="6.3、主配置文件结构：四部分"></a>6.3、主配置文件结构：四部分</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs sh">directive value [value2 ...];<br>注意<br>(1) 指令必须以分号结尾<br>(2) 支持使用配置变量<br> 内建变量：由Nginx模块引入，可直接引用<br> 自定义变量：由用户使用<span class="hljs-built_in">set</span>命令定义,格式: <span class="hljs-built_in">set</span> variable_name value;<br> 引用变量：<span class="hljs-variable">$variable_name</span><br>主配置文件结构：四部分<br>main block：主配置段，即全局配置段，对http,mail都有效<br><span class="hljs-comment">#事件驱动相关的配置</span><br>event &#123;<br> ...<br>&#125;   <br><span class="hljs-comment">#http/https 协议相关配置段</span><br>http &#123;<br> ...<br>&#125;          <br><span class="hljs-comment">#默认配置文件不包括下面两个块</span><br><span class="hljs-comment">#mail 协议相关配置段</span><br>mail &#123;<br> ...<br>&#125;    <br><span class="hljs-comment">#stream 服务器相关配置段</span><br>stream &#123;<br> ...<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="6-4、全局配置中的必备配置和优化"><a href="#6-4、全局配置中的必备配置和优化" class="headerlink" title="6.4、全局配置中的必备配置和优化"></a>6.4、全局配置中的必备配置和优化</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs sh">user nginx nginx; <span class="hljs-comment">#启动Nginx工作进程的用户和组</span><br>worker_processes [number | auto]; <span class="hljs-comment">#启动Nginx工作进程的数量,一般设为和CPU核心数相同</span><br>worker_cpu_affinity 00000001 00000010 00000100 00001000 | auto ; <span class="hljs-comment">#将Nginx工作进程绑定到指定的CPU核心，默认Nginx是不进行进程绑定的，绑定并不是意味着当前nginx进程独占以一核心CPU，但是可以保证此进程不会运行在其他核心上，这就极大减少了nginx的工作进程在不同的cpu核心上的来回跳转，减少了CPU对进程的资源分配与回收以及内存管理等，因此可以有效的提升nginx服务器的性能。</span><br>CPU MASK: 00000001：0号CPU<br>          00000010：1号CPU<br>  10000000：7号CPU<br><span class="hljs-comment">#示例:</span><br>worker_cpu_affinity 0001 0010 0100 1000;第0号---第3号CPU<br>worker_cpu_affinity 0101 1010;<br><br><span class="hljs-comment">#错误日志记录配置，语法：error_log file [debug | info | notice | warn | error | crit | alert | emerg]</span><br><span class="hljs-comment">#error_log logs/error.log;</span><br><span class="hljs-comment">#error_log logs/error.log notice;</span><br>error_log /apps/nginx/logs/error.log error; <br><br><span class="hljs-comment">#pid文件保存路径</span><br>pid       /apps/nginx/logs/nginx.pid;<br><br>worker_priority 0; <span class="hljs-comment">#工作进程优先级，-20~20(19)</span><br>worker_rlimit_nofile 65536; <span class="hljs-comment">#所有worker进程能打开的文件数量上限,包括:Nginx的所有连接（例如与代理服务器的连接等），而不仅仅是与客户端的连接,另一个考虑因素是实际的并发连接数不能超过系统级别的最大打开文件数的限制.最好与ulimit -n 或者limits.conf的值保持一致,</span><br><br>daemon off;  <span class="hljs-comment">#前台运行Nginx服务用于测试、或者以容器运行时，需要设为off</span><br>master_process off|on; <span class="hljs-comment">#是否开启Nginx的master-worker工作模式，仅用于开发调试场景,默认为on</span><br><br>events &#123;<br>   worker_connections  65536;  <span class="hljs-comment">#设置单个工作进程的最大并发连接数</span><br>   use epoll; <span class="hljs-comment">#使用epoll事件驱动，Nginx支持众多的事件驱动，比如:select、poll、epoll，只能设置在events模块中设置。</span><br>   accept_mutex on; <span class="hljs-comment">#on为同一时刻一个请求轮流由worker进程处理,而防止被同时唤醒所有worker,避免多个睡眠进程被唤醒的设置，默认为off，新请求会唤醒所有worker进程,此过程也称为&quot;惊 群&quot;，因此nginx刚安装完以后要进行适当的优化。建议设置为on</span><br>   multi_accept on; <span class="hljs-comment">#on时Nginx服务器的每个工作进程可以同时接受多个新的网络连接，此指令默认为off，即默认为一个工作进程只能一次接受一个新的网络连接，打开后几个同时接受多个。建议设置为on</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="6-5、http-协议配置中的必备配置和优化"><a href="#6-5、http-协议配置中的必备配置和优化" class="headerlink" title="6.5、http 协议配置中的必备配置和优化"></a>6.5、http 协议配置中的必备配置和优化</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><code class="hljs sh">http &#123;<br>   include       mime.types; <span class="hljs-comment">#导入支持的文件类型,是相对于/apps/nginx/conf的目录</span><br>   default_type application/octet-stream; <span class="hljs-comment">#除mime.types中文件类型外,设置其它文件默认类型，访问其它类型时会提示下载不匹配的类型文件</span><br>   <br><span class="hljs-comment">#日志配置部分</span><br>    <span class="hljs-comment">#log_format main &#x27;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &#x27;</span><br>    <span class="hljs-comment">#                 &#x27;$status $body_bytes_sent &quot;$http_referer&quot; &#x27;</span><br>    <span class="hljs-comment">#                 &#x27;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&#x27;;</span><br>    <span class="hljs-comment">#access_log logs/access.log main;</span><br>    <br><span class="hljs-comment">#自定义优化参数</span><br>   sendfile       on; <br>    <span class="hljs-comment">#tcp_nopush     on; #在开启了sendfile的情况下，合并请求后统一发送给客户端,必须开启sendfile</span><br>    <span class="hljs-comment">#tcp_nodelay   off; #在开启了keepalived模式下的连接是否启用TCP_NODELAY选项，当为off时，延迟0.2s发送，默认On时，不延迟发送，立即发送用户响应报文。</span><br>    <span class="hljs-comment">#keepalive_timeout 0;</span><br>   keepalive_timeout  65 65; <span class="hljs-comment">#设置会话保持时间,第二个值为响应首部:keepAlived:timeout=65,可以和第一个值不同</span><br>    <span class="hljs-comment">#gzip on; #开启文件压缩</span><br>    <br>   server &#123;<br>       listen       80; <span class="hljs-comment">#设置监听地址和端口</span><br>       server_name localhost; <span class="hljs-comment">#设置server name，可以以空格隔开写多个并支持正则表达式，如:*.magedu.com www.magedu.* ~^www\d+\.magedu\.com$ default_server </span><br>        <span class="hljs-comment">#charset koi8-r; #设置编码格式，默认是俄语格式，建议改为utf-8</span><br>        <span class="hljs-comment">#access_log logs/host.access.log main;</span><br>       location / &#123;<br>           root   html;<br>           index index.html index.htm;<br>       &#125;<br>       <br>        <span class="hljs-comment">#error_page 404             /404.html;</span><br>        <span class="hljs-comment"># redirect server error pages to the static page /50x.html</span><br>        <span class="hljs-comment">#</span><br>       error_page   500 502 503 504 /50x.html; <span class="hljs-comment">#定义错误页面</span><br>       location = /50x.html &#123;<br>           root   html;<br>       &#125;<br>       <br>        <span class="hljs-comment"># proxy the PHP scripts to Apache listening on 127.0.0.1:80</span><br>        <span class="hljs-comment">#</span><br>        <span class="hljs-comment">#location ~ \.php$ &#123; #以http的方式转发php请求到指定web服务器</span><br>        <span class="hljs-comment">#   proxy_pass   http://127.0.0.1;</span><br>        <span class="hljs-comment">#&#125;</span><br>        <br>        <span class="hljs-comment"># pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000</span><br>        <span class="hljs-comment">#</span><br>        <span class="hljs-comment">#location ~ \.php$ &#123; #以fastcgi的方式转发php请求到php处理</span><br>        <span class="hljs-comment">#   root           html;</span><br>        <span class="hljs-comment">#   fastcgi_pass   127.0.0.1:9000;</span><br>        <span class="hljs-comment">#   fastcgi_index index.php;</span><br>        <span class="hljs-comment">#   fastcgi_param SCRIPT_FILENAME /scripts$fastcgi_script_name;</span><br>        <span class="hljs-comment">#   include       fastcgi_params;</span><br>        <span class="hljs-comment">#&#125;</span><br>        <br>          <span class="hljs-comment"># deny access to .htaccess files, if Apache&#x27;s document root</span><br>        <span class="hljs-comment"># concurs with nginx&#x27;s one</span><br>        <span class="hljs-comment">#</span><br>        <span class="hljs-comment">#location ~ /\.ht &#123; #拒绝web形式访问指定文件，如很多的网站都是通过.htaccess文件来改变自己的重定向等功能。</span><br>        <span class="hljs-comment">#   deny all;</span><br>        <span class="hljs-comment">#&#125;</span><br>       location ~ /passwd.html &#123;<br>           deny all;<br>       &#125;<br>   &#125;<br>   <br>    <span class="hljs-comment"># another virtual host using mix of IP-, name-, and port-based configuration</span><br>    <span class="hljs-comment">#</span><br>    <span class="hljs-comment">#server &#123; #自定义虚拟server</span><br>    <span class="hljs-comment">#   listen       8000;</span><br>    <span class="hljs-comment">#   listen       somename:8080;</span><br>    <span class="hljs-comment">#   server_name somename alias another.alias;</span><br>    <br>    <span class="hljs-comment">#   location / &#123; </span><br>    <span class="hljs-comment">#       root   html;</span><br>    <span class="hljs-comment">#       index index.html index.htm; #指定默认网页文件，此指令由</span><br>ngx_http_index_module模块提供<br>    <span class="hljs-comment">#   &#125;</span><br>    <span class="hljs-comment">#&#125;</span><br>    <br>    <span class="hljs-comment"># HTTPS server</span><br>    <span class="hljs-comment">#</span><br>    <span class="hljs-comment">#server &#123; #https服务器配置</span><br>    <span class="hljs-comment">#   listen       443 ssl;</span><br>    <span class="hljs-comment">#   server_name localhost;</span><br>    <br>    <span class="hljs-comment">#   ssl_certificate     cert.pem;</span><br>    <span class="hljs-comment">#   ssl_certificate_key cert.key;</span><br>    <br>    <span class="hljs-comment">#   ssl_session_cache   shared:SSL:1m;</span><br>    <span class="hljs-comment">#   ssl_session_timeout 5m;</span><br>    <br>    <span class="hljs-comment">#   ssl_ciphers HIGH:!aNULL:!MD5;</span><br>    <span class="hljs-comment">#   ssl_prefer_server_ciphers on;</span><br>    <br>    <span class="hljs-comment">#   location / &#123;</span><br>    <span class="hljs-comment">#       root   html;</span><br>    <span class="hljs-comment">#       index index.html index.htm;</span><br>    <span class="hljs-comment">#   &#125;</span><br>    <span class="hljs-comment">#&#125;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="七、使用脚本完成一键编译安装nginx任意版本"><a href="#七、使用脚本完成一键编译安装nginx任意版本" class="headerlink" title="七、使用脚本完成一键编译安装nginx任意版本"></a>七、使用脚本完成一键编译安装nginx任意版本</h3><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><code class="hljs vim">#!/bin/bash<br>SRC_DIR=/usr/local/src<br>NGINX_URL=http://nginx.org/download/<br>NGINX_FILE=nginx-<span class="hljs-number">1.20</span>.<span class="hljs-number">2</span><br>TAR=.tar.gz<br>NGINX_INSTALL_DIR=/apps/nginx<br>CPUS=`lscpu |awk <span class="hljs-string">&#x27;/^CPU\(s\)/&#123;print $2&#125;&#x27;</span>`<br>. /etc/os-release<br><br>os_type () &#123;<br>   awk -F<span class="hljs-string">&#x27;[ &quot;]&#x27;</span> <span class="hljs-string">&#x27;/^NAME/&#123;print $2&#125;&#x27;</span> /etc/os-release<br>&#125;<br><br>os_version () &#123;<br>   awk -F<span class="hljs-string">&#x27;&quot;&#x27;</span> <span class="hljs-string">&#x27;/^VERSION_ID/&#123;print $2&#125;&#x27;</span> /etc/os-release<br>&#125;<br><br>check () &#123;<br>    [ -<span class="hljs-keyword">e</span> $&#123;NGINX_INSTALL_DIR&#125; ] &amp;&amp; &#123; color <span class="hljs-string">&quot;nginx 已安装,请卸载后再安装&quot;</span> <span class="hljs-number">1</span>; <span class="hljs-keyword">exit</span>; &#125;<br>    <span class="hljs-keyword">cd</span>  $&#123;SRC_DIR&#125;<br>    <span class="hljs-keyword">if</span> [  -<span class="hljs-keyword">e</span> $&#123;NGINX_FILE&#125;$&#123;TAR&#125; ];then<br>        color <span class="hljs-string">&quot;相关文件已准备好&quot;</span> <span class="hljs-number">0</span><br>    <span class="hljs-keyword">else</span><br>        color <span class="hljs-string">&#x27;开始下载 nginx 源码包&#x27;</span> <span class="hljs-number">0</span><br>        wget $&#123;NGINX_URL&#125;$&#123;NGINX_FILE&#125;$&#123;TAR&#125; <br>        [ $? -ne <span class="hljs-number">0</span> ] &amp;&amp; &#123; color <span class="hljs-string">&quot;下载 $&#123;NGINX_FILE&#125;$&#123;TAR&#125;文件失败&quot;</span> <span class="hljs-number">1</span>; <span class="hljs-keyword">exit</span>; &#125; <br>    fi<br>&#125; <br><br>install () &#123;<br>    color <span class="hljs-string">&quot;开始安装 nginx&quot;</span> <span class="hljs-number">0</span><br>    <span class="hljs-keyword">if</span> id nginx  &amp;&gt; /dev/null;then<br>        color <span class="hljs-string">&quot;nginx 用户已存在&quot;</span> <span class="hljs-number">1</span> <br>    <span class="hljs-keyword">else</span><br>        useradd -s /sbin/nologin -r  nginx<br>        color <span class="hljs-string">&quot;创建 nginx 用户&quot;</span> <span class="hljs-number">0</span> <br>    fi<br>    color <span class="hljs-string">&quot;开始安装 nginx 依赖包&quot;</span> <span class="hljs-number">0</span><br>    <span class="hljs-keyword">if</span> [ $ID == <span class="hljs-string">&quot;centos&quot;</span> ] ;then<br>	    <span class="hljs-keyword">if</span> [[ $VERSION_ID =~ ^<span class="hljs-number">7</span> ]];then<br>            yum -<span class="hljs-keyword">y</span> -q  install <span class="hljs-keyword">make</span> gcc pcre-devel openssl-devel zlib-devel <span class="hljs-keyword">perl</span>-ExtUtils-Embed<br>		elif [[ $VERSION_ID =~ ^<span class="hljs-number">8</span> ]];then<br>            yum -<span class="hljs-keyword">y</span> -q install <span class="hljs-keyword">make</span> gcc-<span class="hljs-keyword">c</span>++ libtool pcre pcre-devel zlib zlib-devel openssl openssl-devel <span class="hljs-keyword">perl</span>-ExtUtils-Embed <br>		<span class="hljs-keyword">else</span> <br>            color <span class="hljs-string">&#x27;不支持此系统!&#x27;</span>  <span class="hljs-number">1</span><br>            <span class="hljs-keyword">exit</span><br>        fi<br>    elif [ $ID == <span class="hljs-string">&quot;rocky&quot;</span>  ];then<br>	    yum -<span class="hljs-keyword">y</span> -q install <span class="hljs-keyword">make</span> gcc-<span class="hljs-keyword">c</span>++ libtool pcre pcre-devel zlib zlib-devel openssl openssl-devel <span class="hljs-keyword">perl</span>-ExtUtils-Embed <br>	<span class="hljs-keyword">else</span><br>        apt <span class="hljs-keyword">update</span> &amp;&gt; /dev/null<br>        apt -<span class="hljs-keyword">y</span> install <span class="hljs-keyword">make</span> gcc libpcre3 libpcre3-dev openssl libssl-dev zlib1g-dev &amp;&gt; /dev/null<br>    fi<br>    <span class="hljs-keyword">cd</span> $SRC_DIR<br>    tar xf $&#123;NGINX_FILE&#125;$&#123;TAR&#125;<br>    NGINX_DIR=`<span class="hljs-keyword">echo</span> $&#123;NGINX_FILE&#125;$&#123;TAR&#125;| sed -nr <span class="hljs-string">&#x27;s/^(.*[0-9]).*/\1/p&#x27;</span>`<br>    <span class="hljs-keyword">cd</span> $&#123;NGINX_DIR&#125;<br>    ./configure --prefix=$&#123;NGINX_INSTALL_DIR&#125; --user=nginx --group=nginx --with-http_ssl_module --with-http_v2_module --with-http_realip_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre --with-stream --with-stream_ssl_module --with-stream_realip_module <br>    <span class="hljs-keyword">make</span> -<span class="hljs-keyword">j</span> $CPUS &amp;&amp; <span class="hljs-keyword">make</span> install <br>    [ $? -eq <span class="hljs-number">0</span> ] &amp;&amp; color <span class="hljs-string">&quot;nginx 编译安装成功&quot;</span> <span class="hljs-number">0</span> ||  &#123; color <span class="hljs-string">&quot;nginx 编译安装失败,退出!&quot;</span> <span class="hljs-number">1</span> ;<span class="hljs-keyword">exit</span>; &#125;<br>    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;PATH=$&#123;NGINX_INSTALL_DIR&#125;/sbin:$&#123;PATH&#125;&quot;</span> &gt; /etc/<span class="hljs-keyword">profile</span>.d/nginx.<span class="hljs-keyword">sh</span><br>    <span class="hljs-keyword">cat</span> &gt; /lib/systemd/<span class="hljs-built_in">system</span>/nginx.service &lt;&lt;EOF<br>[Unit]<br>Description=The nginx HTTP <span class="hljs-built_in">and</span> <span class="hljs-built_in">reverse</span> proxy server<br>After=network.target remote-fs.target nss-lookup.target<br><br>[Service]<br>Type=forking<br>PIDFile=$&#123;NGINX_INSTALL_DIR&#125;/logs/nginx.pid<br>ExecStartPre=/bin/rm -<span class="hljs-keyword">f</span> $&#123;NGINX_INSTALL_DIR&#125;/logs/nginx.pid<br>ExecStartPre=$&#123;NGINX_INSTALL_DIR&#125;/sbin/nginx -t<br>ExecStart=$&#123;NGINX_INSTALL_DIR&#125;/sbin/nginx<br>ExecReload=/bin/kill -s HUP \$MAINPID<br>KillSignal=SIGQUIT<br>TimeoutStopSec=<span class="hljs-number">5</span><br>KillMode=process<br>PrivateTmp=true<br>LimitNOFILE=<span class="hljs-number">100000</span><br><br>[Install]<br>WantedBy=multi-user.target<br>EOF<br>    systemctl daemon-reload<br>    systemctl enable --now nginx &amp;&gt; /dev/null <br>    systemctl <span class="hljs-keyword">is</span>-active nginx &amp;&gt; /dev/null ||  &#123; color <span class="hljs-string">&quot;nginx 启动失败,退出!&quot;</span> <span class="hljs-number">1</span> ; <span class="hljs-keyword">exit</span>; &#125;<br>    color <span class="hljs-string">&quot;nginx 安装完成&quot;</span> <span class="hljs-number">0</span><br>&#125;<br><br>check<br>install<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="八、任意编译一个第3方nginx模块，并使用"><a href="#八、任意编译一个第3方nginx模块，并使用" class="headerlink" title="八、任意编译一个第3方nginx模块，并使用"></a>八、任意编译一个第3方nginx模块，并使用</h3><p><strong>nginx-module-vts模块实现流量监控</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ABAP">https://github.com/vozlt/nginx-module-vts<br></code></pre></td></tr></table></figure>
+
+<p><a href=""><img src="image-20221127183749418.png" srcset="/img/loading.gif" lazyload alt="image-20221127183749418"></a></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@Rocky ~]<span class="hljs-comment">#cd /usr/local/src</span><br>[root@Rocky src]<span class="hljs-comment">#wget https://github.com/vozlt/nginx-module-vts/archive/refs/tags/v0.2.1.tar.gz</span><br>[root@Rocky src]<span class="hljs-comment">#tar xf v0.2.1.tar.gz</span><br>[root@Rocky src]<span class="hljs-comment">#ls</span><br>nginx-1.22.1  nginx-1.22.1.tar.gz  nginx-module-vts-0.2.1  v0.2.1.tar.gz<br>[root@Rocky src]<span class="hljs-comment">#cd nginx-1.22.1/</span><br>[root@Rocky nginx-1.22.1]<span class="hljs-comment">#nginx -V    #查看Nginx已安装的模块</span><br>nginx version: nginx/1.23.2<br>built by gcc 8.5.0 20210514 (Red Hat 8.5.0-10) (GCC) <br>built with OpenSSL 1.1.1k  FIPS 25 Mar 2021<br>TLS SNI support enabled<br>configure arguments: --prefix=/apps/nginx --user=nginx --group=nginx --with-http_ssl_module --with-http_v2_module --with-http_realip_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre --with-stream --with-stream_ssl_module --with-stream_realip_module<br><span class="hljs-comment">#添加新模块--add-module=/usr/local/src/nginx-module-vts-0.2.1</span><br>[root@Rocky nginx-1.22.1]<span class="hljs-comment">#./configure --prefix=/apps/nginx --user=nginx --group=nginx --with-http_ssl_module --with-http_v2_module --with-http_realip_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre --with-stream --with-stream_ssl_module --with-stream_realip_module --add-module=/usr/local/src/nginx-module-vts-0.2.1</span><br>[root@Rocky nginx-1.22.1]<span class="hljs-comment">#make -j 2 &amp;&amp; make install</span><br><br>http &#123;<br>  ......<br>  vhost_traffic_status_zone;             <span class="hljs-comment">#添加此行</span><br>  ......<br>  server &#123;<br>     ......<br>     location /status &#123;<br>           vhost_traffic_status_display;<br>           vhost_traffic_status_display_format html;<br>     &#125;<br>  ......<br>  &#125;<br>&#125;<br>:wq<br>[root@Rocky nginx-1.20.2]<span class="hljs-comment">#systemctl restart nginx</span><br></code></pre></td></tr></table></figure>
+
+<p>添加监控模块前</p>
+<p><a href=""><img src="image-20221127192944905.png" srcset="/img/loading.gif" lazyload alt="image-20221127192944905"></a></p>
+<p>添加监控模块后</p>
+<p><a href=""><img src="image-20221127192850248.png" srcset="/img/loading.gif" lazyload alt="image-20221127192850248"></a></p>
+<span id="more"></span>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/11/27/%E7%AC%AC%E4%B9%9D%E5%91%A8%E4%BD%9C%E4%B8%9A/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">第九周作业</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/11/01/%E7%AC%AC%E4%B8%83%E5%91%A8%E4%BD%9C%E4%B8%9A/">
+                        <span class="hidden-mobile">第七周作业</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

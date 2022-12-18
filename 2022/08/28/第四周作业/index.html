@@ -1,0 +1,528 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="背景作业：1、自定义写出10个定时任务的示例：①比如每周三凌晨三点执行data命令        ②要求尽量的覆盖各种场景解析： 123456789101112131415161718192021222324crontab -e             #编辑定时任务HELL&#x3D;&#x2F;bin&#x2F;bash         PATH&#x3D;&#x2F;usr&#x2F;local&#x2F;sbin:&#x2F;usr&#x2F;local&#x2F;bin:&#x2F;usr&#x2F;sb">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第四周作业">
+<meta property="og:url" content="http://example.com/2022/08/28/%E7%AC%AC%E5%9B%9B%E5%91%A8%E4%BD%9C%E4%B8%9A/index.html">
+<meta property="og:site_name" content="5-12 23:30">
+<meta property="og:description" content="背景作业：1、自定义写出10个定时任务的示例：①比如每周三凌晨三点执行data命令        ②要求尽量的覆盖各种场景解析： 123456789101112131415161718192021222324crontab -e             #编辑定时任务HELL&#x3D;&#x2F;bin&#x2F;bash         PATH&#x3D;&#x2F;usr&#x2F;local&#x2F;sbin:&#x2F;usr&#x2F;local&#x2F;bin:&#x2F;usr&#x2F;sb">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/08/28/%E7%AC%AC%E5%9B%9B%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220911212407275.png">
+<meta property="og:image" content="http://example.com/2022/08/28/%E7%AC%AC%E5%9B%9B%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220911212506097.png">
+<meta property="og:image" content="http://example.com/2022/08/28/%E7%AC%AC%E5%9B%9B%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220911161947066.png">
+<meta property="og:image" content="http://example.com/2022/08/28/%E7%AC%AC%E5%9B%9B%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220911182550204.png">
+<meta property="og:image" content="http://example.com/2022/08/28/%E7%AC%AC%E5%9B%9B%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220911205446461.png">
+<meta property="og:image" content="http://example.com/2022/08/28/%E7%AC%AC%E5%9B%9B%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220911205908277.png">
+<meta property="article:published_time" content="2022-08-28T11:15:00.000Z">
+<meta property="article:modified_time" content="2022-12-18T04:04:09.403Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/08/28/%E7%AC%AC%E5%9B%9B%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20220911212407275.png">
+  
+  
+  <title>第四周作业 - 5-12 23:30</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="第四周作业">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-08-28 11:15" pubdate>
+        August 28, 2022 am
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      28 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">第四周作业</h1>
+            
+            <div class="markdown-body">
+              <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><h1 id="作业："><a href="#作业：" class="headerlink" title="作业："></a>作业：</h1><h3 id="1、自定义写出10个定时任务的示例："><a href="#1、自定义写出10个定时任务的示例：" class="headerlink" title="1、自定义写出10个定时任务的示例："></a>1、自定义写出10个定时任务的示例：</h3><h5 id="①比如每周三凌晨三点执行data命令-②要求尽量的覆盖各种场景"><a href="#①比如每周三凌晨三点执行data命令-②要求尽量的覆盖各种场景" class="headerlink" title="①比如每周三凌晨三点执行data命令        ②要求尽量的覆盖各种场景"></a>①比如每周三凌晨三点执行data命令        ②要求尽量的覆盖各种场景</h5><p>解析：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></div></td><td class="code"><pre><code class="hljs awk">crontab -e             <span class="hljs-comment">#编辑定时任务</span><br><br>HELL=<span class="hljs-regexp">/bin/</span>bash         <br>PATH=<span class="hljs-regexp">/usr/</span>local<span class="hljs-regexp">/sbin:/u</span>sr<span class="hljs-regexp">/local/</span>bin:<span class="hljs-regexp">/usr/</span>sbin:<span class="hljs-regexp">/usr/</span>bin:<span class="hljs-regexp">/root/</span>bin         <span class="hljs-comment">#系统默认的路径</span><br>MAILTO=root            <br><br><span class="hljs-number">0</span> <span class="hljs-number">3</span> * * <span class="hljs-number">3</span> cp -a <span class="hljs-regexp">/apps/</span>data   /backup     <span class="hljs-comment">#每周三3点整复制data内的文件到backup目录下</span><br><span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">1</span> * * systemctl restart httpd        <span class="hljs-comment">#每月1号1点整重新启动http服务</span><br><span class="hljs-number">30</span> <span class="hljs-number">1</span> * * <span class="hljs-number">1</span>-<span class="hljs-number">5</span> cp -a <span class="hljs-regexp">/etc   /</span>backup/etcbak-`date -d -<span class="hljs-number">1</span>day`   <br><span class="hljs-comment">#每周的工作日1:30，将/etc备份至/backup目录中，保存的文件名称格式为“etcbak-yyyy-mm-ddHH.tar.xz”，其中日期是前一天的时间</span><br>* *<span class="hljs-regexp">/2 * * *  cat /</span>proc<span class="hljs-regexp">/meminfo | grep -e &quot;^S&quot; &quot;^M&quot;  &gt;&gt; /</span>tmp/meminfo.txt<br><span class="hljs-comment">#每两小时取出当前系统/proc/meminfo文件中以S或M开头的信息追加至/tmp/meminfo.txt文件中</span><br>*<span class="hljs-regexp">/10 * * * 1-5 /</span>check_disk.sh          <span class="hljs-comment">#工作日每10分钟检查一次磁盘，如果超过80%，则报警发送至邮箱</span><br><br><br>vim check_disk.sh<br><br><span class="hljs-comment">#!/bin/bash</span><br>warning=<span class="hljs-number">80</span><br>used=`df | awk -F<span class="hljs-string">&quot;[ %]+&quot;</span> <span class="hljs-string">&#x27;&#123;print $5&#125;&#x27;</span> | sort -rn | head -<span class="hljs-number">1</span>`<br>[ <span class="hljs-variable">$used</span> -gt <span class="hljs-variable">$warning</span> ] &amp;&amp; echo Disk will be full ! |mail -s worning youxiang@qq.com<br><br><br><br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="2、图文并茂说明Linux进程和内存概念"><a href="#2、图文并茂说明Linux进程和内存概念" class="headerlink" title="2、图文并茂说明Linux进程和内存概念"></a>2、图文并茂说明Linux进程和内存概念</h3><p>解析：</p>
+<p><a href=""><img src="image-20220911212407275.png" srcset="/img/loading.gif" lazyload alt="image-20220911212407275"></a></p>
+<p><strong>①进程</strong></p>
+<p>进程：运行中的程序的一个副本，是被载入内存的一个指令集合，是资源分配的单位。</p>
+<p>进程是一个具有一定独立功能的程序在一个数据集上的一次动态执行的过程，是操作系统进行资源分配和调度 的一个独立单位，是应用程序运行的载体。进程是一种抽象的概念，从来没有统一的标准定义。</p>
+<p>进程的组成：进程一般由程序、数据集合和进程控制块三部分组成。</p>
+<p>程序用于描述进程要完成的功能，是控制进程执行的指令集； 数据集合是程序在执行时所需要的数据和工作区； 程序控制块(Program Control Block，简称PCB)，包含进程的描述信息和控制信息，是进程存在的唯一 标志。</p>
+<p>进程具有的特征：</p>
+<p>动态性：进程是程序的一次执行过程，是临时的，有生命期的，是动态产生，动态消亡的；</p>
+<p>并发性：任何进程都可以同其他进程一起并发执行；</p>
+<p>独立性：进程是系统进行资源分配和调度的一个独立单位；</p>
+<p>结构性：进程由程序、数据和进程控制块三部分组成。</p>
+<p><strong>②内存</strong></p>
+<p>内存：是运行进程的空间，CPU待处理的数据和运行的程序暂时存储的空间。</p>
+<h3 id="3、图文并茂说明Linux启动流程"><a href="#3、图文并茂说明Linux启动流程" class="headerlink" title="3、图文并茂说明Linux启动流程"></a>3、图文并茂说明Linux启动流程</h3><p>解析：</p>
+<p><a href=""><img src="image-20220911212506097.png" srcset="/img/loading.gif" lazyload alt="image-20220911212506097"></a></p>
+<p><strong>CentOS6启动流程</strong></p>
+<p>（1） 加载BIOS的硬件信息，获取第一个启动设备</p>
+<p>（2） 读取第一个启动设备MBR的引导加载程序(grub)的启动信息</p>
+<p>（3） 加载核心操作系统的核心信息，核心开始解压缩，并尝试驱动所有的硬件设备</p>
+<p>（4） 核心执行init程序，并获取默认的运行信息</p>
+<p>（5）init程序执行/etc/rc.d/rc.sysinit文件，重新挂载根文件系统</p>
+<p>（6）启动核心的外挂模块</p>
+<p>（7）init执行运行的各个批处理文件(scripts)</p>
+<p>（8） init执行/etc/rc.d/rc.local</p>
+<p>（9）执行/bin/login程序，等待用户登录</p>
+<p>（10）登录之后开始以Shell控制主机 </p>
+<p><strong>CentOS7以后启动流程</strong>　</p>
+<p>（1） UEFi或BIOS初始化，运行POST开机自检</p>
+<p>（2） 选择启动设备</p>
+<p>（3） 引导装载程序, centos7是grub2,加载装载程序的配置文件：</p>
+<p>　　/etc/grub.d/</p>
+<p>　　/etc/default/grub</p>
+<p>　　/boot/grub2/grub.cfg</p>
+<p>（4） 加载initramfs驱动模块</p>
+<p>（5） 加载内核选项</p>
+<p>（6）内核初始化，centos7使用systemd代替init</p>
+<p>（7） 执行initrd.target所有单元，包括挂载/etc/fstab</p>
+<p>（8） 从initramfs根文件系统切换到磁盘根目录</p>
+<p>（9） systemd执行默认target配置，配置文件/etc/systemd/system/default.target</p>
+<p>（10）systemd执行sysinit.target初始化系统及basic.target准备操作系统</p>
+<p>（11） systemd启动multi-user.target下的本机与服务器服务</p>
+<p>（12） systemd执行multi-user.target下的/etc/rc.d/rc.local</p>
+<p>（13） Systemd执行multi-user.target下的getty.target及登录服务</p>
+<p>（14）systemd执行graphical需要的服务</p>
+<h3 id="4、自定义一个systemd服务定时去其他服务器上检查-tmp-下文件的个数，如果发现数量有变化就记录变化情况到文件中。"><a href="#4、自定义一个systemd服务定时去其他服务器上检查-tmp-下文件的个数，如果发现数量有变化就记录变化情况到文件中。" class="headerlink" title="4、自定义一个systemd服务定时去其他服务器上检查/tmp/下文件的个数，如果发现数量有变化就记录变化情况到文件中。"></a>4、自定义一个systemd服务定时去其他服务器上检查/tmp/下文件的个数，如果发现数量有变化就记录变化情况到文件中。</h3><p>解析：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs routeros">vim /lib/systemd/system/chaxun.service<br><br>[Unit]<br><span class="hljs-attribute">Description</span>=chaxun<br><br>[Service]<br><span class="hljs-attribute">TimeoutStartSec</span>=0<br><span class="hljs-attribute">Execstart</span>=/bin/sh -c <span class="hljs-string">&quot;ssh root@10.0.0.132 find /tmp/ -mtime 2|wc -l &gt;&gt; log.txt&quot;</span><br><span class="hljs-attribute">ExecStop</span>=/bin/kill sh<br><br>[Install]<br><span class="hljs-attribute">Wantedby</span>=multi-user.target<br><br><br><br><br>生效<br>systemctl daemon-reload<br>systemctl <span class="hljs-built_in">enable</span> --now chaxun.service<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="5、写Linux内核编译安装博客"><a href="#5、写Linux内核编译安装博客" class="headerlink" title="5、写Linux内核编译安装博客"></a>5、写Linux内核编译安装博客</h3><p>解析：</p>
+<p><strong>①提前准备安装软件包</strong></p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs vim">yum -<span class="hljs-keyword">y</span> install gcc <span class="hljs-keyword">make</span> ncurses-devel flex bison openssl-devel elfutils-libelf-devel <span class="hljs-keyword">perl</span> <span class="hljs-keyword">perl</span>-devel<br></code></pre></td></tr></table></figure>
+
+<p><strong>②从官网下载最新版本的内核（<a target="_blank" rel="noopener" href="http://www.kernel.org/">www.kernel.org</a>)</strong></p>
+<p><a href=""><img src="image-20220911161947066.png" srcset="/img/loading.gif" lazyload alt="image-20220911161947066"></a></p>
+<p><strong>③修改配置</strong></p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">cd</span> /usr/local/src<br><span class="hljs-attribute">tar</span> xf linux-<span class="hljs-number">5</span>.<span class="hljs-number">19</span>.<span class="hljs-number">8</span>.tar.xz         #解压<br><span class="hljs-attribute">cd</span> linux-<span class="hljs-number">5</span>.<span class="hljs-number">19</span>.<span class="hljs-number">8</span><br><span class="hljs-attribute">cp</span> /boot/config-<span class="hljs-number">4</span>.<span class="hljs-number">18</span>.<span class="hljs-number">0</span>-<span class="hljs-number">372</span>.<span class="hljs-number">9</span>.<span class="hljs-number">1</span>.el8.x86_64 ./.config    #将现有版本的内核编译config配置文件拷贝到新版本里，快捷方便，在原有的文件里更改<br><span class="hljs-attribute">vim</span> .config<br><span class="hljs-comment"># CONFIG_MODULE_SIG=y              #注释此行</span><br><span class="hljs-attribute">CONFIG_SYSTEM_TRUSTED_KEYS</span>=<span class="hljs-string">&quot;&quot;</span>      #修改此行<br><span class="hljs-comment"># CONFIG_DEBUG_INFO_BTF=y          #linux-5.8.5版本后需要注释此行</span><br><br><br></code></pre></td></tr></table></figure>
+
+<p><strong>④配置选项</strong></p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">make menuconfig</span><br></code></pre></td></tr></table></figure>
+
+<p><a href=""><img src="image-20220911182550204.png" srcset="/img/loading.gif" lazyload alt="image-20220911182550204"></a></p>
+<p>在这里可以选择启用或者禁用一些模块。不知道该如何选择的话，默认退出即可</p>
+<p><strong>⑤编译安装</strong></p>
+<figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs gauss"><span class="hljs-built_in">make</span> -j <span class="hljs-number">2</span>      <span class="hljs-meta">#j 2是2个CPU同时运行，如果CPU有更多可以选择更大的数字   编译内核</span><br><span class="hljs-built_in">make</span> modules_install    <span class="hljs-meta">#安装内核模块</span><br><span class="hljs-built_in">make</span> install            <span class="hljs-meta">#安装内核核心文件</span><br><br><br></code></pre></td></tr></table></figure>
+
+<p><a href=""><img src="image-20220911205446461.png" srcset="/img/loading.gif" lazyload alt="image-20220911205446461"></a></p>
+<p>⑥重新启动</p>
+<p><a href=""><img src="image-20220911205908277.png" srcset="/img/loading.gif" lazyload alt="image-20220911205908277"></a></p>
+<h3 id="6、总结5个自我觉得比较有用的awk的使用场景，比如在什么情况下用awk处理文本效率最高，发散题，至少写1个。"><a href="#6、总结5个自我觉得比较有用的awk的使用场景，比如在什么情况下用awk处理文本效率最高，发散题，至少写1个。" class="headerlink" title="6、总结5个自我觉得比较有用的awk的使用场景，比如在什么情况下用awk处理文本效率最高，发散题，至少写1个。"></a>6、总结5个自我觉得比较有用的awk的使用场景，比如在什么情况下用awk处理文本效率最高，发散题，至少写1个。</h3><p>解析：</p>
+<p>取分区利用率或者IP地址时，命令最少</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><br><span class="hljs-attribute">df</span> | awk <span class="hljs-string">&#x27;NR&gt;=2&#123;print <span class="hljs-variable">$1</span>,<span class="hljs-variable">$5</span>&#125;&#x27;</span>    <span class="hljs-comment">#一条命令取出第二行到最后一行的分区及利用率</span><br>ip a | awk -F<span class="hljs-string">&quot;[ /]+&quot;</span> <span class="hljs-string">&#x27;NR==9&#123;print <span class="hljs-variable">$3</span>&#125;&#x27;</span>  <span class="hljs-comment">#以前的命令还需要tr将多个空格合并</span><br><br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h1 id=""><a href="#" class="headerlink" title=""></a></h1><span id="more"></span>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/09/20/%E7%AC%AC%E4%BA%94%E5%91%A8%E4%BD%9C%E4%B8%9A/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">第五周作业</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/08/15/%E7%AC%AC%E4%B8%89%E5%91%A8%E4%BD%9C%E4%B8%9A/">
+                        <span class="hidden-mobile">第三周作业</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

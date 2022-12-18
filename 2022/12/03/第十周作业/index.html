@@ -1,0 +1,750 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="[TOC] 一、zabbix 架构原理，及常用组件及用途分析  SERVER Zabbix server 是 Zabbix 软件的核心组件 Zabbix Agent 向其报告可用性、系统完整性信息和统计信息。 Zabbix server也是存储所有配置信息、统计信息和操作信息的核心存储库。 Zabbix server也是Zabbix监控系统的告警中心。在监控的系统中出现任何异常，将发出通知给管理员">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第十周作业">
+<meta property="og:url" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/index.html">
+<meta property="og:site_name" content="5-12 23:30">
+<meta property="og:description" content="[TOC] 一、zabbix 架构原理，及常用组件及用途分析  SERVER Zabbix server 是 Zabbix 软件的核心组件 Zabbix Agent 向其报告可用性、系统完整性信息和统计信息。 Zabbix server也是存储所有配置信息、统计信息和操作信息的核心存储库。 Zabbix server也是Zabbix监控系统的告警中心。在监控的系统中出现任何异常，将发出通知给管理员">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221211141406905.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221211143155382.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221211160352740.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221211155520092.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221211155824026.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221211160930949.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221211161027470.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221211161904592.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221211162254882.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221211163011697.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221211163652192.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221213105402925.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221213105254983.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221213105208702.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221213120542304.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221213124541429.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221213180906577.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221213181712612.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221213181809843.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221213182129242.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218093434434.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218093706256.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218094259182.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218094325434.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218094842011.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218095111843.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218095518624.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218102330483.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218102904870.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218101302299.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218103217343.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218105754672.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218110019612.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218110305045.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218110418418.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218110824993.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218111152744.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218111301406.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218112135483.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218112450399.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218112558972.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218112813468.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218113431123.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218113149142.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218113552143.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218113812972.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218113919777.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218115136642.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218115333696.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218115717334.png">
+<meta property="og:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221218115528257.png">
+<meta property="article:published_time" content="2022-12-03T13:47:18.000Z">
+<meta property="article:modified_time" content="2022-12-18T04:04:09.380Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2022/12/03/%E7%AC%AC%E5%8D%81%E5%91%A8%E4%BD%9C%E4%B8%9A/image-20221211141406905.png">
+  
+  
+  <title>第十周作业 - 5-12 23:30</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="第十周作业">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-12-03 13:47" pubdate>
+        December 3, 2022 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      21k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      178 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">第十周作业</h1>
+            
+            <div class="markdown-body">
+              <p>[TOC]</p>
+<h3 id="一、zabbix-架构原理，及常用组件及用途分析"><a href="#一、zabbix-架构原理，及常用组件及用途分析" class="headerlink" title="一、zabbix 架构原理，及常用组件及用途分析"></a>一、zabbix 架构原理，及常用组件及用途分析</h3><p><a href=""><img src="image-20221211141406905.png" srcset="/img/loading.gif" lazyload alt="image-20221211141406905"></a></p>
+<ul>
+<li><p>SERVER</p>
+<p>Zabbix server 是 Zabbix 软件的核心组件</p>
+<p>Zabbix Agent 向其报告可用性、系统完整性信息和统计信息。</p>
+<p>Zabbix server也是存储所有配置信息、统计信息和操作信息的核心存储库。</p>
+<p>Zabbix server也是Zabbix监控系统的告警中心。在监控的系统中出现任何异常，将发出通知给管理员。</p>
+<p>基本的 Zabbix Server 的功能分解成为三个不同的组件。他们是：Zabbix server、Web前端和数据库。</p>
+<p>Zabbix 的所有配置信息都存储在 Server和Web前端进行交互的数据库中。例如，当你通过Web前端（或者API）新增一个监控项时，它会被添加到数据库的监控项表里。然后，Zabbix server 以每分钟一次的频率查询监控项表中的有效项，接着将它存储在 Zabbix server 中的缓存里。这就是为什么 Zabbix前端所做的任何更改需要花费两分钟左右才能显示在最新的数据段的原因。</p>
+</li>
+<li><p>数据库</p>
+<p>所有配置信息以及 Zabbix 采集到的数据都被持久存储在数据库中</p>
+<p>可以支持MySQL,PostgreSQL,Oracle 等多种数据库</p>
+</li>
+<li><p>WEB 界面</p>
+<p>WEB 界面是 Zabbix server 的一部分，用于实现展示和配置的界面</p>
+<p>通常（但不一定）和 Zabbix server 运行在同一台物理机器上</p>
+<p>基于 Apache(Nginx)+PHP 实现,早期只支持LAMP架构,从Zabbix5.0开始支持LNMP</p>
+</li>
+<li><p>AGENT</p>
+<p>Zabbix agents 部署在被监控目标上，用于主动监控本地资源和应用程序，并将收集的数据发送给Zabbix server。从Zabbix5.0开始支技Zabbix Agent2</p>
+</li>
+<li><p>PROXY</p>
+<p>Zabbix Proxy 可以代替 Zabbix Server 采集性能和可用性数据</p>
+<p>Zabbix Proxy 在 Zabbix 的部署是可选部分</p>
+<p>Zabbix Proxy 的部署可以很好的分担单个Zabbix server的负载</p>
+</li>
+<li><p>Java 网关</p>
+<p>Zabbix 要监控 tomcat 服务器和其它JAVA程序，需要使用 Java gateway 做为代理,才能从JAVA程序中获取数据</p>
+</li>
+<li><p>内部配置的数据流程</p>
+<p>Zabbix 内部的数据流对Zabbix的使用也很重要。首先，为了创建一个采集数据的监控项，就必须先创建主机。其次，在任务的另外一端，必须要有监控项才能创建触发器（trigger），必须要有触发器来创建动作（action）。因此，如果您想要收到类似“X个server上CPU负载过高”这样的告警，您必须首先为 Server X 创建一个主机条目，其次创建一个用于监控其 CPU的监控项，最后创建一个触发器，用来触发 CPU负载过高这个动作，并将其发送到您的邮箱里。虽然这些步骤看起来很繁琐，但是使用模板的话，实际操作非常简单。也正是由于这种设计，使得 Zabbix 的配置变得更加灵活易用。</p>
+</li>
+</ul>
+<h3 id="二、监控LNMP架构，并配置报警升级，0-5分钟不报警执行重启应用，5-30分钟邮箱通知运维，30-60分钟邮箱通过总监"><a href="#二、监控LNMP架构，并配置报警升级，0-5分钟不报警执行重启应用，5-30分钟邮箱通知运维，30-60分钟邮箱通过总监" class="headerlink" title="二、监控LNMP架构，并配置报警升级，0-5分钟不报警执行重启应用，5-30分钟邮箱通知运维，30-60分钟邮箱通过总监"></a>二、监控LNMP架构，并配置报警升级，0-5分钟不报警执行重启应用，5-30分钟邮箱通知运维，30-60分钟邮箱通过总监</h3><h4 id="2-1、zabbix环境"><a href="#2-1、zabbix环境" class="headerlink" title="2.1、zabbix环境"></a>2.1、zabbix环境</h4><p>rocky8+zabbix5.0</p>
+<p><a href=""><img src="image-20221211143155382.png" srcset="/img/loading.gif" lazyload alt="image-20221211143155382"></a></p>
+<h4 id="2-2、搭建监控LNMP架构"><a href="#2-2、搭建监控LNMP架构" class="headerlink" title="2.2、搭建监控LNMP架构"></a>2.2、搭建监控LNMP架构</h4><figure class="highlight sh"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></div></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#安装server机器</span><br><span class="hljs-comment">#环境：rocky8+mysql+nginx+zabbix安装在一台机器上（生产环境中，mysql单独安装在一台机器）</span><br><br><span class="hljs-comment">#注意：因采用网址登录，所以需提前进行DNS域名解析</span><br>[root@zabbix_server ~]<span class="hljs-comment">#vim install_zabbix5.0_for_nginx_mysql.sh</span><br><span class="hljs-comment">#!/bin/bash</span><br>rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/8/x86_64/zabbix-release-5.0-1.el8.noarch.rpm<br>sed -i <span class="hljs-string">&#x27;s#http://repo.zabbix.com#https://mirrors.tuna.tsinghua.edu.cn/zabbix#&#x27;</span> /etc/yum.repos.d/zabbix.repo<br>dnf clean all<br>dnf -y install zabbix-server-mysql zabbix-web-mysql zabbix-nginx-conf zabbix-agent2<br>yum -y install mysql-server<br>systemctl <span class="hljs-built_in">enable</span> --now mysqld<br><span class="hljs-built_in">cat</span> &lt;&lt; <span class="hljs-string">EOF | mysql</span><br><span class="hljs-string">create database zabbix character set utf8 collate utf8_bin;</span><br><span class="hljs-string">create user zabbix@localhost identified by &#x27;123456&#x27;;</span><br><span class="hljs-string">grant all privileges on zabbix.* to zabbix@localhost;</span><br><span class="hljs-string">EOF</span><br>zcat /usr/share/doc/zabbix-server-mysql*/create.sql.gz | mysql -uzabbix -p123456  zabbix<br>sed -i.bak <span class="hljs-string">&#x27;/# DBPassword/a DBPassword=123456&#x27;</span> /etc/zabbix/zabbix_server.conf<br>systemctl <span class="hljs-built_in">enable</span> --now nginx<br>sed -i.bak <span class="hljs-string">&#x27;/^server/a\        listen 80;\n        server_name     zabbix.magedu.org; &#x27;</span> /etc/nginx/conf.d/zabbix.conf<br>sed -i.bak <span class="hljs-string">&#x27;/date.timezone/c php_value[date.timezone] = Asia/Shanghai&#x27;</span> /etc/php-fpm.d/zabbix.conf<br>systemctl restart zabbix-server zabbix-agent2 nginx php-fpm<br>systemctl <span class="hljs-built_in">enable</span> zabbix-server zabbix-agent2 nginx php-fpm<br>:wq<br><span class="hljs-comment">#以上就创建好了简单的安装脚本</span><br>[root@zabbix_server ~]<span class="hljs-comment">#bash install_zabbix5.0_for_nginx_mysql.sh</span><br><br><span class="hljs-comment">#此时网站是英文环境，需提前安装中文包，才能设置为中文环境</span><br>[root@zabbix_server ~]<span class="hljs-comment">#yum -y install langpacks-zh_CN</span><br><span class="hljs-comment">#但图形里面会有一些乱码</span><br><br><span class="hljs-comment">#将Windows里的字体文件放入到zabbix-server主机里会解决此问题，Windows字体路径：控制面板\外观和个性化\字体</span><br><br><span class="hljs-comment">#将中文字体上传到 Zabbix Server 的目录 /usr/share/zabbix/assets/fonts 下</span><br>[root@zabbix_server ~]<span class="hljs-comment">#cd /usr/share/zabbix/assets/fonts</span><br>[root@zabbix_server fonts]<span class="hljs-comment">#ll</span><br>total 0<br>lrwxrwxrwx 1 root root 33 Dec  9 09:17 graphfont.ttf -&gt; /etc/alternatives/zabbix-web-font<br>[root@zabbix_server fonts]<span class="hljs-comment">#mv graphfont.ttf graphfont.ttf.bak</span><br>[root@zabbix_server fonts]<span class="hljs-comment">#ls</span><br>graphfont.ttf.bak<br>[root@zabbix_server fonts]<span class="hljs-comment">#rz -E</span><br>rz waiting to receive.<br>[root@zabbix_server fonts]<span class="hljs-comment">#ls</span><br>graphfont.ttf.bak  simsun.ttc<br>[root@zabbix_server fonts]<span class="hljs-comment">#cp simsun.ttc graphfont.ttf   #将上传的字体设置为linux的字体</span><br>[root@zabbix_server fonts]<span class="hljs-comment">#ls</span><br>graphfont.ttf  graphfont.ttf.bak  simsun.ttc<br><br>***********************************************************************************<br><br><span class="hljs-comment">#安装agent2</span><br><span class="hljs-comment">#Rocky8.6系统,简单脚本如下</span><br>[root@zabbix_agent2 ~]<span class="hljs-comment">#vim install_zabbix5.0_agent2_for_rocky8</span><br>rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/8/x86_64/zabbix-release-5.0-1.el8.noarch.rpm<br>sed -i <span class="hljs-string">&#x27;s#http://repo.zabbix.com#https://mirrors.tuna.tsinghua.edu.cn/zabbix#&#x27;</span> /etc/yum.repos.d/zabbix.repo<br>dnf clean all<br>dnf -y install zabbix-agent2<br>sed -i.bak <span class="hljs-string">&#x27;/^Server=/c Server=10.0.0.190&#x27;</span> /etc/zabbix/zabbix_agent2.conf  <span class="hljs-comment">#zabbix_server安装在10.0.0.190(ip地址也可以写成网址，相对应的需要在本机上解析此网址)</span><br> <span class="hljs-comment">#其中两种方法</span><br> <span class="hljs-comment">#①在/etc/hosts里面添加 10.0.0.190  网址</span><br> <span class="hljs-comment">#②在/etc/sysconfig/network-scripts/ifcfg-eth0里面将DNS指向10.0.0.128（此ip是自己设置的DNS解析服务器，里面有10.0.0.190所对应的网址）</span><br>systemctl start zabbix-agent2<br>systemctl <span class="hljs-built_in">enable</span> zabbix-agent2<br>:wq<br>[root@zabbix_agent2 ~]<span class="hljs-comment">#bash install_zabbix5.0_agent2_for_rocky8</span><br><br><span class="hljs-comment">#下一步需要在zabbix_server的web端进行设置，允许监视zabbix_agent2</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="2-3、配置报警升级"><a href="#2-3、配置报警升级" class="headerlink" title="2.3、配置报警升级"></a>2.3、配置报警升级</h4><h5 id="2-3-1、实现故障自愈功能（检测到Apache关闭时，自动重启）"><a href="#2-3-1、实现故障自愈功能（检测到Apache关闭时，自动重启）" class="headerlink" title="2.3.1、实现故障自愈功能（检测到Apache关闭时，自动重启）"></a>2.3.1、实现故障自愈功能（检测到Apache关闭时，自动重启）</h5><p>配置远程命令的操作类似于发送消息，区别在于一个执行命令，一个发送消息</p>
+<p>远程命令可以直接在ZabbixServer, ZabbixProxy和ZabbixAgent上执行。</p>
+<p>但在Zabbix agent和Zabbix proxy上，远程命令默认是不开启的，它们可以通过以下方式启用：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">在agent配置中添加AllowKey=system.run[*]、UnsafeUserParameters=1参数<br><span class="hljs-comment">#zabbix5.0版本以上,AllowKey=system.run[*]代替EnableRemoteCommands,agent2默认没有此命令手工加入</span><br><span class="hljs-comment">#EnableRemoteCommands=1 #开启远程执行命令,此指令在zabbix5.0版本以上淘汰</span><br>在proxy配置中，将enableremotecomcommands参数设置为1；<br></code></pre></td></tr></table></figure>
+
+<h6 id="2-3-1-1、zabbix-agent开启远程命令"><a href="#2-3-1-1、zabbix-agent开启远程命令" class="headerlink" title="2.3.1.1、zabbix agent开启远程命令"></a>2.3.1.1、zabbix agent开启远程命令</h6><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@zabbix_agent2 ~]<span class="hljs-comment">#vim /etc/zabbix/zabbix_agent2.conf</span><br>UnsafeUserParameters=1    <span class="hljs-comment">#取消此行注释，并将0改为1.允许远程执行命令的时候使用不安全的参数</span><br>AllowKey=system.run[*]    <span class="hljs-comment">#添加此行，#开启远程执行命令</span><br>:wq<br>[root@zabbix_agent2 ~]<span class="hljs-comment">#systemctl restart zabbix-agent2.service</span><br><br><span class="hljs-comment">#默认zabbix agent是使用zabbix用户启动的，有些特权命令zabbix用户是没有权限执行，会导致定义好的自治愈策略因为权限拒绝为执行失败,所以需要事先对zabbix用户进行授权.</span><br>[root@zabbix_agent2 ~]<span class="hljs-comment">#ll /etc/sudoers</span><br>-r--r-----. 1 root root 4328 Apr 20  2022 /etc/sudoers<br>[root@zabbix_agent2 ~]<span class="hljs-comment">#chmod u+w /etc/sudoers</span><br>[root@zabbix_agent2 ~]<span class="hljs-comment">#ll /etc/sudoers</span><br>-rw-r-----. 1 root root 4328 Apr 20  2022 /etc/sudoers<br>[root@zabbix_agent2 ~]<span class="hljs-comment">#vim /etc/sudoers</span><br><span class="hljs-comment">## Allow root to run any commands anywhere </span><br>root    ALL=(ALL)       ALL<br>zabbix ALL=(ALL)   NOPASSWD: ALL           <span class="hljs-comment">#添加此行</span><br>:wq<br>[root@zabbix_agent2 ~]<span class="hljs-comment">#chmod u-w /etc/sudoers</span><br>[root@zabbix_agent2 ~]<span class="hljs-comment">#ll /etc/sudoers</span><br>-r--r----- 1 root root 4359 Dec 11 15:29 /etc/sudoers<br>[root@zabbix_agent2 ~]<span class="hljs-comment">#visudo -c                #检查语法是否错误</span><br>/etc/sudoers: parsed OK<br></code></pre></td></tr></table></figure>
+
+<h6 id="2-3-1-2、创建相关动作"><a href="#2-3-1-2、创建相关动作" class="headerlink" title="2.3.1.2、创建相关动作"></a>2.3.1.2、创建相关动作</h6><p>①创建触发器</p>
+<p><a href=""><img src="image-20221211160352740.png" srcset="/img/loading.gif" lazyload alt="image-20221211160352740"></a></p>
+<p>②创建动作</p>
+<p><a href=""><img src="image-20221211155520092.png" srcset="/img/loading.gif" lazyload alt="image-20221211155520092"></a></p>
+<p>③创建远程操作细节</p>
+<p><a href=""><img src="image-20221211155824026.png" srcset="/img/loading.gif" lazyload alt="image-20221211155824026"></a></p>
+<p>④停止apache看是否重新启动</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@zabbix_agent2 ~]<span class="hljs-comment">#systemctl stop httpd</span><br></code></pre></td></tr></table></figure>
+
+<p>在监测页面可以看到动作执行</p>
+<p><a href=""><img src="image-20221211160930949.png" srcset="/img/loading.gif" lazyload alt="image-20221211160930949"></a></p>
+<p>在agent服务器端也可以看到80端口已启动</p>
+<p><a href=""><img src="image-20221211161027470.png" srcset="/img/loading.gif" lazyload alt="image-20221211161027470"></a></p>
+<h5 id="2-3-2、实现邮件报警通知"><a href="#2-3-2、实现邮件报警通知" class="headerlink" title="2.3.2、实现邮件报警通知"></a>2.3.2、实现邮件报警通知</h5><h6 id="2-3-2-1、创建报警媒介类型实现发信人功能"><a href="#2-3-2-1、创建报警媒介类型实现发信人功能" class="headerlink" title="2.3.2.1、创建报警媒介类型实现发信人功能"></a>2.3.2.1、创建报警媒介类型实现发信人功能</h6><p>管理–&gt;报警媒介类型–&gt;创建报警媒介类型</p>
+<p><a href=""><img src="image-20221211161904592.png" srcset="/img/loading.gif" lazyload alt="image-20221211161904592"></a></p>
+<p>添加消息模板用于发送信息</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#可以修改两个消息模板</span><br><span class="hljs-comment"># 问题</span><br>主题: 告警: &#123;EVENT.NAME&#125;<br>告警主机：&#123;HOST.NAME1&#125;<br>告警服务: &#123;ITEM.NAME1&#125;<br>告警Key1: &#123;ITEM.KEY1&#125;：&#123;ITEM.VALUE1&#125;<br>告警Key2: &#123;ITEM.KEY2&#125;：&#123;ITEM.VALUE2&#125;<br>严重级别: &#123;TRIGGER.SEVERITY&#125;<br><span class="hljs-comment"># 恢复 Problem Recovery</span><br>主题: 恢复: &#123;EVENT.DURATION&#125;: &#123;EVENT.NAME&#125;<br>恢复主机：&#123;HOST.NAME1&#125;<br>恢复服务： &#123;ITEM.NAME1&#125;<br>恢复Key1：&#123;ITEM.KEY1&#125;：&#123;ITEM.VALUE1&#125;<br>恢复Key2: &#123;ITEM.KEY2&#125;：&#123;ITEM.VALUE2&#125;<br></code></pre></td></tr></table></figure>
+
+<p><a href=""><img src="image-20221211162254882.png" srcset="/img/loading.gif" lazyload alt="image-20221211162254882"></a></p>
+<h6 id="2-3-2-2、给指定用户添加报警媒介实现收件人功能"><a href="#2-3-2-2、给指定用户添加报警媒介实现收件人功能" class="headerlink" title="2.3.2.2、给指定用户添加报警媒介实现收件人功能"></a>2.3.2.2、给指定用户添加报警媒介实现收件人功能</h6><p><a href=""><img src="image-20221211163011697.png" srcset="/img/loading.gif" lazyload alt="image-20221211163011697"></a></p>
+<h6 id="2-3-2-3、在动作里面添加邮件报警"><a href="#2-3-2-3、在动作里面添加邮件报警" class="headerlink" title="2.3.2.3、在动作里面添加邮件报警"></a>2.3.2.3、在动作里面添加邮件报警</h6><p><a href=""><img src="image-20221211163652192.png" srcset="/img/loading.gif" lazyload alt="image-20221211163652192"></a></p>
+<h3 id="三、zabbix-api批量添加多个主机，要求一些不走代理，一些支持走代理"><a href="#三、zabbix-api批量添加多个主机，要求一些不走代理，一些支持走代理" class="headerlink" title="三、zabbix api批量添加多个主机，要求一些不走代理，一些支持走代理"></a>三、zabbix api批量添加多个主机，要求一些不走代理，一些支持走代理</h3><p>API（Application Programming Interface，应用程序编程接口）是一些预先定义的函数，目的是提供应用程序与开发人员基于某软件或硬件得以访问一组功能的能力，而又无需直接使用源代码，或理解内部工作机制的细节。</p>
+<p>Zabbix API允许你以编程方式检索和修改Zabbix的配置，并提供对历史数据的访问。它广泛用于:</p>
+<ul>
+<li><p>创建新的应用程序以使用Zabbix</p>
+</li>
+<li><p>将Zabbix与第三方软件集成</p>
+</li>
+<li><p>自动执行常规任务</p>
+</li>
+</ul>
+<p>Zabbix API是基于Web的API，作为Web前端的一部分提供。它使用JSON-RPC 2.0协议，这意味着两件事: </p>
+<ul>
+<li><p>该API包含一组独立的方法</p>
+</li>
+<li><p>客户端和API之间的请求和响应使用JSON格式进行编码</p>
+</li>
+</ul>
+<p>API 采用 JSON-RPC 实现。这意味着调用任何函数，都需要发送 POST 请求，输入输出数据都是以JSON 格式。</p>
+<p><strong>Zabbix API由许多名义上分组的独立API方法组成。每个方法执行一个特定任务</strong>。</p>
+<p>例如，方法 host.create 隶属于 host 这个API分组 ，用于创建新主机。API分组有时被称为“类”。</p>
+<p>大多数API至少包含四种方法: get， create， update 和 delete ，分别是检索，创建，更新和删除数据，但是某些API提供一套完全不同的一组方法。</p>
+<p><strong>Zabbix常用API</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sh">user.login                                    <span class="hljs-comment">#用户登录</span><br>host.get(create|delete|update)                <span class="hljs-comment">#主机操作</span><br>hostgroup.get(create|delete|update)           <span class="hljs-comment">#主机组操作</span><br>item.get(create|delete|update)                <span class="hljs-comment">#监控项目操作</span><br>history.get                                   <span class="hljs-comment">#历史数据查询</span><br>event.get                                     <span class="hljs-comment">#事件查询</span><br>trigger.get                                   <span class="hljs-comment">#触发器查询</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="3-1、获取Token"><a href="#3-1、获取Token" class="headerlink" title="3.1、获取Token"></a>3.1、获取Token</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#获取token的脚本，其中的用户密码是登陆zabbix-web页面的账号密码（原始账号：Admin密码：zabbix），此脚本可在任意服务器使用，但需注意域名解析</span><br>[root@zabbix_agent2 ~]<span class="hljs-comment">#cat zabbix-api-token.sh </span><br><span class="hljs-comment">#!/bin/bash</span><br>ZABBIX_SERVER=zabbix.magedu.org<br>curl -s -X POST -H <span class="hljs-string">&#x27;Content-Type:application/json&#x27;</span> -d <span class="hljs-string">&#x27;</span><br><span class="hljs-string">&#123;</span><br><span class="hljs-string">    &quot;jsonrpc&quot;: &quot;2.0&quot;,</span><br><span class="hljs-string">    &quot;method&quot;: &quot;user.login&quot;,</span><br><span class="hljs-string">    &quot;params&quot;: &#123;</span><br><span class="hljs-string">        &quot;user&quot;: &quot;zhangtianxiang&quot;,</span><br><span class="hljs-string">        &quot;password&quot;: &quot;123456&quot;</span><br><span class="hljs-string">    &#125;,</span><br><span class="hljs-string">    &quot;id&quot;: 1</span><br><span class="hljs-string">&#125;&#x27;</span> http://<span class="hljs-variable">$ZABBIX_SERVER</span>/api_jsonrpc.php<br>[root@zabbix_agent2 ~]<span class="hljs-comment">#vim /etc/hosts</span><br>10.0.0.190  zabbix.magedu.org          <span class="hljs-comment">#添加此行</span><br>:wq<br>[root@zabbix_agent2 ~]<span class="hljs-comment">#bash zabbix-api-token.sh </span><br>&#123;<span class="hljs-string">&quot;jsonrpc&quot;</span>:<span class="hljs-string">&quot;2.0&quot;</span>,<span class="hljs-string">&quot;result&quot;</span>:<span class="hljs-string">&quot;5e5f4cd57c79a24319cffecae0d7261c&quot;</span>,<span class="hljs-string">&quot;id&quot;</span>:1&#125;<br><span class="hljs-comment">#其中5e5f4cd57c79a24319cffecae0d7261c即为获取的token</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>注意：</strong></p>
+<p>①在通常的测试场景中，直接输出JSON结果的结果很乱，没有换行，没有任何格式，看起来很复杂，如果想要格式化输出，需要花费很多的时间对结果进行处理，使用python的json.tool可以直接将结果以json格式输出，看起来美观易读</p>
+<p>②还可以利jq工具实现类似的效果</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#使用python的json.tool</span><br>[root@zabbix_agent2 ~]<span class="hljs-comment">#yum -y install python3</span><br>[root@zabbix_agent2 ~]<span class="hljs-comment">#bash zabbix-api-token.sh | python3 -m json.tool</span><br>&#123;<br>    <span class="hljs-string">&quot;jsonrpc&quot;</span>: <span class="hljs-string">&quot;2.0&quot;</span>,<br>    <span class="hljs-string">&quot;result&quot;</span>: <span class="hljs-string">&quot;45909ac689943e0761e5e3deaea55a51&quot;</span>,<br>    <span class="hljs-string">&quot;id&quot;</span>: 1<br>&#125;<br><br><span class="hljs-comment">#利jq工具</span><br>[root@zabbix_agent2 ~]<span class="hljs-comment">#bash zabbix-api-token.sh | jq</span><br>&#123;<br>  <span class="hljs-string">&quot;jsonrpc&quot;</span>: <span class="hljs-string">&quot;2.0&quot;</span>,<br>  <span class="hljs-string">&quot;result&quot;</span>: <span class="hljs-string">&quot;05ab62b170e52a584ea4b9c6656782a0&quot;</span>,<br>  <span class="hljs-string">&quot;id&quot;</span>: 1<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-2、通过API批量添加主机"><a href="#3-2、通过API批量添加主机" class="headerlink" title="3.2、通过API批量添加主机"></a>3.2、通过API批量添加主机</h4><p><strong>通过API添加主机命令格式</strong>：API添加主机为预先知道要添加的主机IP、预先安装并配置好zabbix agent、预先知道要关联的模板ID/组ID等信息，然后同API提交请求添加</p>
+<p>例如：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs sh">curl -s -X POST -H <span class="hljs-string">&#x27;Content-Type:application/json&#x27;</span> -d <span class="hljs-string">&#x27;</span><br><span class="hljs-string"> &#123;</span><br><span class="hljs-string">     &quot;jsonrpc&quot;: &quot;2.0&quot;,</span><br><span class="hljs-string">     &quot;method&quot;: &quot;host.create&quot;, #定义方法，N多种</span><br><span class="hljs-string">     &quot;params&quot;: &#123;</span><br><span class="hljs-string">         &quot;host&quot;: &quot;API Add Host Test&quot;, #自定义添加后的agent的名称</span><br><span class="hljs-string">         &quot;proxy_hostid&quot;: &quot;10273&quot;,#proxy的ID</span><br><span class="hljs-string">         &quot;interfaces&quot;: [</span><br><span class="hljs-string">             &#123;</span><br><span class="hljs-string">                 &quot;type&quot;: 1, #类型为1表示agent，2是SNMP，3是IMPI,4是JMX</span><br><span class="hljs-string">                 &quot;main&quot;: 1, #more接口</span><br><span class="hljs-string">                 &quot;useip&quot;: 1, #0是使用DNS，1是使用IP地址</span><br><span class="hljs-string">                 &quot;ip&quot;: &quot;192.168.0.24&quot;, #添加的zabbix agent的IP地址</span><br><span class="hljs-string">                 &quot;dns&quot;: &quot;&quot;,</span><br><span class="hljs-string">                 &quot;port&quot;: &quot;10050&quot; #agent端口</span><br><span class="hljs-string">             &#125;</span><br><span class="hljs-string">         ],</span><br><span class="hljs-string">         &quot;groups&quot;: [</span><br><span class="hljs-string">             &#123;</span><br><span class="hljs-string">                 &quot;groupid&quot;: &quot;2&quot; #添加到的组的ID</span><br><span class="hljs-string">             &#125;</span><br><span class="hljs-string">         ],</span><br><span class="hljs-string">         &quot;templates&quot;: [</span><br><span class="hljs-string">             &#123;</span><br><span class="hljs-string">                 &quot;templateid&quot;: &quot;10001&quot; #关联的模板的ID</span><br><span class="hljs-string">             &#125;</span><br><span class="hljs-string">         ]</span><br><span class="hljs-string">     &#125;,</span><br><span class="hljs-string">     &quot;auth&quot;: &quot;977781251d1222ebead6f05da1a9ec4d&quot;, </span><br><span class="hljs-string">     &quot;id&quot;: 1</span><br><span class="hljs-string"> &#125;&#x27;</span> http://192.168.7.101/zabbix/api_jsonrpc.php<br></code></pre></td></tr></table></figure>
+
+<h5 id="3-2-1、获取组的ID"><a href="#3-2-1、获取组的ID" class="headerlink" title="3.2.1、获取组的ID"></a>3.2.1、获取组的ID</h5><p>直接在web界面上点击相应的组就会出现对应的ID</p>
+<p><a href=""><img src="image-20221213105402925.png" srcset="/img/loading.gif" lazyload alt="image-20221213105402925"></a></p>
+<h5 id="3-2-2、获取关联模板的ID"><a href="#3-2-2、获取关联模板的ID" class="headerlink" title="3.2.2、获取关联模板的ID"></a>3.2.2、获取关联模板的ID</h5><p>直接在web界面上点击相应的模板就会出现对应的ID</p>
+<p><a href=""><img src="image-20221213105254983.png" srcset="/img/loading.gif" lazyload alt="image-20221213105254983"></a></p>
+<h5 id="3-2-3、获取代理proxy的ID"><a href="#3-2-3、获取代理proxy的ID" class="headerlink" title="3.2.3、获取代理proxy的ID"></a>3.2.3、获取代理proxy的ID</h5><p>直接在web界面上点击相应的代理就会出现对应的ID</p>
+<p><a href=""><img src="image-20221213105208702.png" srcset="/img/loading.gif" lazyload alt="image-20221213105208702"></a></p>
+<h5 id="3-2-4、使用脚本批量添加主机"><a href="#3-2-4、使用脚本批量添加主机" class="headerlink" title="3.2.4、使用脚本批量添加主机"></a>3.2.4、使用脚本批量添加主机</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@zabbix_agent2 ~]<span class="hljs-comment">#chmod +x zabbix-api-token.sh</span><br><span class="hljs-comment">#因为下方zabbix_api_add.sh调用zabbix-api-token.sh脚本，所以zabbix-api-token.sh需加执行权限</span><br>[root@zabbix_agent2 ~]<span class="hljs-comment">#cat zabbix_api_add.sh</span><br><span class="hljs-comment">#!/bin/bash</span><br>ZABBIX_SERVER=zabbix.magedu.org<br>TOKEN=$(./zabbix-api-token.sh| awk -F<span class="hljs-string">&#x27;&quot;&#x27;</span> <span class="hljs-string">&#x27;&#123;print $8&#125;&#x27;</span>)<br>IPLIST=(10.0.0.184 10.0.0.219 10.0.0.130)<br><br><span class="hljs-keyword">for</span> ((i=0; i&lt;<span class="hljs-variable">$&#123;#IPLIST[@]&#125;</span>; i++ ));<span class="hljs-keyword">do</span><br>add_host=<span class="hljs-string">&#x27;</span><br><span class="hljs-string">&#123;</span><br><span class="hljs-string">   &quot;jsonrpc&quot;: &quot;2.0&quot;,</span><br><span class="hljs-string">   &quot;method&quot;: &quot;host.create&quot;,</span><br><span class="hljs-string">   &quot;params&quot;: &#123;</span><br><span class="hljs-string">      &quot;host&quot;: &quot;&#x27;</span><span class="hljs-variable">$&#123;IPLIST[$i]&#125;</span><span class="hljs-string">&#x27;&quot;,</span><br><span class="hljs-string">      &quot;name&quot;: &quot;&#x27;</span>web-api-<span class="hljs-variable">$&#123;IPLIST[$i]&#125;</span><span class="hljs-string">&#x27;&quot;,</span><br><span class="hljs-string">      &quot;interfaces&quot;: [</span><br><span class="hljs-string">          &#123;</span><br><span class="hljs-string">          &quot;type&quot;: 1,</span><br><span class="hljs-string">          &quot;main&quot;: 1,</span><br><span class="hljs-string">          &quot;useip&quot;: 1,</span><br><span class="hljs-string">          &quot;ip&quot;: &quot;&#x27;</span><span class="hljs-variable">$&#123;IPLIST[$i]&#125;</span><span class="hljs-string">&#x27;&quot;,</span><br><span class="hljs-string">          &quot;dns&quot;: &quot;&quot;,</span><br><span class="hljs-string">          &quot;port&quot;: &quot;10050&quot;</span><br><span class="hljs-string">          &#125;</span><br><span class="hljs-string">       ],</span><br><span class="hljs-string">       &quot;groups&quot;: [</span><br><span class="hljs-string">          &#123;</span><br><span class="hljs-string">          &quot;groupid&quot;: &quot;18&quot;</span><br><span class="hljs-string">          &#125;</span><br><span class="hljs-string">       ],</span><br><span class="hljs-string">       &quot;templates&quot;: [</span><br><span class="hljs-string">          &#123;</span><br><span class="hljs-string">          &quot;templateid&quot;: &quot;10444&quot;</span><br><span class="hljs-string">          &#125;</span><br><span class="hljs-string">       ]</span><br><span class="hljs-string">   &#125;,</span><br><span class="hljs-string">&quot;id&quot;: 1,</span><br><span class="hljs-string">&quot;auth&quot;: &quot;&#x27;</span><span class="hljs-variable">$TOKEN</span><span class="hljs-string">&#x27;&quot;</span><br><span class="hljs-string">&#125;&#x27;</span><br>add_proxy_host=<span class="hljs-string">&#x27;</span><br><span class="hljs-string">&#123;</span><br><span class="hljs-string">   &quot;jsonrpc&quot;: &quot;2.0&quot;,</span><br><span class="hljs-string">   &quot;method&quot;: &quot;host.create&quot;,</span><br><span class="hljs-string">   &quot;params&quot;:</span><br><span class="hljs-string">   &#123;</span><br><span class="hljs-string">      &quot;host&quot;: &quot;&#x27;</span><span class="hljs-variable">$&#123;IPLIST[$i]&#125;</span><span class="hljs-string">&#x27;&quot;,</span><br><span class="hljs-string">      &quot;name&quot;: &quot;&#x27;</span>web-proxy-api-<span class="hljs-variable">$&#123;IPLIST[$i]&#125;</span><span class="hljs-string">&#x27;&quot;,</span><br><span class="hljs-string">      &quot;proxy_hostid&quot;: &quot;10446&quot;,</span><br><span class="hljs-string">      &quot;interfaces&quot;:</span><br><span class="hljs-string">      [</span><br><span class="hljs-string">         &#123;</span><br><span class="hljs-string">         &quot;type&quot;: 1,</span><br><span class="hljs-string">         &quot;main&quot;: 1,</span><br><span class="hljs-string">         &quot;useip&quot;: 1,</span><br><span class="hljs-string">         &quot;ip&quot;: &quot;&#x27;</span><span class="hljs-variable">$&#123;IPLIST[$i]&#125;</span><span class="hljs-string">&#x27;&quot;,</span><br><span class="hljs-string">         &quot;dns&quot;: &quot;&quot;,</span><br><span class="hljs-string">         &quot;port&quot;: &quot;10050&quot;</span><br><span class="hljs-string">         &#125;</span><br><span class="hljs-string">      ],</span><br><span class="hljs-string">      &quot;groups&quot;:</span><br><span class="hljs-string">      [</span><br><span class="hljs-string">         &#123;</span><br><span class="hljs-string">         &quot;groupid&quot;: &quot;18&quot;</span><br><span class="hljs-string">         &#125;</span><br><span class="hljs-string">      ],</span><br><span class="hljs-string">      &quot;templates&quot;:</span><br><span class="hljs-string">      [</span><br><span class="hljs-string">         &#123;</span><br><span class="hljs-string">         &quot;templateid&quot;: &quot;10444&quot;</span><br><span class="hljs-string">         &#125;</span><br><span class="hljs-string">      ]</span><br><span class="hljs-string">   &#125;,</span><br><span class="hljs-string">&quot;id&quot;: 1,</span><br><span class="hljs-string">&quot;auth&quot;: &quot;&#x27;</span><span class="hljs-variable">$TOKEN</span><span class="hljs-string">&#x27;&quot;</span><br><span class="hljs-string">&#125;&#x27;</span><br><br>   <span class="hljs-keyword">if</span> [ <span class="hljs-variable">$i</span> -lt 2 ];<span class="hljs-keyword">then</span><br>       curl -s -XPOST -H <span class="hljs-string">&quot;Content-Type: application/json-rpc&quot;</span> -d <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;add_host&#125;</span>&quot;</span> http://<span class="hljs-variable">$&#123;ZABBIX_SERVER&#125;</span>/api_jsonrpc.php<br>   <span class="hljs-keyword">else</span><br>       curl -s -XPOST -H <span class="hljs-string">&quot;Content-Type: application/json-rpc&quot;</span> -d <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;add_proxy_host&#125;</span>&quot;</span> http://<span class="hljs-variable">$&#123;ZABBIX_SERVER&#125;</span>/api_jsonrpc.php<br>   <span class="hljs-keyword">fi</span><br><span class="hljs-keyword">done</span><br>[root@zabbix_agent2 ~]<span class="hljs-comment">#bash zabbix_api_add.sh</span><br>&#123;<span class="hljs-string">&quot;jsonrpc&quot;</span>:<span class="hljs-string">&quot;2.0&quot;</span>,<span class="hljs-string">&quot;result&quot;</span>:&#123;<span class="hljs-string">&quot;hostids&quot;</span>:[<span class="hljs-string">&quot;10451&quot;</span>]&#125;,<span class="hljs-string">&quot;id&quot;</span>:1&#125;&#123;<span class="hljs-string">&quot;jsonrpc&quot;</span>:<span class="hljs-string">&quot;2.0&quot;</span>,<span class="hljs-string">&quot;result&quot;</span>:&#123;<span class="hljs-string">&quot;hostids&quot;</span>:[<span class="hljs-string">&quot;10452&quot;</span>]&#125;,<span class="hljs-string">&quot;id&quot;</span>:1&#125;&#123;<span class="hljs-string">&quot;jsonrpc&quot;</span>:<span class="hljs-string">&quot;2.0&quot;</span>,<span class="hljs-string">&quot;result&quot;</span>:&#123;<span class="hljs-string">&quot;hostids&quot;</span>:[<span class="hljs-string">&quot;10453&quot;</span>]&#125;,<span class="hljs-string">&quot;id&quot;</span>:1&#125;<br></code></pre></td></tr></table></figure>
+
+<p><a href=""><img src="image-20221213120542304.png" srcset="/img/loading.gif" lazyload alt="image-20221213120542304"></a></p>
+<h3 id="四、总结zabbix自定义监控项，基于自定义监控项监控nginx"><a href="#四、总结zabbix自定义监控项，基于自定义监控项监控nginx" class="headerlink" title="四、总结zabbix自定义监控项，基于自定义监控项监控nginx"></a>四、总结zabbix自定义监控项，基于自定义监控项监控nginx</h3><h4 id="4-1、自定义监控项"><a href="#4-1、自定义监控项" class="headerlink" title="4.1、自定义监控项"></a>4.1、自定义监控项</h4><p>系统内置的监控项：zabbix5.0参考文档</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs http">https://www.zabbix.com/documentation/5.0/zh/manual/config/items/itemtypes/zabbix<br>_agent<br></code></pre></td></tr></table></figure>
+
+<h5 id="4-1-1、自定义监控项配置"><a href="#4-1-1、自定义监控项配置" class="headerlink" title="4.1.1、自定义监控项配置"></a>4.1.1、自定义监控项配置</h5><p>监控项键值的格式</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs http">https://www.zabbix.com/documentation/5.0/zh/manual/config/items/item/key<br></code></pre></td></tr></table></figure>
+
+<p><a href=""><img src="image-20221213124541429.png" srcset="/img/loading.gif" lazyload alt="image-20221213124541429"></a></p>
+<p>客户端可以自定义监控项，在Zabbix Agent 配置文件添加内容,格式如下</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#cat /etc/zabbix/zabbix_agentd.conf</span><br><span class="hljs-comment">#cat /etc/zabbix/zabbix_agent2.conf</span><br>UserParameter=&lt;key&gt;,&lt;shell <span class="hljs-built_in">command</span>&gt;<br>Include=/etc/zabbix/zabbix_agentd.d/*.conf<br><br><span class="hljs-comment">#或者创建独立的自定义文件</span><br><span class="hljs-comment">#cat /etc/zabbix/zabbix_agentd.d/*.conf</span><br><span class="hljs-comment">#cat /etc/zabbix/zabbix_agent2.d/*.conf</span><br>UserParameter=&lt;key&gt;,&lt;shell <span class="hljs-built_in">command</span>&gt;<br></code></pre></td></tr></table></figure>
+
+<p><strong>注意</strong>：</p>
+<ul>
+<li>key 必须整个系统<strong>唯一</strong>。注意大小写是敏感的, Key名允许的字符如下</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ABAP">0-9a-zA-Z_-.<br></code></pre></td></tr></table></figure>
+
+<p>key使用 [*] 用于定义该key接受括号内的参数。参数需在配置监控项时给出；参数禁止使用下列字符：\ ’ ” ` * ? [ ] { } ~ $ ! &amp; ; ( ) &lt;&gt;</p>
+<ul>
+<li>Command：命令用于生成key对应的值。可以在命令中使用位置引用$1 … $9来引用监控项Key中的相应参数。Zabbix解析监控项Key的[]中包含的参数，并相应地替换$1，…，$9。$0会替换为完整的原始命令（在对$0，…，$9执行替换之前的命令）运行。不管位置参数（$0,…,$9)是用双引号( “ )还是单引号( ’ )括起来，都会解析位置引用</li>
+</ul>
+<p><strong>测试监控项</strong></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#在Zabbix Agent 上执行测试</span><br>zabbix_agent -t <span class="hljs-string">&quot;在客户端定义的key名&quot;</span><br><br><span class="hljs-comment">#在Zabbix Server上可以使用zabbix_get工具获取自定义监控项</span><br>zabbix_get -s 客户端IP -p 10050 -k <span class="hljs-string">&quot;在客户端定义的key名&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="4-2、监控Nginx服务"><a href="#4-2、监控Nginx服务" class="headerlink" title="4.2、监控Nginx服务"></a>4.2、监控Nginx服务</h4><h5 id="4-2-1、自定义监控nginx（状态页）"><a href="#4-2-1、自定义监控nginx（状态页）" class="headerlink" title="4.2.1、自定义监控nginx（状态页）"></a>4.2.1、自定义监控nginx（状态页）</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@zabbix_agent2_centos ~]<span class="hljs-comment">#yum -y install nginx</span><br>[root@zabbix_agent2_centos ~]<span class="hljs-comment">#vim /etc/nginx/nginx.conf</span><br>server &#123;<br>        erver_name  10.0.0.220;<br>        ..........                      <span class="hljs-comment">#添加以下内容</span><br>        location /nginx_status &#123;<br>             stub_status;<br>             allow 127.0.0.1;<br>             allow 10.0.0.190;<br>             allow 10.0.0.186;<br>             deny  all;<br>        &#125;<br>        ............<br>&#125;<br>:wq<br>[root@zabbix_agent2_centos ~]<span class="hljs-comment">#nginx -t</span><br>[root@zabbix_agent2_centos ~]<span class="hljs-comment">#systemctl restart nginx.service </span><br>[root@zabbix_agent2_centos ~]<span class="hljs-comment">#curl http://10.0.0.220/nginx_status</span><br>Active connections: 1 <br>server accepts handled requests<br> 1 1 1 <br>Reading: 0 Writing: 1 Waiting: 0<br></code></pre></td></tr></table></figure>
+
+<h5 id="4-2-2、配置agent2"><a href="#4-2-2、配置agent2" class="headerlink" title="4.2.2、配置agent2"></a>4.2.2、配置agent2</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#在对应目录下创建zabbix监控nginx的监控配置和获取nginx状态页的脚本</span><br>[root@zabbix_agent2_centos ~]<span class="hljs-comment">#cd /etc/zabbix/zabbix_agent2.d/</span><br>[root@zabbix_agent2_centos zabbix_agent2.d]<span class="hljs-comment">#cat nginx_status.sh</span><br><span class="hljs-comment">#!/bin/bash</span><br><br>PORT=80<br>HOST=10.0.0.220<br><br><span class="hljs-keyword">case</span> <span class="hljs-variable">$1</span> <span class="hljs-keyword">in</span><br>  active)<br>	/usr/bin/curl <span class="hljs-string">&quot;http://<span class="hljs-variable">$HOST</span>:&quot;</span><span class="hljs-variable">$PORT</span><span class="hljs-string">&quot;/nginx_status/&quot;</span> 2&gt;/dev/null| grep <span class="hljs-string">&#x27;Active&#x27;</span> | awk <span class="hljs-string">&#x27;&#123;print $NF&#125;&#x27;</span><br>	;;<br>  reading)<br>	/usr/bin/curl <span class="hljs-string">&quot;http://<span class="hljs-variable">$HOST</span>:&quot;</span><span class="hljs-variable">$PORT</span><span class="hljs-string">&quot;/nginx_status/&quot;</span> 2&gt;/dev/null| grep <span class="hljs-string">&#x27;Reading&#x27;</span> | awk <span class="hljs-string">&#x27;&#123;print $2&#125;&#x27;</span><br>	;;<br>  writing)<br>	/usr/bin/curl <span class="hljs-string">&quot;http://<span class="hljs-variable">$HOST</span>:&quot;</span><span class="hljs-variable">$PORT</span><span class="hljs-string">&quot;/nginx_status/&quot;</span> 2&gt;/dev/null| grep <span class="hljs-string">&#x27;Writing&#x27;</span> | awk <span class="hljs-string">&#x27;&#123;print $4&#125;&#x27;</span><br>	;;<br>  waiting)<br>	/usr/bin/curl <span class="hljs-string">&quot;http://<span class="hljs-variable">$HOST</span>:&quot;</span><span class="hljs-variable">$PORT</span><span class="hljs-string">&quot;/nginx_status/&quot;</span> 2&gt;/dev/null| grep <span class="hljs-string">&#x27;Waiting&#x27;</span> | awk <span class="hljs-string">&#x27;&#123;print $6&#125;&#x27;</span><br>	;;<br>  accepts)<br>	/usr/bin/curl <span class="hljs-string">&quot;http://<span class="hljs-variable">$HOST</span>:&quot;</span><span class="hljs-variable">$PORT</span><span class="hljs-string">&quot;/nginx_status/&quot;</span> 2&gt;/dev/null| awk NR==3 | awk <span class="hljs-string">&#x27;&#123;print $1&#125;&#x27;</span><br>	;;<br>  handled)<br>	/usr/bin/curl <span class="hljs-string">&quot;http://<span class="hljs-variable">$HOST</span>:&quot;</span><span class="hljs-variable">$PORT</span><span class="hljs-string">&quot;/nginx_status/&quot;</span> 2&gt;/dev/null| awk NR==3 | awk <span class="hljs-string">&#x27;&#123;print $2&#125;&#x27;</span><br>	;;<br>  requests)<br>	/usr/bin/curl <span class="hljs-string">&quot;http://<span class="hljs-variable">$HOST</span>:&quot;</span><span class="hljs-variable">$PORT</span><span class="hljs-string">&quot;/nginx_status/&quot;</span> 2&gt;/dev/null| awk NR==3 | awk <span class="hljs-string">&#x27;&#123;print $3&#125;&#x27;</span><br>	;;<br>  *)<br>    <span class="hljs-built_in">echo</span> $<span class="hljs-string">&quot;Usage: <span class="hljs-variable">$0</span> &#123; active | reading | writing | waiting | accepts | handled | requests&#125;&quot;</span><br><span class="hljs-keyword">esac</span><br>[root@zabbix_agent2_centos zabbix_agent2.d]<span class="hljs-comment">#chmod +x nginx_status.sh</span><br>[root@zabbix_agent2_centos zabbix_agent2.d]<span class="hljs-comment">#vim nginx_status.conf</span><br>UserParameter=nginx_status[*],/etc/zabbix/zabbix_agent2.d/nginx_status.sh <span class="hljs-variable">$1</span><br>:wq<br>[root@zabbix_agent2_centos zabbix_agent2.d]<span class="hljs-comment">#systemctl restart zabbix-agent2.service</span><br><br><span class="hljs-comment">#agent2测试</span><br>[root@zabbix_agent2_centos zabbix_agent2.d]<span class="hljs-comment">#zabbix_agent2 -t nginx_status[requests]</span><br>nginx_status[requests]                        [s|22]<br><br><span class="hljs-comment">#zabbix server测试</span><br>[root@zabbix_server ~]<span class="hljs-comment">#zabbix_get -s 10.0.0.220 -k nginx_status[requests]</span><br>23<br></code></pre></td></tr></table></figure>
+
+<h5 id="4-2-3、自定义模板及监控项并添加监控的主机上关联模板"><a href="#4-2-3、自定义模板及监控项并添加监控的主机上关联模板" class="headerlink" title="4.2.3、自定义模板及监控项并添加监控的主机上关联模板"></a>4.2.3、自定义模板及监控项并添加监控的主机上关联模板</h5><p>创建模板</p>
+<p><a href=""><img src="image-20221213180906577.png" srcset="/img/loading.gif" lazyload alt="image-20221213180906577"></a></p>
+<p>添加监控项</p>
+<p><a href=""><img src="image-20221213181712612.png" srcset="/img/loading.gif" lazyload alt="image-20221213181712612"></a></p>
+<p>关联主机</p>
+<p><a href=""><img src="image-20221213181809843.png" srcset="/img/loading.gif" lazyload alt="image-20221213181809843"></a></p>
+<p>查看是否更新数据</p>
+<p><a href=""><img src="image-20221213182129242.png" srcset="/img/loading.gif" lazyload alt="image-20221213182129242"></a></p>
+<h3 id="五、基于zabbix实现邮件或微信告警"><a href="#五、基于zabbix实现邮件或微信告警" class="headerlink" title="五、基于zabbix实现邮件或微信告警"></a>五、基于zabbix实现邮件或微信告警</h3><h4 id="5-1、注册企业微信"><a href="#5-1、注册企业微信" class="headerlink" title="5.1、注册企业微信"></a>5.1、注册企业微信</h4><p>微信告警首先得注册一个企业微信，然后才能实现微信告警。</p>
+<p>浏览器访问下面链接,注册企业微信</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs http">https://work.weixin.qq.com/<br></code></pre></td></tr></table></figure>
+
+<p><a href=""><img src="image-20221218093434434.png" srcset="/img/loading.gif" lazyload alt="image-20221218093434434"></a></p>
+<h4 id="5-2、创建部门和人员"><a href="#5-2、创建部门和人员" class="headerlink" title="5.2、创建部门和人员"></a>5.2、创建部门和人员</h4><h5 id="5-2-1、创建部门"><a href="#5-2-1、创建部门" class="headerlink" title="5.2.1、创建部门"></a>5.2.1、创建部门</h5><p><a href=""><img src="image-20221218093706256.png" srcset="/img/loading.gif" lazyload alt="image-20221218093706256"></a></p>
+<h5 id="5-2-2、加入人员"><a href="#5-2-2、加入人员" class="headerlink" title="5.2.2、加入人员"></a>5.2.2、加入人员</h5><p>方法1: 直接微信邀请,让相关人员自行扫码加入</p>
+<p><a href=""><img src="image-20221218094259182.png" srcset="/img/loading.gif" lazyload alt="image-20221218094259182"></a></p>
+<p>方法2：手动添加人员</p>
+<p><a href=""><img src="image-20221218094325434.png" srcset="/img/loading.gif" lazyload alt="image-20221218094325434"></a></p>
+<h4 id="5-3、将微信应用中添加相关的部门或人员"><a href="#5-3、将微信应用中添加相关的部门或人员" class="headerlink" title="5.3、将微信应用中添加相关的部门或人员"></a>5.3、将微信应用中添加相关的部门或人员</h4><p><a href=""><img src="image-20221218094842011.png" srcset="/img/loading.gif" lazyload alt="image-20221218094842011"></a></p>
+<p><a href=""><img src="image-20221218095111843.png" srcset="/img/loading.gif" lazyload alt="image-20221218095111843"></a></p>
+<p>注意记下以下信息：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ABAP">应用的 AgentId值1000002<br>应用的 Secret的值gc-CapCl6aSxmZm9knrTC_IqbwS70I5A8Q3BwywoXpY<br></code></pre></td></tr></table></figure>
+
+<p><a href=""><img src="image-20221218095518624.png" srcset="/img/loading.gif" lazyload alt="image-20221218095518624"></a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ABAP">查看到企业ID的值为 ww488a1e5ba0db2852<br></code></pre></td></tr></table></figure>
+
+<h4 id="5-4、授权可信ip"><a href="#5-4、授权可信ip" class="headerlink" title="5.4、授权可信ip"></a>5.4、授权可信ip</h4><p><strong>在应用中添加 企业可信IP</strong> (最近添加的功能,必须配置IP白名单才能发微信,否则会出错)</p>
+<div class="code-wrapper"><pre><code class="hljs">106.117.126.69 
+</code></pre></div>
+<p><a href=""><img src="image-20221218102330483.png" srcset="/img/loading.gif" lazyload alt="image-20221218102330483"></a></p>
+<p>添加可信ip前还需要添加真实域名（因暂未添加，所以后面只展示步骤，不再展示测试结果）</p>
+<p><a href=""><img src="image-20221218102904870.png" srcset="/img/loading.gif" lazyload alt="image-20221218102904870"></a></p>
+<h4 id="5-5、测试发送微信消息"><a href="#5-5、测试发送微信消息" class="headerlink" title="5.5、测试发送微信消息"></a>5.5、测试发送微信消息</h4><p><a href=""><img src="image-20221218101302299.png" srcset="/img/loading.gif" lazyload alt="image-20221218101302299"></a></p>
+<h4 id="5-6、创建发送微信脚本"><a href="#5-6、创建发送微信脚本" class="headerlink" title="5.6、创建发送微信脚本"></a>5.6、创建发送微信脚本</h4><p>官方微信教程</p>
+<p>官方微信API参考文档</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs http">https://developer.work.weixin.qq.com/document/path/90664<br></code></pre></td></tr></table></figure>
+
+<p><a href=""><img src="image-20221218103217343.png" srcset="/img/loading.gif" lazyload alt="image-20221218103217343"></a></p>
+<p>官方微信API参考文档</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs http">https://developer.work.weixin.qq.com/document/path/91039<br></code></pre></td></tr></table></figure>
+
+<p>发送微信可以使用各种语言,下面使用shell脚本实现</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#查看zabbix server的配置文件</span><br>[root@zabbix_server ~]<span class="hljs-comment">#grep AlertScriptsPath /etc/zabbix/zabbix_server.conf</span><br><span class="hljs-comment">### Option: AlertScriptsPath</span><br><span class="hljs-comment"># AlertScriptsPath=$&#123;datadir&#125;/zabbix/alertscripts</span><br>AlertScriptsPath=/usr/lib/zabbix/alertscripts<br><br><span class="hljs-comment">#实现发信微信的脚本</span><br>[root@zabbix_server ~]<span class="hljs-comment">#cd /usr/lib/zabbix/alertscripts</span><br>[root@zabbix_server alertscripts]<span class="hljs-comment">#cat wechat.sh </span><br><span class="hljs-comment">#!/bin/bash</span><br><br>CorpID=<span class="hljs-string">&quot;ww488a1e5ba0db2852&quot;</span><br>Secret=<span class="hljs-string">&quot;gc-CapCl6aSxmZm9knrTC_IqbwS70I5A8Q3BwywoXpY&quot;</span><br>GURL=<span class="hljs-string">&quot;https://qyapi.weixin.qq.com/cgi-bin/gettoken?</span><br><span class="hljs-string">corpid=<span class="hljs-variable">$CorpID</span>&amp;corpsecret=<span class="hljs-variable">$Secret</span>&quot;</span><br>Token=$(/usr/bin/curl -s -G <span class="hljs-variable">$GURL</span> |awk -F\&quot;: <span class="hljs-string">&#x27;&#123;print $4&#125;&#x27;</span>|awk -F\&quot; <span class="hljs-string">&#x27;&#123;print $2&#125;&#x27;</span>)<br><br>PURL=<span class="hljs-string">&quot;https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=<span class="hljs-variable">$Token</span>&quot;</span><br><br><span class="hljs-keyword">function</span> <span class="hljs-function"><span class="hljs-title">body</span></span>()&#123;<br>	<span class="hljs-built_in">local</span> int agentid=1000002<br>	<span class="hljs-built_in">local</span> UserID=<span class="hljs-variable">$1</span><br>	<span class="hljs-built_in">local</span> PartyID=2<br>	<span class="hljs-built_in">local</span> Msg=$(<span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;<span class="hljs-variable">$@</span>&quot;</span> | <span class="hljs-built_in">cut</span> -d<span class="hljs-string">&quot; &quot;</span> -f3-)<br>	<span class="hljs-built_in">printf</span> <span class="hljs-string">&#x27;&#123;\n&#x27;</span><br>	<span class="hljs-built_in">printf</span> <span class="hljs-string">&#x27;\t&quot;touser&quot;: &quot;&#x27;</span><span class="hljs-string">&quot;<span class="hljs-variable">$UserID</span>&quot;</span>\&quot;<span class="hljs-string">&quot;,\n&quot;</span><br>	<span class="hljs-built_in">printf</span> <span class="hljs-string">&#x27;\t&quot;toparty&quot;: &quot;&#x27;</span><span class="hljs-string">&quot;<span class="hljs-variable">$PartyID</span>&quot;</span>\&quot;<span class="hljs-string">&quot;,\n&quot;</span><br>	<span class="hljs-built_in">printf</span> <span class="hljs-string">&#x27;\t&quot;msgtype&quot;: &quot;text&quot;,\n&#x27;</span><br>	<span class="hljs-built_in">printf</span> <span class="hljs-string">&#x27;\t&quot;agentid&quot;: &quot;&#x27;</span><span class="hljs-string">&quot;<span class="hljs-variable">$agentid</span>&quot;</span>\&quot;<span class="hljs-string">&quot;,\n&quot;</span><br>	<span class="hljs-built_in">printf</span> <span class="hljs-string">&#x27;\t&quot;text&quot;: &#123;\n&#x27;</span><br>	<span class="hljs-built_in">printf</span> <span class="hljs-string">&#x27;\t\t&quot;content&quot;: &quot;&#x27;</span><span class="hljs-string">&quot;<span class="hljs-variable">$Msg</span>&quot;</span>\&quot;<span class="hljs-string">&quot;\n&quot;</span><br>	<span class="hljs-built_in">printf</span> <span class="hljs-string">&#x27;\t&#125;,\n&#x27;</span><br>	<span class="hljs-built_in">printf</span> <span class="hljs-string">&#x27;\t&quot;safe&quot;:&quot;0&quot;\n&#x27;</span><br>	<span class="hljs-built_in">printf</span> <span class="hljs-string">&#x27;&#125;\n&#x27;</span><br>&#125;<br><br>/usr/bin/curl --data-ascii <span class="hljs-string">&quot;<span class="hljs-subst">$(body $1 $2 $3)</span>&quot;</span> <span class="hljs-variable">$PURL</span><br><br>[root@zabbix_server alertscripts]<span class="hljs-comment">#chmod +x wechat.sh</span><br><br><span class="hljs-comment">#发送测试微信，其中wangxiaochun为企业微信的帐号，并且不区分大小写,在通讯录的用户成员详情中可以看到帐号</span><br>[root@zabbix_server alertscripts]<span class="hljs-comment">#./wechat.sh zhangtianxiang 微信告警标题 微信告警信息</span><br>&#123;<span class="hljs-string">&quot;errcode&quot;</span>:60020,<span class="hljs-string">&quot;errmsg&quot;</span>:<span class="hljs-string">&quot;not allow to access from your ip, hint: [1671332081303762937774104], from ip: 106.117.126.69, more info at https://open.work.weixin.qq.com/devtool/query?e=60020&quot;</span>&#125;<br><span class="hljs-comment">#表示106.117.126.69这个IP地址不允许访问，只有上面的可信ip添加后才能使用</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="5-7、创建微信报警媒介类型"><a href="#5-7、创建微信报警媒介类型" class="headerlink" title="5.7、创建微信报警媒介类型"></a>5.7、创建微信报警媒介类型</h4><p><a href=""><img src="image-20221218105754672.png" srcset="/img/loading.gif" lazyload alt="image-20221218105754672"></a></p>
+<p>报警媒介类型为脚本,脚本参数为以下三项</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ABAP">&#123;ALERT.SENDTO&#125;--收件人媒介<br>&#123;ALERT.SUBJECT&#125;--通知主题,因为微信没有主题,此项无效,可以不填写<br>&#123;ALERT.MESSAGE&#125;--通知内容<br></code></pre></td></tr></table></figure>
+
+<p>官方宏参考:</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs http">https://www.zabbix.com/documentation/5.0/zh/manual/appendix/macros/supported_by_location<br></code></pre></td></tr></table></figure>
+
+<p><a href=""><img src="image-20221218110019612.png" srcset="/img/loading.gif" lazyload alt="image-20221218110019612"></a></p>
+<p><strong>注意:此处可以只填写{ALERT.SENDTO}和{ALERT.MESSAGE}即可</strong></p>
+<p><a href=""><img src="image-20221218110305045.png" srcset="/img/loading.gif" lazyload alt="image-20221218110305045"></a></p>
+<p><a href=""><img src="image-20221218110418418.png" srcset="/img/loading.gif" lazyload alt="image-20221218110418418"></a></p>
+<p>修改消息模板</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#可以添加两个消息类型</span><br><span class="hljs-comment"># 问题</span><br>主题: 告警: &#123;EVENT.NAME&#125;<br>告警主机：&#123;HOST.NAME1&#125;<br>告警服务: &#123;ITEM.NAME1&#125;<br>告警Key1: &#123;ITEM.KEY1&#125;：&#123;ITEM.VALUE1&#125;<br>告警Key2: &#123;ITEM.KEY2&#125;：&#123;ITEM.VALUE2&#125;<br>严重级别: &#123;TRIGGER.SEVERITY&#125;<br><span class="hljs-comment"># 恢复 Problem Recovery</span><br>主题: 恢复: &#123;EVENT.DURATION&#125;: &#123;EVENT.NAME&#125;<br>恢复主机：&#123;HOST.NAME1&#125;<br>恢复服务： &#123;ITEM.NAME1&#125;<br>恢复Key1：&#123;ITEM.KEY1&#125;：&#123;ITEM.VALUE1&#125;<br>恢复Key2: &#123;ITEM.KEY2&#125;：&#123;ITEM.VALUE2&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="5-8、给Zabbix用户添加报警媒介"><a href="#5-8、给Zabbix用户添加报警媒介" class="headerlink" title="5.8、给Zabbix用户添加报警媒介"></a>5.8、给Zabbix用户添加报警媒介</h4><p><a href=""><img src="image-20221218110824993.png" srcset="/img/loading.gif" lazyload alt="image-20221218110824993"></a></p>
+<h4 id="5-9、创建动作"><a href="#5-9、创建动作" class="headerlink" title="5.9、创建动作"></a>5.9、创建动作</h4><h5 id="5-9-1、编辑已有动作"><a href="#5-9-1、编辑已有动作" class="headerlink" title="5.9.1、编辑已有动作"></a>5.9.1、编辑已有动作</h5><p>如果已经创建动作，可以修改已有动作，如下所示</p>
+<p><a href=""><img src="image-20221218111152744.png" srcset="/img/loading.gif" lazyload alt="image-20221218111152744"></a></p>
+<h5 id="5-9-2、创建动作"><a href="#5-9-2、创建动作" class="headerlink" title="5.9.2、创建动作"></a>5.9.2、创建动作</h5><p>如果之前没有动作，新创建动作</p>
+<p><a href=""><img src="image-20221218111301406.png" srcset="/img/loading.gif" lazyload alt="image-20221218111301406"></a></p>
+<h3 id="六、总结zabbix自动发现监控"><a href="#六、总结zabbix自动发现监控" class="headerlink" title="六、总结zabbix自动发现监控"></a>六、总结zabbix自动发现监控</h3><h4 id="6-1、自动发现"><a href="#6-1、自动发现" class="headerlink" title="6.1、自动发现"></a>6.1、自动发现</h4><h5 id="6-1-1、Zabbix网络发现介绍"><a href="#6-1-1、Zabbix网络发现介绍" class="headerlink" title="6.1.1、Zabbix网络发现介绍"></a>6.1.1、Zabbix网络发现介绍</h5><p>之前都是手动一台一台主机的添加到 Zabbix 中进行监控,很是繁琐,可以利用自动发现功能,自动添加被监控的主机</p>
+<p>当众多的服务器都已经安装了agent或者snmp后，利用自动发现功能,Zabbix server 可以自动扫描预先配置好的ip段，自动添加主机，自动关联模板，自动加到主机组里等等。</p>
+<p>网络发现功能更快速的部署zabbix、简化zabbix管理、并且在经常变动的环境里面也不需要花太多的精力，毕竟网络发现也能随时发现变化。</p>
+<p>当然网络发现也不是万能的,虽然网络发现能干很多事情，但是它无法发现网络拓扑的变化。</p>
+<p>由于自动发现效率比较低,严重消耗Zabbix Server资源和网络带宽,大规模环境中较少使用</p>
+<p>自动发现虽然能自动完成发现并添加主机，但仍然存在一些问题</p>
+<ul>
+<li><p>发现时间长，效率较低</p>
+</li>
+<li><p>扫描过程中容易漏扫</p>
+</li>
+<li><p>当IP地址不固定难以实现</p>
+</li>
+<li><p>无法实现不同类型主机关联不同模板</p>
+</li>
+</ul>
+<p>官方文档</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs http">https://www.zabbix.com/documentation/5.0/zh/manual/discovery/network_discovery<br></code></pre></td></tr></table></figure>
+
+<h5 id="6-1-2、实现Zabbix网络发现"><a href="#6-1-2、实现Zabbix网络发现" class="headerlink" title="6.1.2、实现Zabbix网络发现"></a>6.1.2、实现Zabbix网络发现</h5><p>自动发现由两个步骤组成:</p>
+<ul>
+<li><p>发现discovery: Zabbix周期性地扫描在”网络发现规则”中定义的IP段，发现满足规则的主机</p>
+</li>
+<li><p>动作action: 对这些主机完成动作，包括添加主机、添加模板、发送通知等等。</p>
+</li>
+</ul>
+<h6 id="6-1-2-1、创建自动发现指定需要监控的网段"><a href="#6-1-2-1、创建自动发现指定需要监控的网段" class="headerlink" title="6.1.2.1、创建自动发现指定需要监控的网段"></a>6.1.2.1、创建自动发现指定需要监控的网段</h6><p>配置– 自动发现– 创建发现规则</p>
+<p><a href=""><img src="image-20221218112135483.png" srcset="/img/loading.gif" lazyload alt="image-20221218112135483"></a></p>
+<p>指定名称,IP范围和逢动发现检查等信息</p>
+<p><a href=""><img src="image-20221218112450399.png" srcset="/img/loading.gif" lazyload alt="image-20221218112450399"></a></p>
+<p>可见名称为IP地址</p>
+<p><a href=""><img src="image-20221218112558972.png" srcset="/img/loading.gif" lazyload alt="image-20221218112558972"></a></p>
+<h6 id="6-1-2-2、创建添加主机的自动发现动作"><a href="#6-1-2-2、创建添加主机的自动发现动作" class="headerlink" title="6.1.2.2、创建添加主机的自动发现动作"></a>6.1.2.2、创建添加主机的自动发现动作</h6><p>创建新的动作</p>
+<p><a href=""><img src="image-20221218112813468.png" srcset="/img/loading.gif" lazyload alt="image-20221218112813468"></a></p>
+<p><a href=""><img src="image-20221218113431123.png" srcset="/img/loading.gif" lazyload alt="image-20221218113431123"></a></p>
+<p>操作增加三个操作: 添加主机,添加群组,添加模板</p>
+<p><a href=""><img src="image-20221218113149142.png" srcset="/img/loading.gif" lazyload alt="image-20221218113149142"></a></p>
+<p>也可以添加发送消息给Admin等操作</p>
+<p><a href=""><img src="image-20221218113552143.png" srcset="/img/loading.gif" lazyload alt="image-20221218113552143"></a></p>
+<h6 id="6-1-2-3、创建删除主机的自动发现动作"><a href="#6-1-2-3、创建删除主机的自动发现动作" class="headerlink" title="6.1.2.3、创建删除主机的自动发现动作"></a>6.1.2.3、创建删除主机的自动发现动作</h6><p><a href=""><img src="image-20221218113812972.png" srcset="/img/loading.gif" lazyload alt="image-20221218113812972"></a></p>
+<p><a href=""><img src="image-20221218113919777.png" srcset="/img/loading.gif" lazyload alt="image-20221218113919777"></a></p>
+<h4 id="6-2、自动注册"><a href="#6-2、自动注册" class="headerlink" title="6.2、自动注册"></a>6.2、自动注册</h4><h5 id="6-2-1、自动注册介绍"><a href="#6-2-1、自动注册介绍" class="headerlink" title="6.2.1、自动注册介绍"></a>6.2.1、自动注册介绍</h5><p>当客户端众多时,将每台主机手动添加到Zabbix,还手动添加关联模板,无疑是低效的.</p>
+<p>但是利用网络发现实现,Zabbix Server 资源消耗又比较严重</p>
+<p>利用Zabbix的自动注册功能,实现添加主机的自动化,可以大幅减少运维的工作量,减少Zabbix Server 的资源消耗</p>
+<p>此方式和自动发现不同,是由Active agent主动发起请求zabbix server将这些agent加到主机里。</p>
+<p>注意: Agent 必须使用主动模式才支持自动注册</p>
+<p>自动注册由于比自动发现效率更好,Zabbix Server资源消耗更少,更适合大规模及云环境IP地址不固定的场景使用</p>
+<p>官方帮助</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs http">https://www.zabbix.com/documentation/5.0/zh/manual/discovery/auto_registration<br></code></pre></td></tr></table></figure>
+
+<p>在Zabbix agent 端的配置文件修改以下项目</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs ABAP">Server=&lt;Zabbix Server IP&gt;<br>ServerActive=&lt;Zabbix Server IP&gt; #客户端主动模式是实现自动注册的前提条件<br>Hostname=&lt;agent IP&gt;<br>#HostnameItem=system.hostname    <br>HostMetadata==&lt;key&gt;           #非必须项,可以做为添加主机的验证标识和分类,或者实现加入主机的验证功能<br>HostMetadataItem=&lt;监控项Item&gt; #非必须项,监控项的值可以做为添加主机的验证标识和分类<br></code></pre></td></tr></table></figure>
+
+<h5 id="6-2-2、修改Zabbix-agent的配置"><a href="#6-2-2、修改Zabbix-agent的配置" class="headerlink" title="6.2.2、修改Zabbix agent的配置"></a>6.2.2、修改Zabbix agent的配置</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@Rocky8 ~]<span class="hljs-comment">#vim /etc/zabbix/zabbix_agentd2.conf</span><br>Server=zabbix.magedu.org              <span class="hljs-comment">#或者写server的IP地址10.0.0.190</span><br>ServerActive=zabbix.magedu.org        <span class="hljs-comment">#或者写server的IP地址10.0.0.190</span><br>Hostname=web-10.0.0.18  <span class="hljs-comment">#指定主机名,如果不指定,则服务器将使用agent的系统主机名</span><br>HostMetadata=web<br>[root@Rocky8 ~]<span class="hljs-comment">#systemctl restart zabbix-agent2.service</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="6-2-3、在Zabbix-Server配置动作"><a href="#6-2-3、在Zabbix-Server配置动作" class="headerlink" title="6.2.3、在Zabbix Server配置动作"></a>6.2.3、在Zabbix Server配置动作</h5><p>在配置—动作—选择自动注册动作</p>
+<p><a href=""><img src="image-20221218115136642.png" srcset="/img/loading.gif" lazyload alt="image-20221218115136642"></a></p>
+<p>指定动作中条件的主机名的值</p>
+<p><a href=""><img src="image-20221218115333696.png" srcset="/img/loading.gif" lazyload alt="image-20221218115333696"></a></p>
+<p>或者使用元数据添加</p>
+<p><a href=""><img src="image-20221218115717334.png" srcset="/img/loading.gif" lazyload alt="image-20221218115717334"></a></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment">#上图中的主机元数据值web和zabbix-agent2.conf里面的HostMetadata设置有关</span><br>HostMetadata=web<br><span class="hljs-comment">#HostMetadata设置是什么，到时候主机元数据值添对应的值</span><br></code></pre></td></tr></table></figure>
+
+<p>指定操作</p>
+<p><a href=""><img src="image-20221218115528257.png" srcset="/img/loading.gif" lazyload alt="image-20221218115528257"></a></p>
+<span id="more"></span>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/03/java%E7%9A%84%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">java的编译安装</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/02/tomcat%E7%BB%83%E4%B9%A0/">
+                        <span class="hidden-mobile">tomcat练习</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
